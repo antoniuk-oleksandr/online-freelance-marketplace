@@ -1,0 +1,44 @@
+package program.freelance_marketplace.api.users.entity;
+
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
+
+import java.sql.Timestamp;
+import java.util.List;
+
+@Getter
+@Setter
+@Entity
+@Table(name = "users")
+public class UserEntity {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    private String firstName;
+    private String surname;
+    private String email;
+    private Double rating;
+    private Double level;
+    private Timestamp createdAt;
+
+    @OneToMany(orphanRemoval = true)
+    @JoinTable(
+            name = "users_skills",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "skill_id")
+    )
+    private List<SkillEntity> skills;
+
+    @Column(length = 1000)
+    private String about;
+
+    @Column(length = 2048)
+    private String password;
+
+    @Column(name = "private_key", length = 2048)
+    private String privateKey;
+
+    @Column(name = "public_key", length = 2048)
+    private String publicKey;
+}
