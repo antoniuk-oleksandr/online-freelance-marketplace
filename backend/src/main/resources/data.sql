@@ -307,7 +307,7 @@ VALUES
     -- Service 7 (3 packages)
     (7, 19), (7, 20), (7, 21);
 
-INSERT INTO services_languages (service_id, language_id)
+INSERT INTO users_languages (user_id, language_id)
 VALUES
     -- Service 1
     (1, 1), (1, 2), (1, 3),
@@ -324,7 +324,7 @@ VALUES
     -- Service 7
     (7, 19), (7, 20), (7, 21);
 
-INSERT INTO reviews (rating, review)
+INSERT INTO reviews (rating, content)
 VALUES
     (5, 'Outstanding service. Highly recommended!'),
     (4, 'Very good service with minor delays.'),

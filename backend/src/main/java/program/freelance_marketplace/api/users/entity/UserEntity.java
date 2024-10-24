@@ -3,7 +3,9 @@ package program.freelance_marketplace.api.users.entity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import program.freelance_marketplace.api.FileEntity;
 
+import java.io.File;
 import java.sql.Timestamp;
 import java.util.List;
 
@@ -30,6 +32,9 @@ public class UserEntity {
     )
     private List<SkillEntity> skills;
 
+    @OneToOne
+    private FileEntity avatar;
+
     @Column(length = 1000)
     private String about;
 
@@ -41,4 +46,12 @@ public class UserEntity {
 
     @Column(name = "public_key", length = 2048)
     private String publicKey;
+
+    @ManyToMany
+    @JoinTable(
+            name = "users_languages",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "language_id")
+    )
+    private List<LanguageEntity> languages;
 }

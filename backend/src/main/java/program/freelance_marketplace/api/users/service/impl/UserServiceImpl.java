@@ -1,41 +1,52 @@
 package program.freelance_marketplace.api.users.service.impl;
 
 import lombok.AllArgsConstructor;
-import org.springframework.data.domain.Page;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import program.freelance_marketplace.api.ReviewEntity;
-import program.freelance_marketplace.api.ServiceEntity;
+import program.freelance_marketplace.api.orders.dto.CountRating;
+import program.freelance_marketplace.api.services.entity.ServiceEntity;
+import program.freelance_marketplace.api.services.mapper.ServiceMapper;
 import program.freelance_marketplace.api.users.dto.UserByIdDTO;
+import program.freelance_marketplace.api.users.dto.UserServiceDTO;
+import program.freelance_marketplace.api.reviews.dto.UserByIdReviewDTO;
 import program.freelance_marketplace.api.users.entity.UserEntity;
 import program.freelance_marketplace.api.users.mapper.UserMapper;
-import program.freelance_marketplace.api.users.repository.ReviewRepository;
-import program.freelance_marketplace.api.users.repository.ServiceRepository;
 import program.freelance_marketplace.api.users.repository.UserRepository;
 import program.freelance_marketplace.api.users.service.UserService;
+import program.freelance_marketplace.api.users.utils.UserUtils;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
 @AllArgsConstructor
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
-    private final ReviewRepository reviewRepository;
-    private final ServiceRepository serviceRepository;
     private final UserMapper userMapper;
+    private final ServiceMapper serviceMapper;
+    private final UserUtils userUtils;
 
     @Override
     public Optional<UserByIdDTO> getUserById(Long id, Pageable pageable) {
-        Optional<UserEntity> entity = userRepository.findById(id);
-        Page<ReviewEntity> reviewEntityPage = reviewRepository.findReviewsByUserId(id, pageable);
-        List<ServiceEntity> serviceEntities = serviceRepository.getServicesByFreelancerId(id);
-        return entity.map(userMapper::mapUserByIdEntityToDTO)
-                .map(userByIdDTO -> {
-                    userByIdDTO.setReviews(reviewEntityPage.getContent());
-                    userByIdDTO.setServices(userMapper
-                            .mapServiceEntityListToUserServiceDTOList(serviceEntities));
-                    return userByIdDTO;
-                });
+        return userRepository.findById(id)
+                .map(userEntity -> createUserByIdDTO(userEntity, pageable));
+    }
+
+    private UserByIdDTO createUserByIdDTO(UserEntity userEntity, Pageable pageable) {
+        CountRating reviewCountRating = userUtils.getReviewCountRatingByFreelancerId(userEntity.getId());
+        List<UserByIdReviewDTO> reviews = userUtils.getReviewsByUserId(userEntity.getId(), pageable);
+        List<ServiceEntity> serviceEntities = userUtils.getServicesByFreelancerId(userEntity.getId());
+
+        Map<Long, CountRating> serviceReviewMap = userUtils.getServiceReviewMap(serviceEntities);
+        Map<Long, Double> serviceMinPriceMap = userUtils.getServiceMinPriceMap(serviceEntities);
+
+        List<UserServiceDTO> userServiceDTOs = serviceMapper.mapServiceEntityListToUserServiceDTOList(
+                serviceEntities, serviceReviewMap, serviceMinPriceMap
+        );
+
+        return userMapper.mapUserByIdEntityToDTO(userEntity, reviewCountRating, reviews, userServiceDTOs);
     }
 }

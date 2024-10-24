@@ -2,10 +2,12 @@ package program.freelance_marketplace.api.users.mapper;
 
 import org.springframework.stereotype.Component;
 import program.freelance_marketplace.api.FileEntity;
-import program.freelance_marketplace.api.ServiceEntity;
+import program.freelance_marketplace.api.orders.dto.CountRating;
 import program.freelance_marketplace.api.users.dto.UserByIdDTO;
 import program.freelance_marketplace.api.users.dto.UserServiceDTO;
+import program.freelance_marketplace.api.users.entity.LanguageEntity;
 import program.freelance_marketplace.api.users.entity.SkillEntity;
+import program.freelance_marketplace.api.reviews.dto.UserByIdReviewDTO;
 import program.freelance_marketplace.api.users.entity.UserEntity;
 
 import java.util.List;
@@ -13,38 +15,43 @@ import java.util.stream.Collectors;
 
 @Component
 public class UserMapper {
-    public UserByIdDTO mapUserByIdEntityToDTO(UserEntity userEntity) {
+    public UserByIdDTO mapUserByIdEntityToDTO(
+            UserEntity userEntity,
+            CountRating reviewCountRating,
+            List<UserByIdReviewDTO> reviewEntities,
+            List<UserServiceDTO> userServiceDTOs
+    ) {
         return UserByIdDTO.builder()
                 .id(userEntity.getId())
+                .avatar(mapFileEntityToString(userEntity.getAvatar()))
+                .reviewsCount(reviewCountRating.count())
+                .rating(reviewCountRating.rating())
+                .reviews(reviewEntities)
                 .firstName(userEntity.getFirstName())
                 .surname(userEntity.getSurname())
-                .rating(userEntity.getRating())
                 .level(userEntity.getLevel())
                 .createdAt(userEntity.getCreatedAt())
                 .about(userEntity.getAbout())
+                .services(userServiceDTOs)
                 .skills(mapSkillEntityListToStringList(userEntity.getSkills()))
+                .languages(mapLanguageEntityListToStringList(userEntity.getLanguages()))
                 .build();
     }
 
-    public List<String> mapSkillEntityListToStringList(List<SkillEntity> skillEntities) {
+    private String mapFileEntityToString(FileEntity fileEntity) {
+        if (fileEntity == null) return null;
+        else return fileEntity.getName();
+    }
+
+    private List<String> mapSkillEntityListToStringList(List<SkillEntity> skillEntities) {
         return skillEntities.stream()
                 .map(SkillEntity::getName)
                 .collect(Collectors.toList());
     }
 
-    public List<UserServiceDTO> mapServiceEntityListToUserServiceDTOList(List<ServiceEntity> serviceEntities) {
-        return serviceEntities.stream()
-                .map(serviceEntity -> UserServiceDTO.builder()
-                        .id(serviceEntity.getId())
-                        .title(serviceEntity.getTitle())
-                        .createdAt(serviceEntity.getCreated_at())
-                        .description(serviceEntity.getDescription())
-                        .image(serviceEntity.getImage().getName())
-                        .category(serviceEntity.getCategory())
-                        .languages(serviceEntity.getLanguages().stream()
-                                .map(FileEntity::getName)
-                                .collect(Collectors.toList()))
-                        .build())
+    public List<String> mapLanguageEntityListToStringList(List<LanguageEntity> languageEntities) {
+        return languageEntities.stream()
+                .map(LanguageEntity::getName)
                 .collect(Collectors.toList());
     }
 }
