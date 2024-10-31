@@ -7,7 +7,6 @@ import program.freelance_marketplace.api.CategoryEntity;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
-import java.util.List;
 
 @Getter
 @Setter
@@ -19,7 +18,6 @@ public class UserServiceDTO {
     private String description;
     private String image;
     private CategoryEntity category;
-    private List<String> files;
     private Double minPrice;
     private Long reviewsCount;
     private BigDecimal rating;

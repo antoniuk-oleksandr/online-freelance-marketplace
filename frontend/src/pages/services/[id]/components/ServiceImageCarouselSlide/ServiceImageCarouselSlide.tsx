@@ -9,12 +9,14 @@ const ServiceImageCarouselSlide = (props: ServiceImageCarouselSlideProps) => {
     const {src} = props;
 
     return (
-        <Carousel.Slide className={"aspect-video"}>
+        <Carousel.Slide className={"aspect-video flex size-full"}>
             <Image
-                width={1920}
-                height={1080}
-                alt={"img"}
+                priority
+                sizes="full"
                 src={src}
+                alt="img"
+                fill
+                style={{ objectFit: "cover" }}
             />
         </Carousel.Slide>
     )

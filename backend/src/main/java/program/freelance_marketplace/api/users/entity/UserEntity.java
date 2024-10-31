@@ -20,7 +20,6 @@ public class UserEntity {
     private String firstName;
     private String surname;
     private String email;
-    private Double rating;
     private Double level;
     private Timestamp createdAt;
 

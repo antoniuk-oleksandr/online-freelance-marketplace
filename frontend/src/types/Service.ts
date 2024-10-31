@@ -1,6 +1,7 @@
 import {User} from "@/types/User";
 import { Package } from "./Package";
 import {Review} from "@/types/Review";
+import {Category} from "@/types/Category";
 
 export type Service = {
     id: number,
@@ -9,7 +10,7 @@ export type Service = {
     images: string[],
     createdAt: Date,
     rating: number,
-    category: string,
+    category: Category,
     freelancer: User,
     packages: Package[],
     reviews: Review[]

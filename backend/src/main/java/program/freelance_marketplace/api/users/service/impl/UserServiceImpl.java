@@ -1,13 +1,11 @@
 package program.freelance_marketplace.api.users.service.impl;
 
 import lombok.AllArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import program.freelance_marketplace.api.orders.dto.CountRating;
-import program.freelance_marketplace.api.services.entity.ServiceEntity;
-import program.freelance_marketplace.api.services.mapper.ServiceMapper;
+import program.freelance_marketplace.api.freelance_services.entity.ServiceEntity;
+import program.freelance_marketplace.api.freelance_services.mapper.ServiceMapper;
 import program.freelance_marketplace.api.users.dto.UserByIdDTO;
 import program.freelance_marketplace.api.users.dto.UserServiceDTO;
 import program.freelance_marketplace.api.reviews.dto.UserByIdReviewDTO;

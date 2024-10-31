@@ -2,6 +2,7 @@ package program.freelance_marketplace.api.users.mapper;
 
 import org.springframework.stereotype.Component;
 import program.freelance_marketplace.api.FileEntity;
+import program.freelance_marketplace.api.freelance_services.dto.FreelanceServiceReviewCustomer;
 import program.freelance_marketplace.api.orders.dto.CountRating;
 import program.freelance_marketplace.api.users.dto.UserByIdDTO;
 import program.freelance_marketplace.api.users.dto.UserServiceDTO;
@@ -10,6 +11,7 @@ import program.freelance_marketplace.api.users.entity.SkillEntity;
 import program.freelance_marketplace.api.reviews.dto.UserByIdReviewDTO;
 import program.freelance_marketplace.api.users.entity.UserEntity;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -54,4 +56,21 @@ public class UserMapper {
                 .map(LanguageEntity::getName)
                 .collect(Collectors.toList());
     }
+
+    public List<FreelanceServiceReviewCustomer> mapCustomerObjectsToDTOList(
+            Object[] customerObjects
+    ) {
+        return Arrays.stream(customerObjects)
+                .map(item -> {
+                    Object[] customerData = (Object[]) item;
+                    return new FreelanceServiceReviewCustomer(
+                            (Long) customerData[0],
+                            (String) customerData[1],
+                            (String) customerData[2],
+                            customerData[3] == null ? null : (String) customerData[3]
+                    );
+                })
+                .toList();
+    }
+
 }

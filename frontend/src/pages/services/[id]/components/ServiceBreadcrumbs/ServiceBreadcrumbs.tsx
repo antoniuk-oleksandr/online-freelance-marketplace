@@ -6,13 +6,16 @@ import {Service} from "@/types/Service";
 type ServiceBreadcrumbsProps = Service;
 
 const ServiceBreadcrumbs = (props: ServiceBreadcrumbsProps) => {
-    const {category, title} = props;
+    const {category} = props;
 
     const items = [
         {title: "Home", href: "/"},
-        {title: title, href: `/search?category=${category}`},
+        {title: category.name, href: `/search?category=${category.id}`},
     ].map((item) => (
-        <Link href={item.href} key={item.title}>
+        <Link
+            className={"hover:underline ease-out duration-200"}
+            href={item.href} key={item.title}
+        >
             {item.title}
         </Link>
     ));

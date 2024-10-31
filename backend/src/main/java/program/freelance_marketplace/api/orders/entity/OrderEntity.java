@@ -5,7 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 import program.freelance_marketplace.api.*;
 import program.freelance_marketplace.api.reviews.entity.ReviewEntity;
-import program.freelance_marketplace.api.services.entity.ServiceEntity;
+import program.freelance_marketplace.api.freelance_services.entity.ServiceEntity;
 import program.freelance_marketplace.api.users.entity.UserEntity;
 
 import java.sql.Timestamp;

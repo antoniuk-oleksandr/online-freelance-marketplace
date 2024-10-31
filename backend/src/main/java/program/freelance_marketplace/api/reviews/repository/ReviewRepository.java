@@ -32,4 +32,14 @@ public interface ReviewRepository extends JpaRepository<ReviewEntity, Long> {
             "ORDER BY O.ended_at DESC",
             nativeQuery = true)
     Page<Object[]> findReviewsByUserId(@Param("userId") Long userId, Pageable pageable);
+
+    @Query(value = "SELECT R.*, O.created_at, O.ended_at, P.price " +
+            "FROM orders O " +
+            "LEFT JOIN reviews R ON O.review_id = R.id " +
+            "LEFT JOIN services_packages SP ON O.service_package_id = SP.package_id " +
+            "LEFT JOIN packages P ON SP.package_id = P.id " +
+            "WHERE O.service_id = :serviceId " +
+            "AND R.id IS NOT NULL",
+            nativeQuery = true)
+    Page<Object[]> findReviewsByServiceId(@Param("serviceId") Long serviceId, Pageable pageable);
 }

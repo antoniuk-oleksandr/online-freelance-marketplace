@@ -6,7 +6,8 @@ export const getFileHost = () => {
     return 'localhost:8030';
 }
 
-export const getFile = (name: string) => {
+export const getFile = (name: string | null) => {
+    if(!name) return '';
     if (name.includes("http")) return name;
     else return `http://${getFileHost()}/files/${name}`;
 }

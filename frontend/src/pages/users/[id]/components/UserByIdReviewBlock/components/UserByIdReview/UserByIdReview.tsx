@@ -1,10 +1,6 @@
 import UserByIdReviewLayout from "./UserByIdReviewLayout";
 import {Review} from "@/types/Review";
 import DividerElement from "@/common-components/DividerElement";
-import {Avatar, Image, Rating} from "@mantine/core";
-import BulletElement from "@/common-components/BulletElement";
-import {getFile, getPackageDuration, getTimeAgo} from "@/utils/utils";
-import Link from "next/link";
 import UserByIdReviewUser
     from "@/pages/users/[id]/components/UserByIdReviewBlock/components/UserByIdReview/components/UserByIdReviewUser/UserByIdReviewUser";
 import UserByIdReviewRatingBar

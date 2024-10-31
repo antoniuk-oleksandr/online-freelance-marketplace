@@ -10,7 +10,7 @@ const UserSkillsBlock = (props: UserByIdProps) => {
     return (
         <UserComponentLayout>
             <p className={"text-xl font-bold"}>Skills</p>
-            <div className={"flex gap-x-1"}>
+            <div className={"flex gap-x-2"}>
                 {skills.map((skill, index) => (
                     <SkillBadge skill={skill} key={index}/>
                 ))}

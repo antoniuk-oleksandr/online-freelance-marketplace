@@ -2,15 +2,16 @@ package program.freelance_marketplace.api.users.utils;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
+import program.freelance_marketplace.api.FileEntity;
 import program.freelance_marketplace.api.orders.dto.CountRating;
 import program.freelance_marketplace.api.orders.mapper.OrderMapper;
 import program.freelance_marketplace.api.orders.repository.OrderRepository;
 import program.freelance_marketplace.api.reviews.mapper.ReviewMapper;
-import program.freelance_marketplace.api.services.entity.ServiceEntity;
-import program.freelance_marketplace.api.services.mapper.ServiceMapper;
+import program.freelance_marketplace.api.freelance_services.entity.ServiceEntity;
+import program.freelance_marketplace.api.freelance_services.mapper.ServiceMapper;
 import program.freelance_marketplace.api.reviews.dto.UserByIdReviewDTO;
 import program.freelance_marketplace.api.reviews.repository.ReviewRepository;
-import program.freelance_marketplace.api.services.repository.ServiceRepository;
+import program.freelance_marketplace.api.freelance_services.repository.ServiceRepository;
 
 import org.springframework.data.domain.Pageable;
 
