@@ -1,6 +1,7 @@
 import SelectedPackageLayout from "./SelectedPackageLayout";
 import {Package} from "@/types/Package";
-import {Button, NumberFormatter} from "@mantine/core";
+import {NumberFormatter} from "@mantine/core";
+import MyButton from "@/common-components/MyButton/MyButton";
 
 type SelectedPackageProps = Package;
 
@@ -22,9 +23,10 @@ const SelectedPackage = (props: SelectedPackageProps) => {
                     value={price}
                 />
             </div>
-            <Button className="mt-8 !w-full !bg-cyan-500 hover:!bg-cyan-400 transition-colors duration-200">
+            <MyButton
+                className={"!mt-8 !w-full"}>
                 Order Now
-            </Button>
+            </MyButton>
         </SelectedPackageLayout>
     );
 };

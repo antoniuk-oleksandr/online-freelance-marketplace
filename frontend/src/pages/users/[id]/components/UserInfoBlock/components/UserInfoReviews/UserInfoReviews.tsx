@@ -10,6 +10,7 @@ const UserInfoReviews = (props: UserInfoReviewsProps) => {
     const {user} = props;
     const {rating, reviewsCount} = user;
 
+    if (!rating || !reviewsCount) return null;
     return (
         <UserInfoReviewsLayout {...props}>
             <FaStar className="text-yellow-400"/>

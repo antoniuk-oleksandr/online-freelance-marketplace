@@ -6,7 +6,6 @@ const UserByIdServicesBlock = ({ user }: UserByIdProps) => {
     const { services } = user;
 
     if (!services || services.length === 0) return null;
-
     return (
         <UserComponentLayout>
             <h2 className="text-xl font-bold">Services</h2>

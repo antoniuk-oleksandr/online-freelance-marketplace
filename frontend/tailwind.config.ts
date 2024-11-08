@@ -7,10 +7,11 @@ const config: Config = {
     theme: {
         extend: {
             gridTemplateColumns: {
-              service: "1fr 25rem",
+                service: "1fr 25rem",
+                "sign-form": "36rem 1fr",
             },
             spacing: {
-              packages: "calc(32px)"
+                packages: "calc(32px)"
             },
             width: {
                 100: "25rem",
@@ -21,6 +22,7 @@ const config: Config = {
             },
             minHeight: {
                 app: "calc(100svh - 12.1625rem)",
+                212: "53rem",
             },
             colors: {
                 dark: {

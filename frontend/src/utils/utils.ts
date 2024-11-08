@@ -1,3 +1,5 @@
+import {FieldErrors, FieldValues} from "react-hook-form";
+
 export const getHost = () => {
     return 'localhost:8080';
 }
@@ -7,7 +9,7 @@ export const getFileHost = () => {
 }
 
 export const getFile = (name: string | null) => {
-    if(!name) return '';
+    if (!name) return '';
     if (name.includes("http")) return name;
     else return `http://${getFileHost()}/files/${name}`;
 }
@@ -65,4 +67,9 @@ export const getPackageDuration = (before: number, after: number) => {
         default:
             return `${Math.floor(diffInDays / 365)} years`;
     }
+}
+
+export const shouldHeaderBeShown = (page: string): boolean => {
+    const pagesToHideHeader = ["/sign-in", "/sign-up"];
+    return !pagesToHideHeader.includes(page);
 }

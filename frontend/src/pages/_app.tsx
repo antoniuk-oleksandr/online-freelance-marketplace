@@ -5,15 +5,20 @@ import Header from "@/common-components/Header/Header";
 import PageLayout from "@/common-components/PageLayout";
 import Providers from "@/common-components/Providers";
 import "@mantine/core/styles.css"
-import {Lato} from "@next/font/google";
+import {Inter} from "@next/font/google";
 import Footer from "@/common-components/Footer/Footer";
+import {usePage} from "@/general-hooks/use-page";
+import {shouldHeaderBeShown} from "@/utils/utils";
 
-const inter = Lato({
+const inter = Inter({
     subsets: ['latin'],
-    weight: ['400', '700'],
+    weight: ['400', '500', '600', '700', '800', '900'],
 });
 
 export default function App({Component, pageProps}: AppProps) {
+    const {page} = usePage();
+    const headerShown = shouldHeaderBeShown(page);
+
     return (
         <Providers>
             <Head>
@@ -21,13 +26,13 @@ export default function App({Component, pageProps}: AppProps) {
                 <meta name="description" content="Freelance marketplace for hiring and offering services online."/>
             </Head>
             <div className={`${inter.className} flex flex-col gap-y-8`}>
-                <Header/>
+                {headerShown && <Header/>}
                 <PageLayout>
-                    <div className={"min-h-app"}>
+                    <div className={headerShown ? 'min-h-app' : 'min-h-svh'}>
                         <Component {...pageProps} />
                     </div>
                 </PageLayout>
-                <Footer/>
+                {headerShown && <Footer/>}
             </div>
         </Providers>
     )

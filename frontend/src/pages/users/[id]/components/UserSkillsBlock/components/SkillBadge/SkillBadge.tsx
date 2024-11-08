@@ -1,15 +1,17 @@
 import SkillBadgeLayout from "./SkillBadgeLayout";
+import {Skill} from "@/types/Skill";
 
 type SkillBadgeProps = {
-    skill: string
+    skill: Skill
 }
 
 const SkillBadge = (props: SkillBadgeProps) => {
     const {skill} = props;
+    const {name, id} = skill;
 
     return (
-        <SkillBadgeLayout>
-            <span>{skill}</span>
+        <SkillBadgeLayout id={id}>
+            <span>{name}</span>
         </SkillBadgeLayout>
     )
 }

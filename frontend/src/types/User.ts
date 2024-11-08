@@ -1,18 +1,20 @@
 import {Review} from "@/types/Review";
 import {UserService} from "@/types/UserService";
+import {Language} from "@/types/Language";
+import {Skill} from "@/types/Skill";
 
 export type User = {
     id: number,
     firstName: string,
     surname: string,
-    rating: number,
+    rating: number | null,
     level: number,
-    reviewsCount: number,
+    reviewsCount: number | null,
     avatar: string | null,
     createdAt: Date,
     about: string | null,
-    languages: string[],
-    skills: string[],
-    reviews: Review[],
-    services: UserService[],
+    languages: Language[] | null,
+    skills: Skill[] | null,
+    reviews: Review[] | null,
+    services: UserService[] | null,
 }

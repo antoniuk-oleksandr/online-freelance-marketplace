@@ -17,6 +17,9 @@ type UserByIdReviewBottomContentProps = {
 const UserByIdReviewBottomContent = (props: UserByIdReviewBottomContentProps) => {
     const {review, showServices} = props;
     const {createdAt, endedAt, service} = review;
+
+    console.log(review);
+
     const {price} = service;
 
     return (

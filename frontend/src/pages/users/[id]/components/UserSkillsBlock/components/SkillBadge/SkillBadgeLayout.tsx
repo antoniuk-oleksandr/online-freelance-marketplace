@@ -1,12 +1,20 @@
 import {LayoutProps} from "@/types/LayoutProps";
+import Link from "next/link";
 
-const SkillBadgeLayout = (props: LayoutProps) => {
-    const {children} = props;
+type SkillBadgeLayoutProps = LayoutProps & {
+    id: number
+};
+
+const SkillBadgeLayout = (props: SkillBadgeLayoutProps) => {
+    const {children, id} = props;
 
     return (
-        <div className={"rounded-xl border border-light-palette-divider dark:border-dark-palette-divider px-3 py-1 bg-light-palette-background-block dark:bg-dark-palette-background-block"}>
+        <Link
+            href={"/search?skills=" + id}
+            className={"rounded-xl border border-light-palette-divider dark:border-dark-palette-divider px-3 py-1 bg-light-palette-background-block dark:bg-dark-palette-background-block"}
+        >
             {children}
-        </div>
+        </Link>
     )
 }
 

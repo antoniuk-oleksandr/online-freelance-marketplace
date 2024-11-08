@@ -3,7 +3,7 @@ import {getHost} from "@/utils/utils";
 
 export const getUserByIdRequest = async (id: string) => {
     const host = getHost();
-    const url = `http://${host}/api/users/${id}?page=0&size=30`;
+    const url = `http://${host}/api/v1/users/${id}`;
 
     try {
         return await axios.get(url);

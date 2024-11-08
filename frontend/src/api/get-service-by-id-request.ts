@@ -4,13 +4,13 @@ import {Service} from "@/types/Service";
 
 export const getServiceByIdRequest = async (id: string) => {
     const host = getHost();
-    const url = `http://${host}/api/services/${id}?page=0&size=30`;
+    const url = `http://${host}/api/v1/services/${id}`;
 
     try {
         const {data, status} = await axios.get(url);
 
         return {
-            data: data as Service,
+            data: data.service as Service,
             status
         };
     } catch (error) {

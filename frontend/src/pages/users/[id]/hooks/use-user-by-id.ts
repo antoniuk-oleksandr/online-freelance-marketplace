@@ -15,7 +15,7 @@ export const useUserById = () => {
 
         const getData = async () => {
             const {data, status} = await getUserByIdRequest(id as string);
-            if(status === 200) setUser(data);
+            if(status === 200) setUser(data.user);
             else setStatus(status);
         }
 
