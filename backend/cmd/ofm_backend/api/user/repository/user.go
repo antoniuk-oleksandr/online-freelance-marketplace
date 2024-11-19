@@ -76,8 +76,8 @@ func GetUserByIdReviews(id int, db *sqlx.DB) (*[]model.UserByIdReview, error) {
 	query := `
 		SELECT DISTINCT ON (S.id) R.id,
 		    R.content, R.rating, O.created_at,
-		    O.ended_at, U.id AS user_id,
-		    U.first_name, U.surname, F.name AS avatar,
+		    O.ended_at, U.id AS user_id, U.username,
+		    F.name AS avatar,
 		    S.id AS service_id,
 		    P.price, F1.name AS service_image,
 		    S.title

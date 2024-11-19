@@ -43,7 +43,5 @@ func GetUserById(c *fiber.Ctx) error {
 		services,
 	)
 
-	return c.JSON(fiber.Map{
-		"user": userDto,
-	})
+	return c.JSON(userDto)
 }

@@ -7,7 +7,7 @@ SELECT
     countRating.avg as rating,
     (
         SELECT
-            json_agg(FI.name)
+            COALESCE(json_agg(FI.name), '[]'::json)
         FROM services_files SFI
             LEFT JOIN files FI ON SFI.file_id = FI.id
         WHERE SFI.service_id = S.id
@@ -39,6 +39,7 @@ SELECT
         SELECT
             json_build_object(
                 'id', UI.id,
+                'username', UI.username,
                 'first_name', UI.first_name,
                 'surname', UI.surname,
                 'avatar', FI.name,
@@ -50,7 +51,7 @@ SELECT
             LEFT JOIN users UI ON UI.id = SI.freelancer_id
             LEFT JOIN LATERAL
             (
-	            SELECT COUNT(RI.id), AVG(RI.rating)
+                SELECT COALESCE(COUNT(RI.id), 0) as count, COALESCE(AVG(RI.rating), 0) as avg
                 FROM orders OI
                     LEFT JOIN reviews RI ON RI.id = OI.review_id
                 WHERE OI.freelancer_id = SI.freelancer_id AND ended_at IS NOT NULL
@@ -61,12 +62,13 @@ SELECT
 FROM services S
 LEFT JOIN LATERAL
     (
-        SELECT COUNT(RI.id), AVG(RI.rating)
+        SELECT COALESCE(COUNT(RI.id), 0) as count, COALESCE(AVG(RI.rating), 0) as avg
         FROM orders OI
             LEFT JOIN reviews RI ON RI.id = OI.review_id
         WHERE OI.service_id = S.id AND ended_at IS NOT NULL
     ) as countRating ON True
-WHERE S.id = $1`
+WHERE S.id = $1
+`
 
 var FreealnceReviewsQuery = `
 SELECT

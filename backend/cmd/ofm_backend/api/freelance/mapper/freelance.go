@@ -33,6 +33,7 @@ func MapFreelanceModelToDTO(
 		Reviews:      reviews,
 		Freelancer: &dto.FreelanceServiceFreelancer{
 			ID:           freelanceByID.Freelancer.ID,
+			Username:     freelanceByID.Freelancer.Username,
 			FirstName:    freelanceByID.Freelancer.FirstName,
 			Surname:      freelanceByID.Freelancer.Surname,
 			Avatar:       freelanceByID.Freelancer.Avatar,

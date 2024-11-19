@@ -1,11 +1,13 @@
-import {FieldErrors, FieldValues} from "react-hook-form";
-
 export const getHost = () => {
     return 'localhost:8080';
 }
 
 export const getFileHost = () => {
     return 'localhost:8030';
+}
+
+export const getHoverClass = () => {
+    return "hover:bg-light-palette-action-hover dark:hover:bg-dark-palette-action-hover duration-200 ease-out"
 }
 
 export const getFile = (name: string | null) => {

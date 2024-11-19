@@ -11,9 +11,8 @@ func MapUserByIdReviewModelsToReviewUserDTOs(reviews *[]model.UserByIdReview) *[
 	for _, review := range *reviews {
 		user := dto.ReviewUserDTO{
 			ID:        review.UserID,
-			FirstName: review.FirstName,
-			Surname:   review.Surname,
 			Avatar:    review.Avatar,
+			Username:  review.Username,
 		}
 
 		reviewUsers = append(reviewUsers, user)

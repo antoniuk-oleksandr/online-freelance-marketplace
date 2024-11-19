@@ -1,21 +1,16 @@
-import {z, ZodObject} from "zod";
+import {z} from 'zod';
+import {SignUpData} from "@/types/SignData.ts";
 
-export const signUpSchema: ZodObject<any> = z.object({
-    name: z.string().min(1, "Name is required").min(3, "Name must be at least 3 characters long"),
-    email: z.string().min(1, "Email is required").email(),
-    password: z
-        .string()
-        .min(1, "Password is required")
-        .min(8, "Password must be at least 8 characters long")
-        .regex(/[a-z]/, "Password must contain at least one lowercase letter")
-        .regex(/[A-Z]/, "Password must contain at least one uppercase letter")
-        .regex(/\d/, "Password must contain at least one number")
-        .regex(/[@$!%*?&]/, "Password must contain at least one special character")
+export const signUpSchema = z.object({
+    username: z.string().min(1, {message: "Username is required."}),
+    firstName: z.string().min(1, {message: "First name is required."}),
+    surname: z.string().min(1, {message: "Surname is required."}),
+    password: z.string().min(1, {message: "Password is required."}),
+})
 
-});
-
-export const defaultSignUpValues = {
-    name: "",
-    email: "",
+export const initialSignUpData: SignUpData = {
+    firstName: "",
+    surname: "",
+    username: "",
     password: "",
 }

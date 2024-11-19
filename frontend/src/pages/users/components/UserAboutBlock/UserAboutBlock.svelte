@@ -1,0 +1,21 @@
+<script lang="ts">
+    import UserComponentLayout from "@/pages/users/components/UserComponentLayout.svelte";
+    import Spoiler from "@/common-components/Spoiler/Spoiler.svelte";
+
+    type UserAboutBlockProps = {
+        about: string | null
+    }
+
+    const {about}: UserAboutBlockProps = $props();
+</script>
+
+{#if about !== null}
+    <UserComponentLayout>
+        <h2 class="text-xl font-bold">About</h2>
+        <Spoiler>
+            <p
+                    class="text-base h-fit text-light-palette-text-secondary dark:text-dark-palette-text-secondary"
+            >{@html about}</p>
+        </Spoiler>
+    </UserComponentLayout>
+{/if}

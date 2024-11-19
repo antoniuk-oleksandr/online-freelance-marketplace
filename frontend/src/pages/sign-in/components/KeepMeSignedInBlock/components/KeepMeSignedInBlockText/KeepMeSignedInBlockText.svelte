@@ -1,0 +1,1 @@
+<span class="font-medium text-base">Keep me signed in</span>

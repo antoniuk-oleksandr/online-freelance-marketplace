@@ -7,6 +7,7 @@ export type User = {
     id: number,
     firstName: string,
     surname: string,
+    username: string,
     rating: number | null,
     level: number,
     reviewsCount: number | null,
@@ -17,4 +18,4 @@ export type User = {
     skills: Skill[] | null,
     reviews: Review[] | null,
     services: UserService[] | null,
-}
+};

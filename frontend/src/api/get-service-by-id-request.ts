@@ -1,8 +1,14 @@
 import {getHost} from "@/utils/utils";
 import axios from "axios";
-import {Service} from "@/types/Service";
+import type {Service} from "@/types/Service.ts";
 
-export const getServiceByIdRequest = async (id: string) => {
+type ServiceByIdRequestResponse = {
+    data: Service | null,
+    status: number
+}
+
+export const getServiceByIdRequest = async (id: string)
+    : Promise<ServiceByIdRequestResponse> => {
     const host = getHost();
     const url = `http://${host}/api/v1/services/${id}`;
 
@@ -10,11 +16,10 @@ export const getServiceByIdRequest = async (id: string) => {
         const {data, status} = await axios.get(url);
 
         return {
-            data: data.service as Service,
+            data: data as Service,
             status
         };
     } catch (error) {
-        console.error(error);
         return {
             data: null,
             status: (error as any).response.status

@@ -2,6 +2,7 @@ package dto
 
 type FreelanceServiceFreelancer struct {
 	ID           int64   `json:"id"`
+	Username     string  `json:"username"`
 	FirstName    string  `json:"firstName"`
 	Surname      string  `json:"surname"`
 	Avatar       string  `json:"avatar"`

@@ -1,0 +1,19 @@
+<script lang="ts">
+    import type {LayoutProps} from "@/types/LayoutProps.ts";
+    import {Link} from "svelte-routing";
+    import PaperElement from "@/common-components/PaperElement/PaperElement.svelte";
+    import {getHoverClass} from "@/utils/utils.ts";
+
+    type UserByIdServiceLayoutProps = LayoutProps & {
+        id: number,
+    }
+
+    const {children, id}: UserByIdServiceLayoutProps = $props();
+    const hoverClass = getHoverClass();
+</script>
+
+<Link to={`/services/${id}`}>
+    <PaperElement styles={hoverClass}>
+        {@render children()}
+    </PaperElement>
+</Link>

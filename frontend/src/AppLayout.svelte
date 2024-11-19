@@ -1,0 +1,33 @@
+<script lang="ts">
+    import type {LayoutProps} from "@/types/LayoutProps.ts";
+    import {useLocation} from "svelte-routing";
+    import Header from "@/common-components/Header/Header.svelte";
+    import Footer from "@/common-components/Footer/Footer.svelte";
+    import PageLayout from "@/common-components/PageLayout.svelte";
+
+    let {children}: LayoutProps = $props();
+
+    let loc = useLocation();
+
+    const pagesToHide = ["sign-in", "sign-up", "forgot-password", "reset-password"];
+
+    let hideHeaderFooter = $state<boolean>(pagesToHide.includes($loc.pathname.split("/")[1]));
+
+    $effect(() => {
+        hideHeaderFooter = pagesToHide.includes($loc.pathname.split("/")[1]);
+    });
+</script>
+
+<div class="flex flex-col gap-y-8 animate-fade-in">
+    {#if !hideHeaderFooter}
+        <Header/>
+    {/if}
+    <PageLayout>
+        <div class="min-h-app w-full">
+            {@render children()}
+        </div>
+    </PageLayout>
+    {#if !hideHeaderFooter}
+        <Footer/>
+    {/if}
+</div>

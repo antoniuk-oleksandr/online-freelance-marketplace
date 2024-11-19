@@ -1,5 +1,5 @@
-import {User} from "@/types/User";
+import { User } from "@/types/User";
 
 export type UserByIdProps = {
-    user: User
-}
+  user: User;
+};

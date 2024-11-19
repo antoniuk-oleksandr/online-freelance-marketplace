@@ -1,2 +1,4 @@
 /database
 /file-server/uploads/*
+/backend/.env
+/frontend/.env

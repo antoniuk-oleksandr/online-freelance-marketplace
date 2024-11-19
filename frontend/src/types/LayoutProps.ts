@@ -1,5 +1,5 @@
-import {ReactNode} from "react";
+import { Snippet } from "svelte";
 
 export type LayoutProps = {
-    children: ReactNode
+    children: Snippet;
 }

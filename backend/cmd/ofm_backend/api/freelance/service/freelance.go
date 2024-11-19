@@ -1,11 +1,11 @@
 package service
 
 import (
+	"ofm_backend/cmd/ofm_backend/api/freelance/mapper"
 	"ofm_backend/cmd/ofm_backend/api/freelance/repository"
 	"ofm_backend/internal/database"
 	"strconv"
-	"ofm_backend/cmd/ofm_backend/api/freelance/mapper"
-	
+
 	"github.com/gofiber/fiber/v2"
 )
 
@@ -34,7 +34,5 @@ func GetFreelanceById(c *fiber.Ctx) error {
 
 	free := mapper.MapFreelanceModelToDTO(freelanceService, freelanceServiceReviews)
 	
-	return c.JSON(fiber.Map{
-		"service": free,
-	})
+	return c.JSON(free)
 }
