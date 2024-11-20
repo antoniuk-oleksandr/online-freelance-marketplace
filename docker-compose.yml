@@ -10,31 +10,29 @@ services:
     ports:
       - "5431:5432"
     volumes:
-      - ../database:/var/lib/postgresql/data
+      - ./database:/var/lib/postgresql/data
 
   file-server:
     restart: always
     build:
-      context: ../file-server
+      context: ./file-server
     container_name: freelance-marketplace-file-server
     ports:
       - "8030:8030"
     volumes:
-      - ../file-server/uploads:/app/uploads
+      - ./file-server/uploads:/app/uploads
     networks:
       - backend-network
 
-      #nginx:
-      #image: nginx:latest
-      #container_name: file-server-nginx
-      #ports:
-      #- "80:80"
-      #volumes:
-      #- ../file-server/nginx.conf:/etc/nginx/nginx.conf:ro  #
-      #depends_on:
-      #- file-server
-      #networks:
-      #- backend-network
+  redis:
+    image: redis:latest
+    container_name: freelance-marketplace-redis
+    restart: always
+    ports:
+      - "6379:6379"
+    networks:
+      - backend-network
+    command: ["redis-server", "--requirepass", "freelance-redis-db"]
 
 networks:
   backend-network:

@@ -1,10 +1,10 @@
 package main
 
 import (
-	user_controller "ofm_backend/cmd/ofm_backend/api/user/controller"
+	admin_controller "ofm_backend/cmd/ofm_backend/api/admin/controller"
 	auth_controller "ofm_backend/cmd/ofm_backend/api/auth/controller"
 	freelance_controller "ofm_backend/cmd/ofm_backend/api/freelance/controller"
-	admin_controller "ofm_backend/cmd/ofm_backend/api/admin/controller"
+	user_controller "ofm_backend/cmd/ofm_backend/api/user/controller"
 	"ofm_backend/internal/config"
 	"ofm_backend/internal/database"
 	"ofm_backend/internal/middleware"
@@ -20,6 +20,7 @@ func main() {
 	}
 
 	database.Init()
+	database.ConnectToRedisDB()
 
 	app := fiber.New()
 	app.Use(config.ConfigCors())
@@ -32,6 +33,7 @@ func main() {
 	apiGroup.Post("/sign-in", auth_controller.SignIn)
 	apiGroup.Post("/sign-up", auth_controller.SignUp)
 	apiGroup.Post("/refresh-token", auth_controller.RefreshToken)
+	apiGroup.Post("/confirm-email", middleware.JWTProtected(), auth_controller.ConfirmEmail)
 
 	protectedGroup.Get("/", admin_controller.DoAdminStuff)
 
