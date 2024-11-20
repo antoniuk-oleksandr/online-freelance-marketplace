@@ -1,42 +1,63 @@
 package service
 
 import (
+	"fmt"
 	"ofm_backend/cmd/ofm_backend/api/auth/body"
 	"ofm_backend/cmd/ofm_backend/api/auth/repository"
 	"ofm_backend/internal/database"
+	filereader "ofm_backend/internal/file_reader"
+	"ofm_backend/internal/mailer"
 	"ofm_backend/internal/middleware"
+	"os"
+	"strings"
 
 	"github.com/gofiber/fiber/v2"
 )
 
-func SignUp(user *body.SignUpBody) (string, error) {
+func SignUp(user *body.SignUpBody) error {
 	db := database.GetDB()
 	redisDB := database.GetRedisDB()
 
 	encryptedPassword, err := middleware.Encrypt(user.Password)
 	if err != nil {
-		return "", err
+		return err
 	}
 	user.Password = encryptedPassword
 
 	available, err := repository.CheckIfUsernameIsAvailable(user.Username, db)
 	if err != nil {
-		return "", err
+		return err
 	}
 
 	if !available {
-		return "", fiber.ErrConflict
+		return fiber.ErrConflict
 	}
 
 	token, err := middleware.GenerateAccessToken(user.Username)
 	if err != nil {
-		return "", err
+		return err
 	}
 
 	err = repository.AddTempUserData(user, redisDB)
 	if err != nil {
-		return "", err
+		return err
 	}
 	
-	return token, nil
+	host := os.Getenv("FRONTEND_HOST")
+	port := os.Getenv("FRONTEND_PORT")
+	link := fmt.Sprintf("http://%s:%s/confirm-email?token=%s", host, port, token)
+	
+	html, err := filereader.GetHTMLTempalate("confirm_email.html")
+	if err != nil {
+		return err
+	}
+	html = strings.Replace(html, "{url}", link, -1)
+	html = strings.Replace(html, "{username}", user.Username, -1)
+	
+	err = mailer.SendEmail(user.Email, "Password confirmation", html, "text/html")
+	if err != nil {
+		return err
+	} 
+	
+	return nil
 }

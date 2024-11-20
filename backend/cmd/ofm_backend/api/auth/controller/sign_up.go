@@ -2,6 +2,7 @@ package controller
 
 import (
 	"errors"
+	"fmt"
 	"ofm_backend/cmd/ofm_backend/api/auth/body"
 	"ofm_backend/cmd/ofm_backend/api/auth/service"
 
@@ -17,7 +18,7 @@ func SignUp(ctx *fiber.Ctx) error {
 		})
 	}
 
-	token, err := service.SignUp(&user)
+	err := service.SignUp(&user)
 	if err != nil {
 		if errors.Is(err, fiber.ErrConflict) {
 			return ctx.Status(fiber.StatusConflict).JSON(fiber.Map{
@@ -25,12 +26,13 @@ func SignUp(ctx *fiber.Ctx) error {
 			})
 		}
 
+		fmt.Println(err)
 		return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"message": "Could not create account.",
 		})
 	}
-	
+
 	return ctx.Status(fiber.StatusOK).JSON(fiber.Map{
-		"token": token,
+		"message": "The email was sent successfully.",
 	})
 }
