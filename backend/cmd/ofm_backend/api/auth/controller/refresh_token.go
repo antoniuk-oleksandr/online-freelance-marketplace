@@ -10,14 +10,14 @@ func RefreshToken(c *fiber.Ctx) error {
 	tokenString := c.Get("Authorization")
 	if tokenString == "" {
 		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
-			"message": "Wrong token",
+			"error": "Wrong token",
 		})
 	}
 
 	accessToken, err := service.RefreshToken(c, tokenString)
 	if err != nil {
 		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
-			"message": err.Error(),
+			"error": err.Error(),
 		})
 	}
 

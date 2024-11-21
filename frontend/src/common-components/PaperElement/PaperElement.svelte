@@ -9,7 +9,7 @@
 </script>
 
 <div
-        class={`${styles} p-6 rounded-lg border border-light-palette-divider dark:border-dark-palette-divider`}
+        class={`${styles} p-6 rounded-lg border bg-light-palette-background-block dark:bg-dark-palette-background-block border-light-palette-divider dark:border-dark-palette-divider`}
 >
     {@render children()}
 </div>

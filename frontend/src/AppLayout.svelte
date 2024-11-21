@@ -7,14 +7,13 @@
 
     let {children}: LayoutProps = $props();
 
-    let loc = useLocation();
+    let location = useLocation();
 
-    const pagesToHide = ["sign-in", "sign-up", "forgot-password", "reset-password"];
-
-    let hideHeaderFooter = $state<boolean>(pagesToHide.includes($loc.pathname.split("/")[1]));
+    const pagesToHide = ["sign-in", "sign-up", "confirm-email", "forgot-password", "reset-password"];
+    let hideHeaderFooter = $state<boolean>(pagesToHide.includes($location.pathname.split("/")[1]));
 
     $effect(() => {
-        hideHeaderFooter = pagesToHide.includes($loc.pathname.split("/")[1]);
+        hideHeaderFooter = pagesToHide.includes($location.pathname.split("/")[1]);
     });
 </script>
 

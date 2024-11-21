@@ -7,6 +7,7 @@
     import SignInPage from "@/pages/sign-in/SignInPage.svelte";
     import NotFound from "@/common-components/NotFound/NotFound.svelte";
     import SignUpPage from "@/pages/sign-up/SignUpPage.svelte";
+    import ConfirmEmailPage from "@/pages/confirm-email/ConfirmEmailPage.svelte";
 </script>
 
 <Router>
@@ -25,6 +26,9 @@
         </Route>
         <Route path="/sign-up">
             <SignUpPage/>
+        </Route>
+        <Route path="/confirm-email">
+            <ConfirmEmailPage/>
         </Route>
         <Route path="/*">
             <NotFound/>

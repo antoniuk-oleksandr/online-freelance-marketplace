@@ -1,15 +1,19 @@
 <script lang="ts">
     import Sign from "@/common-components/Sign/Sign.svelte";
     import {initialSignUpData, signUpSchema} from "@/pages/sign-up/helpers.ts";
-    import {handleSignUp} from "@/pages/sign-up/handlers.ts";
     import SignUpInputs from "@/pages/sign-up/components/SignUpInputs/SignUpInputs.svelte";
+    import {postSignUpRequest} from "@/api/post-sign-up-request.ts";
 
+    let showEmailSentMessage = $state(false);
+    const setShowEmailSentMessage = (value: boolean) => showEmailSentMessage = value;
 </script>
 
 <Sign
+        showEmailSentMessage={showEmailSentMessage}
+        setShowEmailSentMessage={setShowEmailSentMessage}
         defaultValues={initialSignUpData}
         googleButtonText={"Sign in with Google"}
-        submitAction={handleSignUp}
+        submitAction={postSignUpRequest}
         signText={"Sign Up"}
         subSignText={"Please sign Up to continue to your account."}
         subFormText={"Already have an account?"}

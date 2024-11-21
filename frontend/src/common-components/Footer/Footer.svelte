@@ -5,7 +5,7 @@
 </script>
 
 <FooterLayout>
-    <div class={"flex gap-x-6 items-center flex-col sm:flex-row gap-y-4"}>
+    <div class={"flex gap-x-6 justify-center md:justify-start items-center w-full flex-col sm:flex-row gap-y-4"}>
         <AppLogo/>
         <p>© 2024 Online Freelance Marketplace. All rights reserved.</p>
     </div>

@@ -5,9 +5,10 @@
     const {children}: LayoutProps = $props();
 </script>
 
-<div class="flex h-svh items-center">
+<div class="grid h-svh place-items-center">
     <PaperElement
-            styles="w-full flex h-form rounded-none lg:rounded-lg !p-0 grid grid-cols-1 lg:grid-cols-2 overflow-hidden border-none lg:border-solid !bg-transparent lg:!bg-light-palette-background-block lg:dark:!bg-dark-palette-background-block">
+            styles="flex text-base flex-col items-center gap-4 p-8 max-w-168 !border-0 md:!border !bg-transparent md:!bg-light-palette-background-block md:dark:!bg-dark-palette-background-block"
+    >
         {@render children()}
     </PaperElement>
 </div>

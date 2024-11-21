@@ -21,7 +21,7 @@ func GetFreelanceById(c *fiber.Ctx) error {
 	freelanceService, err := repository.GetFreelanceServiceById(id, db)
 	if err != nil {
 		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
-			"error": "Freelance service not found",
+			"message": "Freelance service not found",
 		})
 	}
 	

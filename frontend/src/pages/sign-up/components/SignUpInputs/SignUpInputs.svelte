@@ -34,6 +34,14 @@
     />
     <Input
             wasSubmitted={formStoreData.wasSubmitted}
+            value={formStoreData.data.email}
+            error={formStoreData.errors.email?.[0] || null}
+            id="email"
+            type="text"
+            label="Email"
+    />
+    <Input
+            wasSubmitted={formStoreData.wasSubmitted}
             value={formStoreData.data.password}
             error={formStoreData.errors.password?.[0] || null}
             id="password"

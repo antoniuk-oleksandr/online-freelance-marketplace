@@ -14,7 +14,7 @@ func SignUp(ctx *fiber.Ctx) error {
 
 	if err := ctx.BodyParser(&user); err != nil {
 		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"message": "Invalid request body.",
+			"error": "Invalid request body",
 		})
 	}
 
@@ -22,17 +22,17 @@ func SignUp(ctx *fiber.Ctx) error {
 	if err != nil {
 		if errors.Is(err, fiber.ErrConflict) {
 			return ctx.Status(fiber.StatusConflict).JSON(fiber.Map{
-				"message": "Username already exists.",
+				"error": "User already exists",
 			})
 		}
 
 		fmt.Println(err)
 		return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-			"message": "Could not create account.",
+			"error": "Could not create account",
 		})
 	}
 
 	return ctx.Status(fiber.StatusOK).JSON(fiber.Map{
-		"message": "The email was sent successfully.",
+		"message": "The email was sent successfully",
 	})
 }

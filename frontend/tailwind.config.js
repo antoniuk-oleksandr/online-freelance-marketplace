@@ -38,6 +38,7 @@ const config = {
             maxWidth: {
                 320: "80rem",
                 256: "64rem",
+                168: "42rem",
             },
             minHeight: {
                 app: "calc(100svh - 12.1625rem)",

@@ -5,14 +5,19 @@
     import {formStore} from "@/common-components/Sign/stores/form-store.js";
     import type {FormStore} from "@/types/FormStore.ts";
     import {useLocation} from "svelte-routing";
+    import {handleSignSubmit} from "@/common-components/Sign/handlers.ts";
 
-    const {children, submitAction, schema, defaultValues}: SignProps = $props();
+    const {children, submitAction, schema, defaultValues, setLoading, setShowEmailSentMessage}: SignProps = $props();
 
-    const {form, data, errors, isSubmitting, reset, setFields} = createForm({
+    const {form, data, errors, isSubmitting, setErrors, setFields, reset} = createForm({
         initialValues: defaultValues,
         extend: validator({schema}),
-        onSubmit: async (values) => submitAction(values)
+        onSubmit: (values) => handleSubmit(values)
     })
+
+    const handleSubmit = (values: any) => {
+        handleSignSubmit(values, submitAction, setErrors, setLoading, setShowEmailSentMessage);
+    }
 
     useLocation().subscribe((_) => {
         formStore.set({data: null, errors: null, wasSubmitted: false, keepSignedIn: false});

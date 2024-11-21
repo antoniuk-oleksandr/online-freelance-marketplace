@@ -21,14 +21,20 @@
 </script>
 
 <InputLayout>
-    <InputContainerLayout error={error} isFocused={isFocused} wasSubmitted={wasSubmitted}>
+    <InputContainerLayout
+            isFocused={isFocused} error={error}
+            wasSubmitted={wasSubmitted} value={value}
+    >
         <InputLabel
                 id={id} value={value}
                 label={label} error={error}
                 wasSubmitted={wasSubmitted}
                 isFocused={isFocused}
         />
-        <InputElement setIsFocused={setIsFocused} id={id} type={type}/>
+        <InputElement
+                id={id} type={type}
+                setIsFocused={setIsFocused}
+        />
     </InputContainerLayout>
     <InputError wasSubmitted={wasSubmitted} error={error}/>
 </InputLayout>

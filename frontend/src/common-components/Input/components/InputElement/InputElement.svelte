@@ -11,6 +11,6 @@
 <input
         onfocus={() => setIsFocused(true)}
         onblur={() => setIsFocused(false)}
-        class="p-4 w-full outline-none bg-transparent text-lg text-light-palette-text-primary dark:text-dark-palette-text-primary"
+        class="px-4 py-3 w-full outline-none bg-transparent text-base text-light-palette-text-primary dark:text-dark-palette-text-primary"
         id={id} name={id} type={type}
 >

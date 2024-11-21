@@ -9,21 +9,20 @@ import (
 )
 
 func ConfirmEmail(ctx *fiber.Ctx) error {
-	accessToken, refreshToken, err := service.ConfirmEmail(ctx)
+	err := service.ConfirmEmail(ctx)
 	if err != nil {
 		if errors.Is(err, utils.ErrTempTokenExpired) {
 			return ctx.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
-				"message": "The token has expired.",
+				"error": "The token has expired",
 			})
 		}
+		
 		return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-			"message": "An unexpected error occurred.",
+			"error": "An unexpected error occurred",
 		})
 	}	
 	
 	return ctx.JSON(fiber.Map{
-		"accessToken":  accessToken,
-		"refreshToken": refreshToken,
+		"message":  "Email confirmed",
 	})
 }
-

@@ -70,8 +70,3 @@ export const getPackageDuration = (before: number, after: number) => {
             return `${Math.floor(diffInDays / 365)} years`;
     }
 }
-
-export const shouldHeaderBeShown = (page: string): boolean => {
-    const pagesToHideHeader = ["/sign-in", "/sign-up"];
-    return !pagesToHideHeader.includes(page);
-}
