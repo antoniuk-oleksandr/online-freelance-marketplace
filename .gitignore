@@ -2,3 +2,5 @@
 /file-server/uploads/*
 /backend/.env
 /frontend/.env
+/old_backend
+/old_frontend
