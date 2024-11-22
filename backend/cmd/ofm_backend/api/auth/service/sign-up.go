@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"ofm_backend/cmd/ofm_backend/api/auth/body"
 	"ofm_backend/cmd/ofm_backend/api/auth/repository"
+	"ofm_backend/cmd/ofm_backend/utils"
 	"ofm_backend/internal/database"
 	filereader "ofm_backend/internal/file_reader"
 	"ofm_backend/internal/mailer"
@@ -11,7 +12,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/gofiber/fiber/v2"
+	"github.com/google/uuid"
 )
 
 func SignUp(user *body.SignUpBody) error {
@@ -24,21 +25,31 @@ func SignUp(user *body.SignUpBody) error {
 	}
 	user.Password = encryptedPassword
 
-	available, err := repository.CheckIfUsernameIsAvailable(user.Username, db)
+	isUsernameAvailable, err := repository.CheckIfUsernameIsAvailable(user.Username, db)
 	if err != nil {
 		return err
 	}
 
-	if !available {
-		return fiber.ErrConflict
+	if !isUsernameAvailable {
+		return utils.ErrUsernameIsTaken
 	}
-
-	token, err := middleware.GenerateAccessToken(user.Username)
+	
+	isEmailAvailable, err := repository.CheckIfEmailIsAvailable(user.Email, db)
 	if err != nil {
 		return err
 	}
+	
+	if !isEmailAvailable {
+		return utils.ErrEmailIsTaken
+	}
 
-	err = repository.AddTempUserData(user, redisDB)
+	userUUID := uuid.New().String()
+	err = repository.AddTempUserData(user, userUUID, redisDB)
+	if err != nil {
+		return err
+	}
+	
+	token, err := middleware.GenerateConfirmPasswordToken(userUUID)
 	if err != nil {
 		return err
 	}

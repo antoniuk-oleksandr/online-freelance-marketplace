@@ -22,14 +22,28 @@ func CheckIfUsernameIsAvailable(username string, db *sqlx.DB) (bool, error) {
 	return !available, nil
 } 
 
-func AddTempUserData(user *body.SignUpBody, redisDB *redis.Client) error {
+func CheckIfEmailIsAvailable(email string, db *sqlx.DB) (bool, error) {
+	var available bool
+	
+	query := `SELECT EXISTS (SELECT  * FROM users WHERE email = $1)`
+	
+	err := db.Get(&available, query, email)
+	if err != nil {
+		return false, err
+	}
+	
+	return !available, nil
+}
+
+func AddTempUserData(user *body.SignUpBody, userUUID string, redisDB *redis.Client) error {
 	pipe := redisDB.Pipeline()
 	
-	pipe.HSet(context.Background(), user.Username, map[string]interface{}{
+	pipe.HSet(context.Background(), userUUID, map[string]interface{}{
 		"email":     user.Email,
 		"firstName": user.FirstName,
 		"password":  user.Password,
 		"surname":   user.Surname,
+		"username":  user.Username,
 	})
 	
 	pipe.Expire(context.Background(), user.Username, 15*time.Minute)

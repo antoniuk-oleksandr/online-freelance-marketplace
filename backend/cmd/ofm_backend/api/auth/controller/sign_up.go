@@ -2,9 +2,9 @@ package controller
 
 import (
 	"errors"
-	"fmt"
 	"ofm_backend/cmd/ofm_backend/api/auth/body"
 	"ofm_backend/cmd/ofm_backend/api/auth/service"
+	"ofm_backend/cmd/ofm_backend/utils"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -20,13 +20,18 @@ func SignUp(ctx *fiber.Ctx) error {
 
 	err := service.SignUp(&user)
 	if err != nil {
-		if errors.Is(err, fiber.ErrConflict) {
-			return ctx.Status(fiber.StatusConflict).JSON(fiber.Map{
-				"error": "User already exists",
+		if utils.ErrMailSend.Error() == err.Error() {
+			return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+				"error": "Invalid email address",
 			})
 		}
 
-		fmt.Println(err)
+		if errors.Is(err, utils.ErrEmailIsTaken) || errors.Is(err, utils.ErrUsernameIsTaken) {
+			return ctx.Status(fiber.StatusConflict).JSON(fiber.Map{
+				"error": err.Error(),
+			})
+		}
+
 		return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"error": "Could not create account",
 		})

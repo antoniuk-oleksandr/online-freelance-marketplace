@@ -8,12 +8,12 @@ import (
 )
 
 func ConfirmEmail(ctx *fiber.Ctx) error{
-	username :=	ctx.Locals("username").(string)
+	uuid :=	ctx.Locals("uuid").(string)
 
 	redisDB := database.GetRedisDB()
 	db := database.GetDB()
 	
-	user, err := repository.GetUserTempData(username, redisDB)
+	user, err := repository.GetUserTempData(uuid, redisDB)
 	if err != nil {
 		return err
 	}

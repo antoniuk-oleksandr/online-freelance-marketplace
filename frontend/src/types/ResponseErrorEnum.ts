@@ -7,11 +7,13 @@ export enum ResponseErrorEnum {
     InvalidServiceID = "Invalid freelance service ID",
     ServiceNotFound = "Freelance service not found",
     InvalidUserID = "Invalid user ID",
-    UserAlreadyExists = "User already exists",
     UserNotFound = "User not found",
     UserNotConfirmed = "User not confirmed",
     CouldNotCreateAccount = "Could not create account",
     UnexpectedError = "An unexpected error occurred",
+    InvalidEmail = "Invalid email address",
+    UsernameIsTaken = "Username is already taken",
+    EmailIsTaken = "Email is already taken",
 }
 
 export type ResponseError = {

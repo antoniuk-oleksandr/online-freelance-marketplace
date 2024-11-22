@@ -1,5 +1,5 @@
 <script lang="ts">
-    import Input from "@/common-components/Input/Input.svelte";
+    import Input from "@/common-components/Sign/components/SignInput/Input.svelte";
     import {formStore} from "@/common-components/Sign/stores/form-store.ts";
     import type {FormStore} from "@/types/FormStore.ts";
 

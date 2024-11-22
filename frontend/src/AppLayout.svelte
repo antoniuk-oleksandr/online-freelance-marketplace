@@ -4,6 +4,7 @@
     import Header from "@/common-components/Header/Header.svelte";
     import Footer from "@/common-components/Footer/Footer.svelte";
     import PageLayout from "@/common-components/PageLayout.svelte";
+    import ToastElement from "@/common-components/ToastElement/ToastElement.svelte";
 
     let {children}: LayoutProps = $props();
 
@@ -18,6 +19,7 @@
 </script>
 
 <div class="flex flex-col gap-y-8 animate-fade-in">
+    <ToastElement/>
     {#if !hideHeaderFooter}
         <Header/>
     {/if}

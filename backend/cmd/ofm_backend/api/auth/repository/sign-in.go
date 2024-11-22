@@ -1,17 +1,21 @@
 package repository
 
-import "github.com/jmoiron/sqlx"
+import (
+	"ofm_backend/cmd/ofm_backend/api/auth/model"
 
-func GetUserPassword(username string, db *sqlx.DB) (*string, error) {
-	var password string
+	"github.com/jmoiron/sqlx"
+)
 
-	query := `SELECT password FROM users WHERE username = $1`
+func GetUserPassword(usernameOrEmail string, db *sqlx.DB) (*model.UsernamePassword, error) {
+	var usernamePassword model.UsernamePassword
+
+	query := `SELECT username, password FROM users WHERE username = $1 OR email = $1`
 
 	var err error
-	err = db.Get(&password, query, username)
+	err = db.Get(&usernamePassword, query, usernameOrEmail)
 	if err != nil {
 		return nil, err
 	}
 
-	return &password, nil
+	return &usernamePassword, nil
 }

@@ -16,10 +16,43 @@ const config = {
                 "fade-in": {
                     "0%": {opacity: "0"},
                     "100%": {opacity: "1"}
-                }
+                },
+                "toast": {
+                    "0%": {
+                        opacity: 0,
+                        transform: "translateX(-20%)",
+                        scale: "0.95"
+                    },
+                    "50%": {
+                        opacity: 1,
+                        transform: "translateX(0)",
+                        scale: "1"
+                    },
+                    "100%": {
+                        opacity: 1,
+                        transform: "translateX(0)",
+                        scale: "1"
+                    },
+                },
+                toastExit: {
+                    '0%': {
+                        opacity: '1',
+                        transform: 'translateX(0) scale(1)',
+                    },
+                    '50%': {
+                        opacity: '1',
+                        transform: 'translateX(0) scale(1)',
+                    },
+                    '100%': {
+                        opacity: '0',
+                        transform: 'translateX(-20%) scale(0.95)',
+                    },
+                },
             },
             animation: {
                 "fade-in": "fade-in 700ms ease-out",
+                "toast": "toast 500ms ease-out",
+                "toastExit": "toastExit 500ms ease-out",
             },
             gridTemplateColumns: {
                 service: "1fr 25rem",
@@ -33,7 +66,7 @@ const config = {
                 100: "25rem",
             },
             height: {
-                form : "56rem",
+                form: "56rem",
             },
             maxWidth: {
                 320: "80rem",

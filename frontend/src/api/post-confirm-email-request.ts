@@ -5,7 +5,7 @@ import {PostConfirmEmailRequestResponse} from "@/types/PostConfirmEmailRequestRe
 export const postConfirmEmailRequest =
     async (token: string): Promise<PostConfirmEmailRequestResponse> => {
         const host = getHost();
-        const url = `http://${host}/api/v1/confirm-email`;
+        const url = `http://${host}/api/v1/auth/confirm-email`;
 
         try {
             const response = await axios.post(url, {}, {

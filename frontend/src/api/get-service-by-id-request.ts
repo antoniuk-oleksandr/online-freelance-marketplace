@@ -10,7 +10,7 @@ type ServiceByIdRequestResponse = {
 export const getServiceByIdRequest = async (id: string)
     : Promise<ServiceByIdRequestResponse> => {
     const host = getHost();
-    const url = `http://${host}/api/v1/services/${id}`;
+    const url = `http://${host}/api/v1/freelances/${id}`;
 
     try {
         const {data, status} = await axios.get(url);

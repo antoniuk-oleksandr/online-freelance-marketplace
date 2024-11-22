@@ -1,41 +1,29 @@
 package main
 
 import (
-	admin_controller "ofm_backend/cmd/ofm_backend/api/admin/controller"
-	auth_controller "ofm_backend/cmd/ofm_backend/api/auth/controller"
-	freelance_controller "ofm_backend/cmd/ofm_backend/api/freelance/controller"
-	user_controller "ofm_backend/cmd/ofm_backend/api/user/controller"
+	auth_routes "ofm_backend/cmd/ofm_backend/api/auth/routes"
+	freelance_routes "ofm_backend/cmd/ofm_backend/api/freelance/routes"
+	user_routes "ofm_backend/cmd/ofm_backend/api/user/routes"
 	"ofm_backend/internal/config"
 	"ofm_backend/internal/database"
-	"ofm_backend/internal/middleware"
+	"ofm_backend/cmd/ofm_backend/utils"
 
 	"github.com/gofiber/fiber/v2"
-	"github.com/joho/godotenv"
 )
 
 func main() {
-	err := godotenv.Load()
-	if err != nil {
-		panic("Error loading .env file")
-	}
+	utils.LoadEnvValues()
 
-	database.Init()
+	database.ConnectToPostgresDB()
 	database.ConnectToRedisDB()
 
 	app := fiber.New()
 	app.Use(config.ConfigCors())
 
 	apiGroup := app.Group("/api/v1")
-	protectedGroup := apiGroup.Group("/admins", middleware.JWTProtected())
-
-	apiGroup.Get("/users/:id", user_controller.GetUserById)
-	apiGroup.Get("/services/:id", freelance_controller.GetFreelanceById)
-	apiGroup.Post("/sign-in", auth_controller.SignIn)
-	apiGroup.Post("/sign-up", auth_controller.SignUp)
-	apiGroup.Post("/refresh-token", auth_controller.RefreshToken)
-	apiGroup.Post("/confirm-email", middleware.JWTProtected(), auth_controller.ConfirmEmail)
-
-	protectedGroup.Get("/", admin_controller.DoAdminStuff)
-
+	auth_routes.RegisterAuthRoutes(apiGroup)
+	freelance_routes.RegisterFreelanceRoutes(apiGroup)
+	user_routes.RegisterUserRoutes(apiGroup)
+	
 	app.Listen(":8080")
 }

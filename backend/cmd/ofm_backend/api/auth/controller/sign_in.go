@@ -11,14 +11,20 @@ func SignIn(c *fiber.Ctx) error {
 
 	if err != nil {
 		if err.Error() == fiber.ErrUnprocessableEntity.Error() {
-			return c.Status(fiber.StatusUnprocessableEntity).JSON(fiber.Map{"error": "Invalid request body"})
+			return c.Status(fiber.StatusUnprocessableEntity).JSON(
+				fiber.Map{"error": "Invalid request body"},
+			)
 		}
 
 		if err.Error() == fiber.ErrUnauthorized.Error() {
-			return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "Invalid credentials"})
+			return c.Status(fiber.StatusUnauthorized).JSON(
+				fiber.Map{"error": "Invalid credentials"},
+			)
 		}
 
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": err.Error()})
+		return c.Status(fiber.StatusBadRequest).JSON(
+			fiber.Map{"error": "An unexpected error occurred"},
+		)
 	}
 
 	return c.JSON(fiber.Map{

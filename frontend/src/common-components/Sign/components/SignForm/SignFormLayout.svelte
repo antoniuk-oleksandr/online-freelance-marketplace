@@ -7,7 +7,10 @@
     import {useLocation} from "svelte-routing";
     import {handleSignSubmit} from "@/common-components/Sign/handlers.ts";
 
-    const {children, submitAction, schema, defaultValues, setLoading, setShowEmailSentMessage}: SignProps = $props();
+    const {
+        children, submitAction, schema,
+        defaultValues, setLoading, setShowEmailSentMessage
+    }: SignProps = $props();
 
     const {form, data, errors, isSubmitting, setErrors, setFields, reset} = createForm({
         initialValues: defaultValues,
@@ -16,7 +19,10 @@
     })
 
     const handleSubmit = (values: any) => {
-        handleSignSubmit(values, submitAction, setErrors, setLoading, setShowEmailSentMessage);
+        handleSignSubmit(
+            values, submitAction, setErrors,
+            setFields, setShowEmailSentMessage,setLoading,
+        );
     }
 
     useLocation().subscribe((_) => {
@@ -34,7 +40,7 @@
 
     let prevKeepSignedIn = $state(false);
     formStore.subscribe((value) => {
-        if(value.keepSignedIn !== prevKeepSignedIn) {
+        if (value.keepSignedIn !== prevKeepSignedIn) {
             prevKeepSignedIn = value.keepSignedIn;
             setFields('keepSignedIn', value.keepSignedIn);
         }

@@ -1,7 +1,7 @@
 package service
 
 import (
-	"ofm_backend/cmd/ofm_backend/api/auth/model"
+	"ofm_backend/cmd/ofm_backend/api/auth/body"
 	"ofm_backend/cmd/ofm_backend/api/auth/repository"
 	"ofm_backend/internal/database"
 	"ofm_backend/internal/middleware"
@@ -10,34 +10,34 @@ import (
 )
 
 func SignIn(ctx *fiber.Ctx) (string, string, error) {
-	var credentials model.Credentials
-
-	if err := ctx.BodyParser(&credentials); err != nil {
+	var signInBody body.SignInBody
+	
+	if err := ctx.BodyParser(&signInBody); err != nil {
 		return "", "", err
 	}
 
 	db := database.GetDB()
 
-	passwordFromDB, err := repository.GetUserPassword(credentials.Username, db)
+	usernamePassword, err := repository.GetUserPassword(signInBody.UsernameOrEmail, db)
 	if err != nil {
 		return "", "", fiber.ErrUnauthorized
 	}
 
-	decryptedPassword, err := middleware.Decrypt(*passwordFromDB)
+	decryptedPassword, err := middleware.Decrypt(usernamePassword.Password)
 	if err != nil {
 		return "", "", err
 	}
 
-	if decryptedPassword != credentials.Password {
+	if decryptedPassword != signInBody.Password {
 		return "", "", fiber.ErrUnauthorized
 	}
 
-	accessToken, err := middleware.GenerateAccessToken(credentials.Username)
+	accessToken, err := middleware.GenerateAccessToken(usernamePassword.Username)
 	if err != nil {
 		return "", "", err
 	}
 
-	refreshToken, err := middleware.GenerateRefreshToken(credentials.Username)
+	refreshToken, err := middleware.GenerateRefreshToken(usernamePassword.Username)
 	if err != nil {
 		return "", "", err
 	}

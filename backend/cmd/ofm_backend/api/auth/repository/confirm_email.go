@@ -18,8 +18,8 @@ func AddUser(user *body.SignUpBody, db *sqlx.DB) error {
 	return err
 }
 
-func GetUserTempData(username string, redisDB *redis.Client) (*body.SignUpBody, error) {
-	data, err := redisDB.HGetAll(context.Background(), username).Result()
+func GetUserTempData(uuid string, redisDB *redis.Client) (*body.SignUpBody, error) {
+	data, err := redisDB.HGetAll(context.Background(), uuid).Result()
 	if err != nil {
 		return nil, err
 	}
@@ -33,6 +33,6 @@ func GetUserTempData(username string, redisDB *redis.Client) (*body.SignUpBody, 
 		FirstName: data["firstName"],
 		Password:  data["password"],
 		Surname:   data["surname"],
-		Username:  username,
+		Username:  data["username"],
 	}, nil
 }

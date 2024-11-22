@@ -4,7 +4,7 @@ import axios from "axios";
 
 export const postSignUpRequest = async (signUpData: SignUpData) => {
     const host = getHost();
-    const url = `http://${host}/api/v1/sign-up`;
+    const url = `http://${host}/api/v1/auth/sign-up`;
 
     try {
         const response = await axios.post(url, signUpData);

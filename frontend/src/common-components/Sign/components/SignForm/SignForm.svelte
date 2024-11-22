@@ -16,7 +16,7 @@
     {/if}
     <Button
             loading={loading}
-            styles="text-lg !h-14"
+            styles="text-lg !h-12"
             type={"submit"}
     >{signProps.signButtonText}</Button>
     <LeftSignSideOrText/>
