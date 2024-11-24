@@ -1,7 +1,7 @@
 package middleware
 
 import (
-	enums "ofm_backend/cmd/ofm_backend/api/auth/utils"
+	enums "ofm_backend/cmd/ofm_backend/utils"
 	"os"
 	"strconv"
 	"strings"

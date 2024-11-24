@@ -17,3 +17,16 @@ func GetFileById(id int, db *sqlx.DB) (*model.File, error) {
 
 	return &file, nil
 }
+
+func AddFile(name string, db *sqlx.DB) (int, error) {
+	var fileID int
+	
+	query := `INSERT INTO files (name) VALUES ($1) RETURNING id`
+	
+	err := db.QueryRow(query, name).Scan(&fileID)
+	if err != nil {
+		return 0, err
+	}
+	
+	return fileID, nil
+}

@@ -9,5 +9,5 @@ import (
 func RegisterFreelanceRoutes(apiGroup fiber.Router) {
 	freelancesGroup := apiGroup.Group("/freelances")
 	
-	freelancesGroup.Get("/services/:id", controller.GetFreelanceById)
+	freelancesGroup.Get("/:id", controller.GetFreelanceById)
 }

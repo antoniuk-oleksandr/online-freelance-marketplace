@@ -3,13 +3,14 @@ import {ResponseMessageEnum} from "@/types/ResponseMessageEnum.ts";
 import Cookies from "js-cookie";
 import {navigate} from "svelte-routing";
 import {toastElementStore} from "@/common-components/ToastElement/store/toast-element-store.ts";
+import {postGoogleRequest} from "@/api/post-google-request.ts";
 
 const showToast = (message: string, type: "success" | "error") => {
     toastElementStore.set({
         show: true,
         message,
         type,
-        existAnimation: false,
+        exitAnimation: false,
     });
 };
 
@@ -24,7 +25,7 @@ const setCookies = (data: any, keepSignedIn: boolean, values: any) => {
     Cookies.set("refreshToken", data.refreshToken, options[1]);
 };
 
-const handleErrors = (data: any, setErrors: any, setFields: any) => {
+const handleSignErrors = (data: any, setErrors: any, setFields: any) => {
     if (data.error === ResponseErrorEnum.UsernameIsTaken) {
         setErrors("username", "Username is already taken.");
     } else if (data.error === ResponseErrorEnum.EmailIsTaken) {
@@ -40,7 +41,7 @@ const handleErrors = (data: any, setErrors: any, setFields: any) => {
     }
 };
 
-const handleSuccess = (data: any, values: any, setShowEmailSentMessage: any) => {
+const handleSuccessSign = (data: any, values: any, setShowEmailSentMessage: any) => {
     if (data.message === ResponseMessageEnum.EmailSentSuccessfully) {
         setShowEmailSentMessage && setShowEmailSentMessage(true);
     } else {
@@ -64,10 +65,35 @@ export const handleSignSubmit = async (
     const {data, status} = await submitAction(values);
 
     if (status === 200) {
-        handleSuccess(data, values, setShowEmailSentMessage);
+        handleSuccessSign(data, values, setShowEmailSentMessage);
     } else {
-        handleErrors(data, setErrors, setFields);
+        handleSignErrors(data, setErrors, setFields);
     }
 
     setLoading(false);
+};
+
+
+export const handleGoogleAuth = async (code: string) => {
+    const {status, data} = await postGoogleRequest(code);
+    if (status === 200) {
+        handleSuccessSign(data, {keepSignedIn: false}, false);
+    }
+}
+
+export const handleGoogleButtonClick = async (
+    setLoading: (loading: boolean) => void,
+    clientId: string,
+) => {
+    setLoading(true);
+    google.accounts.oauth2.initCodeClient({
+        client_id: clientId,
+        scope: "email profile",
+        ux_mode: "popup",
+        callback: async (googleResponse) => {
+            await handleGoogleAuth(googleResponse.code);
+            setLoading(false);
+        },
+        error_callback: () => setLoading(false)
+    }).requestCode();
 };

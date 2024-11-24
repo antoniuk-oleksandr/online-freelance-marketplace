@@ -1,7 +1,7 @@
 package middleware
 
 import (
-	enums "ofm_backend/cmd/ofm_backend/api/auth/utils"
+	enums "ofm_backend/cmd/ofm_backend/utils"
 	"os"
 	"strconv"
 	"strings"
@@ -45,7 +45,7 @@ func ProcessRegularJWT() fiber.Handler {
 	}
 }
 
-func GenerateToken(username string, tokenType int, experation int64) (string, error) {
+func GenerateOneToken(username string, tokenType int, experation int64) (string, error) {
 	claims := jwt.MapClaims{
 		"username": username,
 		"type":     tokenType,
@@ -57,9 +57,23 @@ func GenerateToken(username string, tokenType int, experation int64) (string, er
 }
 
 func GenerateAccessToken(username string) (string, error) {
-	return GenerateToken(username, enums.Access, time.Now().Add(time.Minute*15).Unix())
+	return GenerateOneToken(username, enums.Access, time.Now().Add(time.Minute*15).Unix())
 }
 
 func GenerateRefreshToken(username string) (string, error) {
-	return GenerateToken(username, enums.Refresh, time.Now().Add(time.Hour*24*30).Unix())
+	return GenerateOneToken(username, enums.Refresh, time.Now().Add(time.Hour*24*30).Unix())
+}
+
+func GenerateTokens(username string) (string, string, error) {
+	accessToken, err := GenerateAccessToken(username)
+	if err != nil {
+		return "", "", err
+	}
+	
+	refreshToken, err := GenerateRefreshToken(username)
+	if err != nil {
+		return "", "", err
+	}
+	
+	return accessToken, refreshToken, nil
 }

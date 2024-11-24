@@ -3,8 +3,6 @@
     import type {ToastElementStore} from "@/types/ToastElementStore.ts";
 
     const {type}: ToastElementStore = $props();
-
-    console.log(type);
 </script>
 
 {#if type === 'error'}

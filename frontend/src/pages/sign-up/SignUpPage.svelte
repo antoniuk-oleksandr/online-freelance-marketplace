@@ -12,7 +12,7 @@
         showEmailSentMessage={showEmailSentMessage}
         setShowEmailSentMessage={setShowEmailSentMessage}
         defaultValues={initialSignUpData}
-        googleButtonText={"Sign in with Google"}
+        googleButtonText={"Continue with Google"}
         submitAction={postSignUpRequest}
         signText={"Sign Up"}
         subSignText={"Please sign Up to continue to your account."}

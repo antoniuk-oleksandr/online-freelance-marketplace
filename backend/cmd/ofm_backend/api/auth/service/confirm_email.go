@@ -7,17 +7,17 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-func ConfirmEmail(ctx *fiber.Ctx) error{
-	uuid :=	ctx.Locals("uuid").(string)
+func ConfirmEmail(ctx *fiber.Ctx) error {
+	uuid := ctx.Locals("uuid").(string)
 
 	redisDB := database.GetRedisDB()
 	db := database.GetDB()
-	
+
 	user, err := repository.GetUserTempData(uuid, redisDB)
 	if err != nil {
 		return err
 	}
-	
+
 	if err = repository.AddUser(user, db); err != nil {
 		return err
 	}

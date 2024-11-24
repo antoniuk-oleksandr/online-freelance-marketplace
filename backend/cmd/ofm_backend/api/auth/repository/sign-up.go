@@ -11,33 +11,45 @@ import (
 
 func CheckIfUsernameIsAvailable(username string, db *sqlx.DB) (bool, error) {
 	var available bool
-	
+
 	query := `SELECT EXISTS (SELECT  * FROM users WHERE username = $1)`
-	
+
 	err := db.Get(&available, query, username)
 	if err != nil {
 		return false, err
 	}
-	
+
 	return !available, nil
-} 
+}
 
 func CheckIfEmailIsAvailable(email string, db *sqlx.DB) (bool, error) {
 	var available bool
-	
+
 	query := `SELECT EXISTS (SELECT  * FROM users WHERE email = $1)`
-	
+
 	err := db.Get(&available, query, email)
 	if err != nil {
 		return false, err
 	}
-	
+
 	return !available, nil
+}
+
+func CheckIfEmailCanBeUsedAsUsername(email string, db *sqlx.DB) (bool, error) {
+	var taken bool
+
+	query := `SELECT EXISTS (SELECT * FROM users WHERE username = $1)`
+
+	if err := db.Get(&taken, query, email); err != nil {
+		return false, err
+	}
+
+	return !taken, nil
 }
 
 func AddTempUserData(user *body.SignUpBody, userUUID string, redisDB *redis.Client) error {
 	pipe := redisDB.Pipeline()
-	
+
 	pipe.HSet(context.Background(), userUUID, map[string]interface{}{
 		"email":     user.Email,
 		"firstName": user.FirstName,
@@ -45,13 +57,13 @@ func AddTempUserData(user *body.SignUpBody, userUUID string, redisDB *redis.Clie
 		"surname":   user.Surname,
 		"username":  user.Username,
 	})
-	
+
 	pipe.Expire(context.Background(), user.Username, 15*time.Minute)
-	
+
 	_, err := pipe.Exec(context.Background())
 	if err != nil {
 		return err
 	}
-	
+
 	return nil
 }

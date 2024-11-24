@@ -5,5 +5,5 @@ export const toastElementStore = writable<ToastElementStore>({
     message: "",
     type: "error",
     show: false,
-    existAnimation: false,
+    exitAnimation: false,
 });

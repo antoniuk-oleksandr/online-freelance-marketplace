@@ -8,14 +8,14 @@ export const showOpenToastAnimation = () => setTimeout(() => {
 export const showCloseToastAnimation = () => {
     toastElementStore.update((prev) => ({
         ...prev,
-        existAnimation: true
+        exitAnimation: true
     }));
 
     return  setTimeout(() => {
         toastElementStore.update((prev) => ({
             ...prev,
             show: false,
-            existAnimation: false
+            exitAnimation: false
         }));
     }, 500);
 }
