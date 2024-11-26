@@ -35,18 +35,6 @@ func CheckIfEmailIsAvailable(email string, db *sqlx.DB) (bool, error) {
 	return !available, nil
 }
 
-func CheckIfEmailCanBeUsedAsUsername(email string, db *sqlx.DB) (bool, error) {
-	var taken bool
-
-	query := `SELECT EXISTS (SELECT * FROM users WHERE username = $1)`
-
-	if err := db.Get(&taken, query, email); err != nil {
-		return false, err
-	}
-
-	return !taken, nil
-}
-
 func AddTempUserData(user *body.SignUpBody, userUUID string, redisDB *redis.Client) error {
 	pipe := redisDB.Pipeline()
 

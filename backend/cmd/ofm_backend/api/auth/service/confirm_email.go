@@ -22,5 +22,10 @@ func ConfirmEmail(ctx *fiber.Ctx) error {
 		return err
 	}
 
+	err = repository.ClearTempData(uuid, redisDB)
+	if err != nil {
+		return err
+	}
+	
 	return nil
 }

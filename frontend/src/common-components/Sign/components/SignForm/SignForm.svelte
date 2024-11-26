@@ -4,6 +4,8 @@
     import LeftSignSideOrText from "@/common-components/Sign/components/LeftSignSideOrText/LeftSignSideOrText.svelte";
     import SignFormLayout from "@/common-components/Sign/components/SignForm/SignFormLayout.svelte";
     import GoogleButton from "@/common-components/Sign/components/GoogleButton/GoogleButton.svelte";
+    import {navigate} from "svelte-routing";
+    import BackSignInButton from "@/common-components/Sign/components/BackSignInButton/BackSignInButton.svelte";
 
     const signProps: SignProps = $props();
     let loading = $state(false);
@@ -19,6 +21,9 @@
             styles="text-lg !h-12"
             type={"submit"}
     >{signProps.signButtonText}</Button>
-    <LeftSignSideOrText/>
+    {#if signProps.showBackButton}
+        <BackSignInButton/>
+    {/if}
+    <LeftSignSideOrText {...signProps}/>
     <GoogleButton {...signProps}/>
 </SignFormLayout>

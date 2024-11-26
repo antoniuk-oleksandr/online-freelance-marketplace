@@ -33,7 +33,7 @@ func AddUserWithGoogleAuth(
 	VALUES ($1, $2, $3, $4, $5, $6)`
 
 	_, err := db.Exec(
-		query, claims.Username, claims.Email, "",
+		query, claims.Email, claims.Email, "",
 		claims.GivenName, claims.FamilyName, avatarID,
 	)
 	if err != nil {

@@ -1,10 +1,10 @@
 import {ResponseError, ResponseErrorEnum} from "@/types/ResponseErrorEnum.ts";
-import {PostConfirmEmailRequestResponse} from "@/types/PostConfirmEmailRequestResponse.ts";
+import {PostAuthRequestResponse} from "@/types/PostAuthRequestResponse.ts";
 import {ResponseMessageEnum} from "@/types/ResponseMessageEnum.ts";
 import {ResponseMessage} from "@/types/ResponseMessage.ts";
 
 export const handleConfirmEmailResponse = (
-    response: PostConfirmEmailRequestResponse,
+    response: PostAuthRequestResponse,
     setError: (error: ResponseErrorEnum | undefined | null) => void,
 ) => {
     const {data, status} = response;

@@ -33,12 +33,12 @@ func SignUp(user *body.SignUpBody) error {
 	if !isUsernameAvailable {
 		return utils.ErrUsernameIsTaken
 	}
-	
+
 	isEmailAvailable, err := repository.CheckIfEmailIsAvailable(user.Email, db)
 	if err != nil {
 		return err
 	}
-	
+
 	if !isEmailAvailable {
 		return utils.ErrEmailIsTaken
 	}
@@ -48,27 +48,27 @@ func SignUp(user *body.SignUpBody) error {
 	if err != nil {
 		return err
 	}
-	
+
 	token, err := middleware.GenerateConfirmPasswordToken(userUUID)
 	if err != nil {
 		return err
 	}
-	
+
 	host := os.Getenv("FRONTEND_HOST")
 	port := os.Getenv("FRONTEND_PORT")
 	link := fmt.Sprintf("http://%s:%s/confirm-email?token=%s", host, port, token)
-	
+
 	html, err := filereader.GetHTMLTempalate("confirm_email.html")
 	if err != nil {
-		return err
+		return err	
 	}
 	html = strings.Replace(html, "{url}", link, -1)
 	html = strings.Replace(html, "{username}", user.Username, -1)
-	
+
 	err = mailer.SendEmail(user.Email, "Password confirmation", html, "text/html")
 	if err != nil {
 		return err
-	} 
-	
+	}
+
 	return nil
 }

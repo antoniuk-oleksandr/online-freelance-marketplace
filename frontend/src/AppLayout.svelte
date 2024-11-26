@@ -10,7 +10,7 @@
 
     let location = useLocation();
 
-    const pagesToHide = ["sign-in", "sign-up", "confirm-email", "forgot-password", "reset-password"];
+    const pagesToHide = ["sign-in", "sign-up", "confirm-email", "forgot-password", "forgot-password", "reset-password"];
     let hideHeaderFooter = $state<boolean>(pagesToHide.includes($location.pathname.split("/")[1]));
 
     $effect(() => {

@@ -36,3 +36,8 @@ func GetUserTempData(uuid string, redisDB *redis.Client) (*body.SignUpBody, erro
 		Username:  data["username"],
 	}, nil
 }
+
+func ClearTempData(uuid string, redisDB *redis.Client) error {
+	_, err := redisDB.Del(context.Background(), uuid).Result()
+	return err
+}

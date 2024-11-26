@@ -3,7 +3,7 @@ import {ResponseMessageEnum} from "@/types/ResponseMessageEnum.ts";
 import Cookies from "js-cookie";
 import {navigate} from "svelte-routing";
 import {toastElementStore} from "@/common-components/ToastElement/store/toast-element-store.ts";
-import {postGoogleRequest} from "@/api/post-google-request.ts";
+import {postAuthRequest} from "@/api/post-auth-request.ts";
 
 const showToast = (message: string, type: "success" | "error") => {
     toastElementStore.set({
@@ -25,26 +25,39 @@ const setCookies = (data: any, keepSignedIn: boolean, values: any) => {
     Cookies.set("refreshToken", data.refreshToken, options[1]);
 };
 
+
 const handleSignErrors = (data: any, setErrors: any, setFields: any) => {
-    if (data.error === ResponseErrorEnum.UsernameIsTaken) {
-        setErrors("username", "Username is already taken.");
-    } else if (data.error === ResponseErrorEnum.EmailIsTaken) {
-        setErrors("email", "Email is already taken.");
-    } else if (data.error === ResponseErrorEnum.InvalidEmail) {
-        setErrors("email", "Invalid email address.");
-    } else if (data.error === ResponseErrorEnum.InvalidCredentials) {
-        setFields("password", "");
-        setTimeout(() => {
-            setErrors("usernameOrEmail", "Invalid email/username or password.");
-            setErrors("password", "Invalid email/username or password.");
-        });
+    switch (data.error) {
+        case ResponseErrorEnum.UsernameIsTaken:
+            setErrors("username", "Username is already taken.");
+            break;
+        case ResponseErrorEnum.EmailIsTaken:
+            setErrors("email", "Email is already taken.");
+            break;
+        case ResponseErrorEnum.InvalidEmail:
+            setErrors("email", "Invalid email address.");
+            break;
+        case ResponseErrorEnum.InvalidCredentials:
+            setFields("password", "");
+            setTimeout(() => {
+                setErrors("usernameOrEmail", "Invalid email/username or password.");
+                setErrors("password", "Invalid email/username or password.");
+            });
+            break;
+        case ResponseErrorEnum.EmailDoesNotExist:
+            setErrors("usernameOrEmail", "Email does not exist.");
+            break;
+        case ResponseErrorEnum.UsernameDoesNotExist:
+            setErrors("usernameOrEmail", "Username does not exist.");
+            break;
     }
 };
+
 
 const handleSuccessSign = (data: any, values: any, setShowEmailSentMessage: any) => {
     if (data.message === ResponseMessageEnum.EmailSentSuccessfully) {
         setShowEmailSentMessage && setShowEmailSentMessage(true);
-    } else {
+    } else if (data.accessToken && data.refreshToken) {
         setCookies(data, values.keepSignedIn, values);
         navigate("/");
         showToast("You have successfully signed in.", "success");
@@ -75,7 +88,8 @@ export const handleSignSubmit = async (
 
 
 export const handleGoogleAuth = async (code: string) => {
-    const {status, data} = await postGoogleRequest(code);
+    const {status, data} = await postAuthRequest("google", undefined, {code});
+
     if (status === 200) {
         handleSuccessSign(data, {keepSignedIn: false}, false);
     }

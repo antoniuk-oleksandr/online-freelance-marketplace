@@ -47,13 +47,6 @@ func handleUserAccount(claims *body.GoogleJwtClaims, db *sqlx.DB) (string, error
 	if userExists {
 		return username, nil
 	}
-
-	username, err = determineUsername(claims, db)
-	if err != nil {
-		return "", err
-	}
-	
-	claims.Username = username
 	
 	avatarID, err := fileRepo.AddFile(claims.PicURL, db)
 	if err != nil {
@@ -65,23 +58,5 @@ func handleUserAccount(claims *body.GoogleJwtClaims, db *sqlx.DB) (string, error
 		return "", err
 	}
 
-	return username, nil
-}
-
-func determineUsername(claims *body.GoogleJwtClaims, db *sqlx.DB) (string, error){
-	available, err := repository.CheckIfUsernameIsAvailable(claims.Email, db)
-	if err != nil {
-		return "", err
-	}
-	
-	if available {
-		return claims.Email, nil
-	}
-	
-	username, err := utils.TryToFindAvailableUsername(claims.Email, db)
-	if err != nil {
-		return "", err
-	}
-	
-	return username, nil
+	return claims.Email, nil
 }

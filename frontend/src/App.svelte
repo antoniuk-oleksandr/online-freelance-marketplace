@@ -8,6 +8,8 @@
     import NotFound from "@/common-components/NotFound/NotFound.svelte";
     import SignUpPage from "@/pages/sign-up/SignUpPage.svelte";
     import ConfirmEmailPage from "@/pages/confirm-email/ConfirmEmailPage.svelte";
+    import ForgotPasswordPage from "@/pages/forgot-password/ForgotPasswordPage.svelte";
+    import ResetPasswordPage from "@/pages/reset-password/ResetPasswordPage.svelte";
 </script>
 
 <Router>
@@ -29,6 +31,12 @@
         </Route>
         <Route path="/confirm-email">
             <ConfirmEmailPage/>
+        </Route>
+        <Route path="/forgot-password">
+            <ForgotPasswordPage/>
+        </Route>
+        <Route path="/reset-password">
+            <ResetPasswordPage/>
         </Route>
         <Route path="/*">
             <NotFound/>

@@ -11,4 +11,7 @@ var (
 	ErrInvalidRequestBody   = errors.New("Invalid request body")
 	ErrUsernameNotAvailable = errors.New("Username is not available")
 	ErrUnexpectedError      = errors.New("An unexpected error occurred")
+	ErrEmailDoesNotExist    = errors.New("Email does not exist")
+	ErrUsernameDoesNotExist = errors.New("Username does not exist")
+	ErrBlacklistedToken     = errors.New("Token is blacklisted")
 )

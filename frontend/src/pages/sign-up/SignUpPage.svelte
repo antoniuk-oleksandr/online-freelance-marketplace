@@ -2,10 +2,14 @@
     import Sign from "@/common-components/Sign/Sign.svelte";
     import {initialSignUpData, signUpSchema} from "@/pages/sign-up/helpers.ts";
     import SignUpInputs from "@/pages/sign-up/components/SignUpInputs/SignUpInputs.svelte";
-    import {postSignUpRequest} from "@/api/post-sign-up-request.ts";
+    import {postAuthRequest} from "@/api/post-auth-request.ts";
+    import type {SignUpData} from "@/types/SignData.ts";
 
     let showEmailSentMessage = $state(false);
     const setShowEmailSentMessage = (value: boolean) => showEmailSentMessage = value;
+
+    const postSignUpRequest= (body: SignUpData) =>
+        postAuthRequest("sign-up", undefined, body)
 </script>
 
 <Sign

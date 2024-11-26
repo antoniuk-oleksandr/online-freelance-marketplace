@@ -4,7 +4,9 @@ import {SignUpData} from "@/types/SignData.ts";
 export const signUpSchema = z.object({
     username: z.string()
         .min(1, {message: "Username is required."})
-        .min(3, {message: "Username must be at least 3 characters long."}),
+        .min(3, {message: "Username must be at least 3 characters long."})
+        .max(16, {message: "Username must be at most 16 characters long."})
+        .regex(/^[a-zA-Z0-9_]+$/, {message: "Username must contain only letters, digits, and underscores."}),
     firstName: z.string().min(1, {message: "First name is required."}),
     surname: z.string().min(1, {message: "Surname is required."}),
     email: z.string()

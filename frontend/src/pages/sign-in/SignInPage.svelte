@@ -2,8 +2,11 @@
     import {initialSignInData, signInSchema} from "@/pages/sign-in/helpers.ts";
     import SignInInputs from "@/pages/sign-in/components/SignInInputs/SignInInputs.svelte";
     import Sign from "@/common-components/Sign/Sign.svelte";
-    import {postSignInRequest} from "@/api/post-sign-in-request.ts";
+    import {postAuthRequest} from "@/api/post-auth-request.ts";
+    import type {SignInData} from "@/types/SignData.ts";
 
+    const postSignInRequest = async (body: SignInData) =>
+        postAuthRequest("sign-in", undefined, body)
 </script>
 
 <Sign

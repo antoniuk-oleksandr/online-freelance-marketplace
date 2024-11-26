@@ -4,4 +4,5 @@ const (
 	Access = iota
 	Refresh
 	ConfirmEmail
+	ResetPassword
 )

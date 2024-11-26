@@ -1,17 +1,18 @@
-import { ZodObject } from "zod";
+import {ZodType} from "zod";
 import {Snippet} from "svelte";
 
 export type SignProps = {
   defaultValues: any,
+  submitAction: (data: any) => Promise<any>,
   signText: string,
   subSignText: string,
-  subFormText: string,
+  schema: ZodType<any, any>,
   signButtonText: string,
-  subFormLink: string,
-  signButtonLinkText: string,
-  submitAction: (data: any) => Promise<any>,
-  schema: ZodObject<any>,
-  googleButtonText: string,
+  showBackButton?: boolean,
+  signButtonLinkText?: string,
+  subFormLink?: string,
+  subFormText?: string,
+  googleButtonText?: string,
   children?: Snippet,
   setLoading?: (loading: boolean) => void,
   showEmailSentMessage?: boolean,

@@ -13,9 +13,10 @@
 </script>
 
 <button
+        style="transition: all 0.2s ease-out !important;"
         disabled={loading}
-        type={type}
-        class="{styles} {loading ? 'opacity-70' : 'hover:!bg-cyan-400 active:!scale-95'} !bg-cyan-500 text-white px-4 rounded-md !h-12 !grid !place-items-center !duration-200 font-semibold !ease-out"
+        type={type ?? "button"}
+        class="{styles} {loading ? 'opacity-70' : 'hover:!bg-cyan-400 active:!scale-95'} !bg-cyan-500 text-white px-4 rounded-md !h-12 !grid !place-items-center font-semibold"
         onclick={clickAction}
 >
     {#if loading}

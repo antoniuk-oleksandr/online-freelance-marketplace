@@ -7,6 +7,5 @@ type GoogleJwtClaims struct {
 	PicURL     string `json:"picture"`
 	GivenName  string `json:"given_name"`
 	FamilyName string `json:"family_name"`
-	Username   string `json:"username"`
 	jwt.RegisteredClaims
 }

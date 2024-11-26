@@ -4,6 +4,7 @@
     import type {FormStore} from "@/types/FormStore.ts";
     import KeepMeLoggedInBlock
         from "@/pages/sign-in/components/KeepMeSignedInBlock/KeepMeSignedInBlock.svelte";
+    import BottomSignLine from "@/pages/sign-in/components/BottomSignLine/BottomSignLine.svelte";
 
     let formStoreData = $state<null | FormStore>(null);
     formStore.subscribe((value) => formStoreData = value);
@@ -26,5 +27,5 @@
             type="password"
             label="Password"
     />
-    <KeepMeLoggedInBlock/>
+    <BottomSignLine/>
 {/if}

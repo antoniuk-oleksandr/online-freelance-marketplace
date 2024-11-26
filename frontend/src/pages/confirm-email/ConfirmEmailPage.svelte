@@ -1,11 +1,11 @@
 <script lang="ts">
-    import {postConfirmEmailRequest} from "@/api/post-confirm-email-request.ts";
     import {handleConfirmEmailResponse} from "@/pages/confirm-email/helpers.ts";
     import {ResponseErrorEnum} from "@/types/ResponseErrorEnum.ts";
     import Spinner from "@/common-components/Spinner/Spinner.svelte";
     import ConfirmEmailPageLayout from "@/pages/confirm-email/ConfirmEmailPageLayout.svelte";
     import ErrorComponent from "@/common-components/ErrorComponent/ErrorComponent.svelte";
-    import EmailConfimedBlock from "@/pages/confirm-email/components/EmailConfimedBlock/EmailConfimedBlock.svelte";
+    import {postAuthRequest} from "@/api/post-auth-request.ts";
+    import SuccessMessage from "@/common-components/SuccessMessage/SuccessMessage.svelte";
 
     let error = $state<undefined | null | ResponseErrorEnum>(undefined);
     const setError = (value: undefined | null | ResponseErrorEnum) => error = value;
@@ -18,7 +18,7 @@
             setError(ResponseErrorEnum.InvalidToken);
             return;
         }
-        postConfirmEmailRequest(token).then((response) => {
+        postAuthRequest("confirm-email", token).then((response) => {
             handleConfirmEmailResponse(response, setError);
         });
     })
@@ -28,7 +28,11 @@
     {#if error === undefined}
         <Spinner/>
     {:else if error === null}
-        <EmailConfimedBlock/>
+        <SuccessMessage
+                title="Email Confirmed"
+                description="Your email has been successfully confirmed. You can now proceed to use your account."
+                subText="Thank you for verifying your email. We’re excited to have you on board!"
+        />
     {:else if error !== null}
         <ErrorComponent error={error}/>
     {/if}

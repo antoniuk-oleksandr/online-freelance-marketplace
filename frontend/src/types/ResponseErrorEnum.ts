@@ -14,6 +14,9 @@ export enum ResponseErrorEnum {
     InvalidEmail = "Invalid email address",
     UsernameIsTaken = "Username is already taken",
     EmailIsTaken = "Email is already taken",
+    EmailDoesNotExist = "Email does not exist",
+    UsernameDoesNotExist = "Username does not exist",
+    BlacklistedToken = "Token is blacklisted"
 }
 
 export type ResponseError = {
