@@ -13,6 +13,7 @@ export const getUserByIdRequest = async (id: string): Promise<GetUserByIdRequest
 
     try {
         const response = await axios.get(url);
+
         return {
             data: response.data as User,
             status: response.status as number

@@ -1,6 +1,6 @@
 <script lang="ts">
     import type {LayoutProps} from "@/types/LayoutProps.ts";
-    import {isDarkMode} from "@/stores/theme-storage.ts";
+    import {isDarkMode} from "@/common-stores/theme-storage.ts";
 
     type PackageTabLayoutProps = LayoutProps & {
         length: number,

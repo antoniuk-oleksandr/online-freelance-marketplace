@@ -13,7 +13,7 @@
 
 
 <Link
-        to={"/search?skills=" + id}
+        to={"/search?skill=" + id}
         class={`rounded-xl border border-light-palette-divider dark:border-dark-palette-divider px-3 py-1 bg-light-palette-background-block dark:bg-dark-palette-background-block ${hoverClass}}`}
 >
     {@render children()}

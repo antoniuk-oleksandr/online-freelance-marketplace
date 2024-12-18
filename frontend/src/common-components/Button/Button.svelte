@@ -5,18 +5,29 @@
     type MyButtonProps = LayoutProps & {
         clickAction?: () => void,
         styles?: string,
-        type?: "button" | "submit" | "reset"
-        loading?: boolean
+        type?: "button" | "submit" | "reset",
+        loading?: boolean,
+        color?: "red" | "default" | "grey" | "outline"
     };
 
-    const {children, clickAction, styles, type, loading}: MyButtonProps = $props();
+    const {children, clickAction, styles, type, loading, color}: MyButtonProps = $props();
+
+    const colorStyles = {
+        red: {buttonStyle: "!bg-red-500 text-white", hoverColor: "hover:!bg-red-400"},
+        default: {buttonStyle: "!bg-cyan-500 text-white", hoverColor: "hover:!bg-cyan-400"},
+        grey: { buttonStyle: "!bg-gray-300 dark:!bg-zinc-700", hoverColor: "hover:!bg-gray-200 hover:dark:!bg-zinc-600" },
+        outline: {buttonStyle: "ring-1 ring-light-palette-divider dark:ring-dark-palette-divider", hoverColor: "hover:!bg-light-palette-action-hover hover:dark:!bg-dark-palette-action-hover"}
+    };
+
+    let selectedStyle = color ? colorStyles[color] : colorStyles.default;
+
 </script>
 
 <button
         style="transition: all 0.2s ease-out !important;"
         disabled={loading}
         type={type ?? "button"}
-        class="{styles} {loading ? 'opacity-70' : 'hover:!bg-cyan-400 active:!scale-95'} !bg-cyan-500 text-white px-4 rounded-md !h-12 !grid !place-items-center font-semibold"
+        class="{styles} {loading ? 'opacity-70' : selectedStyle.hoverColor + ' active:!scale-95'} {selectedStyle.buttonStyle} px-4 rounded-md !h-12 !grid !place-items-center font-semibold"
         onclick={clickAction}
 >
     {#if loading}

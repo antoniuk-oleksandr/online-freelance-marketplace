@@ -4,6 +4,6 @@
     const {children}: LayoutProps = $props();
 </script>
 
-<div class="p-6 text-base pt-8 text-light-palette-text-secondary dark:text-dark-palette-text-secondary">
+<div class="p-6 text-base pt-8">
     {@render children()}
 </div>

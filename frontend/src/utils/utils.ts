@@ -70,3 +70,7 @@ export const getPackageDuration = (before: number, after: number) => {
             return `${Math.floor(diffInDays / 365)} years`;
     }
 }
+
+export const capitalize = (str: string) => {
+    return str.charAt(0).toUpperCase() + str.slice(1);
+}

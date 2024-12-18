@@ -5,20 +5,26 @@
     import Footer from "@/common-components/Footer/Footer.svelte";
     import PageLayout from "@/common-components/PageLayout.svelte";
     import ToastElement from "@/common-components/ToastElement/ToastElement.svelte";
+    import Modal from "@/common-components/Modal/Modal.svelte";
 
     let {children}: LayoutProps = $props();
 
     let location = useLocation();
 
-    const pagesToHide = ["sign-in", "sign-up", "confirm-email", "forgot-password", "forgot-password", "reset-password"];
-    let hideHeaderFooter = $state<boolean>(pagesToHide.includes($location.pathname.split("/")[1]));
+    const pagesToHideHeaderFooter = ["sign-in", "sign-up", "confirm-email", "forgot-password", "forgot-password", "reset-password"];
+    let hideHeaderFooter = $state<boolean>(pagesToHideHeaderFooter.includes($location.pathname.split("/")[1]));
+
+    const pagesToHideFooter = ["search"];
+    let hideFooter = $state<boolean>(pagesToHideFooter.includes($location.pathname.split("/")[1]));
 
     $effect(() => {
-        hideHeaderFooter = pagesToHide.includes($location.pathname.split("/")[1]);
+        hideHeaderFooter = pagesToHideHeaderFooter.includes($location.pathname.split("/")[1]);
+        hideFooter = pagesToHideFooter.includes($location.pathname.split("/")[1]);
     });
 </script>
 
-<div class="flex flex-col gap-y-8 animate-fade-in">
+<div class="flex flex-col gap-y-6 animate-fade-in">
+    <Modal/>
     <ToastElement/>
     {#if !hideHeaderFooter}
         <Header/>
@@ -28,7 +34,7 @@
             {@render children()}
         </div>
     </PageLayout>
-    {#if !hideHeaderFooter}
+    {#if !hideHeaderFooter && !hideFooter}
         <Footer/>
     {/if}
 </div>

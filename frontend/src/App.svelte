@@ -10,6 +10,9 @@
     import ConfirmEmailPage from "@/pages/confirm-email/ConfirmEmailPage.svelte";
     import ForgotPasswordPage from "@/pages/forgot-password/ForgotPasswordPage.svelte";
     import ResetPasswordPage from "@/pages/reset-password/ResetPasswordPage.svelte";
+    import OrderPage from "@/pages/order/OrderPage.svelte";
+    import PaymentPage from "@/pages/payment/PaymentPage.svelte";
+    import SearchPage from "@/pages/search/SearchPage.svelte";
 </script>
 
 <Router>
@@ -20,8 +23,17 @@
         <Route path="/services/:id" let:params>
             <ServicePage id={params.id}/>
         </Route>
+        <Route path="/services/:id/order" let:params>
+            <OrderPage id={params.id}/>
+        </Route>
+        <Route path="/services/:id/payment">
+            <PaymentPage/>
+        </Route>
         <Route path="/users/:id" let:params>
             <UserPage id={params.id}/>
+        </Route>
+        <Route path="/search">
+            <SearchPage/>
         </Route>
         <Route path="/sign-in">
             <SignInPage/>

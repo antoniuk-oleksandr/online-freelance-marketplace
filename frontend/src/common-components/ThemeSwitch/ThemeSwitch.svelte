@@ -1,7 +1,7 @@
 <script lang="ts">
     import Icon from '@iconify/svelte';
     import ThemeSwitchLayout from "@/common-components/ThemeSwitch/ThemeSwitchLayout.svelte";
-    import {isDarkMode} from "@/stores/theme-storage.ts";
+    import {isDarkMode} from "@/common-stores/theme-storage.ts";
 
     let darkMode = $state<boolean | null>(null);
 

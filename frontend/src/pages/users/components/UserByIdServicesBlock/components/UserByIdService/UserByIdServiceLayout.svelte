@@ -6,14 +6,15 @@
 
     type UserByIdServiceLayoutProps = LayoutProps & {
         id: number,
+        size?: "small" | "normal"
     }
 
-    const {children, id}: UserByIdServiceLayoutProps = $props();
+    const {children, id, size}: UserByIdServiceLayoutProps = $props();
     const hoverClass = getHoverClass();
 </script>
 
 <Link to={`/services/${id}`}>
-    <PaperElement styles={hoverClass}>
+    <PaperElement styles="{hoverClass} {size === 'small' ? '!p-3' : ''}">
         {@render children()}
     </PaperElement>
 </Link>

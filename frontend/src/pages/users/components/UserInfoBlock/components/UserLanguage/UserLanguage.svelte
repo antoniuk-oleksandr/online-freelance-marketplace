@@ -11,6 +11,6 @@
     const {id, name} = language;
 </script>
 
-<Link to={`/search?languages=${id}`}>
+<Link to={`/search?language=${id}`}>
     <span class="hover:underline duration-200 ease-out">{name}{isLast ? '' : ','}</span>
 </Link>

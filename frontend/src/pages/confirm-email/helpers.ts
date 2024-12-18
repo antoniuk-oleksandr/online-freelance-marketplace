@@ -9,7 +9,7 @@ export const handleConfirmEmailResponse = (
 ) => {
     const {data, status} = response;
     const errorMessage = (data as ResponseError).error;
-    const responseMessage = (data as ResponseMessage).message;
+    const responseMessage = (data as unknown as ResponseMessage).message;
 
     if (status === 200 && responseMessage === ResponseMessageEnum.EmailConfirmed) {
         setError(null);

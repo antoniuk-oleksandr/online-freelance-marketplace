@@ -4,6 +4,7 @@ import (
 	auth_routes "ofm_backend/cmd/ofm_backend/api/auth/routes"
 	freelance_routes "ofm_backend/cmd/ofm_backend/api/freelance/routes"
 	user_routes "ofm_backend/cmd/ofm_backend/api/user/routes"
+	filter_params_routes "ofm_backend/cmd/ofm_backend/api/filter_params/routes"
 	"ofm_backend/internal/config"
 	"ofm_backend/internal/database"
 	"ofm_backend/cmd/ofm_backend/utils"
@@ -24,6 +25,7 @@ func main() {
 	auth_routes.RegisterAuthRoutes(apiGroup)
 	freelance_routes.RegisterFreelanceRoutes(apiGroup)
 	user_routes.RegisterUserRoutes(apiGroup)
+	filter_params_routes.RegisterFilterParamsRoutes(apiGroup)
 	
 	app.Listen(":8080")
 }

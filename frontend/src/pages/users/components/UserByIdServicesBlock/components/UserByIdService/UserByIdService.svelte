@@ -13,14 +13,15 @@
 
     type UserByIdServiceProps = {
         service: UserService,
+        size?: "small" | "normal"
     }
 
-    const {service}: UserByIdServiceProps = $props();
+    const {service, size}: UserByIdServiceProps = $props();
 </script>
 
-<UserByIdServiceLayout {...service}>
+<UserByIdServiceLayout size={size} {...service}>
     <UserByIdServiceImage {...service}/>
-    <UserByIdServiceTitle {...service}/>
+    <UserByIdServiceTitle size={size} {...service}/>
     <UserByIdServiceInfo {...service}/>
     <UserByIdServicePrice {...service}/>
 </UserByIdServiceLayout>
