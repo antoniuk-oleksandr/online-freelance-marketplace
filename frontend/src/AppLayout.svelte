@@ -6,6 +6,7 @@
     import PageLayout from "@/common-components/PageLayout.svelte";
     import ToastElement from "@/common-components/ToastElement/ToastElement.svelte";
     import Modal from "@/common-components/Modal/Modal.svelte";
+    import ErrorComponent from "@/common-components/ErrorComponent/ErrorComponent.svelte";
 
     let {children}: LayoutProps = $props();
 
@@ -24,6 +25,7 @@
 </script>
 
 <div class="flex flex-col gap-y-6 animate-fade-in">
+    <ErrorComponent/>
     <Modal/>
     <ToastElement/>
     {#if !hideHeaderFooter}

@@ -8,7 +8,7 @@ export const request = async <T>(
     body?: any,
 ) => {
     const host = getHost();
-    const url = `http://${host}/api/v1/auth/${endpoint}`;
+    const url = `http://${host}/api/v1${endpoint}`;
 
     const methodFunc = method === "GET"
         ? axios.get : method === "POST"
@@ -25,13 +25,13 @@ export const request = async <T>(
             : await methodFunc(url, body, config);
 
         return {
-            data: response.data as T,
+            data: response.data,
             status: response.status,
-        }
+        } as T
     } catch (e) {
         return {
             data: (e as any).response.data,
             status: (e as any).status,
-        }
+        } as T
     }
 }

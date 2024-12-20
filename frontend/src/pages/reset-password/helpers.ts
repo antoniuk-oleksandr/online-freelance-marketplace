@@ -1,5 +1,6 @@
 import {z} from "zod";
 import {ResponseErrorEnum} from "@/types/ResponseErrorEnum.ts";
+import {errorStore} from "@/common-stores/error-store.ts";
 
 export const initialResetPasswordData = {
     password: '',
@@ -23,14 +24,13 @@ export const resetPasswordSchema = z.object({
 
 export const processUrlToken = (
     setToken: (token: string) => void,
-    setError: (value: undefined | null | ResponseErrorEnum) => void
 ) => {
     const params = new URLSearchParams(window.location.search);
     const tokenParam = params.get('token') ?? "";
     setToken(tokenParam);
 
     if (!tokenParam) {
-        setError(ResponseErrorEnum.InvalidToken);
+        errorStore.set({shown: true, error: ResponseErrorEnum.InvalidToken});
         return;
     }
 }

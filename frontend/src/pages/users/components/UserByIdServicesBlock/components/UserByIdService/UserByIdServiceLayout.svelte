@@ -14,7 +14,7 @@
 </script>
 
 <Link to={`/services/${id}`}>
-    <PaperElement styles="{hoverClass} {size === 'small' ? '!p-3' : ''}">
+    <PaperElement styles="service-element {hoverClass} {size === 'small' ? '!p-3' : ''}">
         {@render children()}
     </PaperElement>
 </Link>

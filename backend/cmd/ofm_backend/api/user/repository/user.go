@@ -29,7 +29,7 @@ func GetUserById(id int, db *sqlx.DB) (*model.User, error) {
 			        WHERE USI.user_id = U.id
 			    )  AS skills,
 			    COALESCE(userCountRating.reviews_count, 0) as reviews_count,
-			    COALESCE(userCountRating.rating, 0) as rating
+			    COALESCE(ROUND(userCountRating.rating, 2), 0) as rating
 			FROM users U
 			    LEFT JOIN files F ON F.id = U.avatar_id
 			    -- User count rating
@@ -114,7 +114,7 @@ func GetUserServicesByUserId(id int, db *sqlx.DB) (*[]model.UserByIdFreelanceSer
 			    -- Subquery for reviews_count and rating
 			    COALESCE(subCountRating.count, 0) AS reviews_count,
 			    COALESCE(subCountRating.rating, 0) AS rating,
-			    subMinPrice.minPrice AS min_price
+			    COALESCE(subMinPrice.minPrice, 0) AS min_price
 			FROM services S
 			    LEFT JOIN services_files SF ON S.id = SF.service_id
 			    LEFT JOIN files F ON SF.file_id = F.id
@@ -123,7 +123,7 @@ func GetUserServicesByUserId(id int, db *sqlx.DB) (*[]model.UserByIdFreelanceSer
 			        SELECT
 			            S.id,
 			            COUNT(R.id) AS count,
-			            AVG(R.rating) AS rating
+			            ROUND(AVG(R.rating), 2) AS rating
 			        FROM services S
 			            LEFT JOIN orders O ON S.id = O.service_id
 			            LEFT JOIN reviews R ON O.review_id = R.id

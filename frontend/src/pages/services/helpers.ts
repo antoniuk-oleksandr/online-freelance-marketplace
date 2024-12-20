@@ -10,13 +10,6 @@ export const tryToGetServiceById = async (
     const {data, status} = await getServiceByIdRequest(id);
 
     if (status === 200 && data) {
-        data.images = data.images.map((image) => getFile(image));
-        data.freelancer.avatar = getFile(data.freelancer.avatar);
-        data.reviews = data.reviews && data.reviews.map((review) => {
-            review.customer.avatar = getFile(review.customer.avatar);
-            return review;
-        });
-
         setService(data);
     }
 

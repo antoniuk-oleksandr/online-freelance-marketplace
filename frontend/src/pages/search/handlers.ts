@@ -5,10 +5,14 @@ import {searchFilterArrayStore} from "@/pages/search/stores/search-filter-array-
 import {Language} from "@/types/Language.ts";
 import {Skill} from "@/types/Skill.ts";
 import {Category} from "@/types/Category.ts";
-import type {SearchFilterArrayStore} from "@/types/SearchFilterArrayStore.ts";
-import {submitSearchPage} from "@/pages/search/helpers.ts";
+import {generateSearchLink, getSearchPageParams, makeSearchRequest, submitSearchPage} from "@/pages/search/helpers.ts";
 import {searchFilterDrawerStore} from "@/pages/search/stores/search-filter-drawer-store.ts";
 import {searchFilterArrayInputDataStore} from "@/pages/search/stores/search-filter-array-input-data-store.ts";
+import type {SearchRequestResponse} from "@/types/SearchRequestResponse.ts";
+import {request} from "@/api/request.ts";
+import {errorStore} from "@/common-stores/error-store.ts";
+import {searchCursorStore} from "@/pages/search/stores/search-cursor-store.ts";
+import {SearchCursorStore} from "@/types/SearchCursorStore.ts";
 
 export const handleSearchFromToBlockInputSpinnersClick = (
     value: number,
@@ -100,22 +104,75 @@ export const handleSearchInput = (
     });
 }
 
-export const handleSearchScroll = (
-    reached: boolean,
-    setReached: (value: boolean) => void,
+export const createLastServiceObserver = (
+    gridElement: HTMLElement | undefined,
+    searchCursorData: SearchCursorStore,
 ) => {
-    if (reached) return;
+    if (!gridElement) return;
 
-    const scrollTop = document.documentElement.scrollTop;
-    const scrollHeight = document.documentElement.scrollHeight;
-    const clientHeight = document.documentElement.clientHeight;
+    const lastChildElement = gridElement.children[gridElement.childElementCount - 1]
 
-    const scrolledPercent = (scrollTop + clientHeight) / scrollHeight;
+    const observer = new IntersectionObserver((entries) => {
+        const last = entries[0];
+        if (!last.isIntersecting || !searchCursorData.originalSearchPageParams || !searchCursorData.searchRequestResponse) return;
+        let {searchRequestResponse, originalSearchPageParams} = searchCursorData;
 
-    const isPast75Percent = scrolledPercent >= 0.75;
+        if (searchRequestResponse.status === 200 && searchRequestResponse.data.hasMore) {
+            const link = generateSearchLink(originalSearchPageParams, searchRequestResponse.data.cursor);
+            request<SearchRequestResponse>(link, "GET").then((response) => {
+                if (response.status !== 200) {
+                    errorStore.set({shown: true, error: response.data.error});
+                }
 
-    if (isPast75Percent) {
-        console.log("You have scrolled past 75%!");
-        setReached(true);
-    }
+                if (response.status !== 200 || !searchRequestResponse.data.services || !response.data.services) return;
+
+                response.data.services = [...searchRequestResponse.data.services, ...response.data.services]
+
+                searchCursorStore.update((prev) => ({
+                    ...prev,
+                    searchRequestResponse: response,
+                    cursorAdded: true
+                }))
+            });
+        }
+
+        observer.unobserve(last.target)
+    }, {
+        rootMargin: "1600px"
+    })
+
+    observer.observe(lastChildElement);
+}
+
+export const handleSearchRefresh = () => {
+    const params = getSearchPageParams();
+    searchStore.set(params);
+
+    searchCursorStore.update((prev) => ({
+        ...prev,
+        cursorAdded: false,
+        originalSearchPageParams: params
+    }));
+
+
+    const link = generateSearchLink(params);
+    processRequest(link);
+}
+
+const processRequest = (link: string) => {
+    request<SearchRequestResponse>(link, "GET").then((response) => {
+        if (response.status === 200) {
+            searchCursorStore.update((prev) => {
+                if (!prev.originalSearchPageParams) return prev;
+
+                return {
+                    ...prev,
+                    cursorAdded: true,
+                    searchRequestResponse: response
+                }
+            })
+        } else {
+            errorStore.set({shown: true, error: response.data.error});
+        }
+    });
 }

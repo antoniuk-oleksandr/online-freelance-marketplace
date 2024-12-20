@@ -5,6 +5,7 @@ import (
 	freelance_routes "ofm_backend/cmd/ofm_backend/api/freelance/routes"
 	user_routes "ofm_backend/cmd/ofm_backend/api/user/routes"
 	filter_params_routes "ofm_backend/cmd/ofm_backend/api/filter_params/routes"
+	search_routes "ofm_backend/cmd/ofm_backend/api/search/routes"
 	"ofm_backend/internal/config"
 	"ofm_backend/internal/database"
 	"ofm_backend/cmd/ofm_backend/utils"
@@ -20,12 +21,14 @@ func main() {
 
 	app := fiber.New()
 	app.Use(config.ConfigCors())
+	app.Use(config.ConfigRateLimiter())
 
 	apiGroup := app.Group("/api/v1")
 	auth_routes.RegisterAuthRoutes(apiGroup)
 	freelance_routes.RegisterFreelanceRoutes(apiGroup)
 	user_routes.RegisterUserRoutes(apiGroup)
 	filter_params_routes.RegisterFilterParamsRoutes(apiGroup)
+	search_routes.RegisterSearchRoutes(apiGroup)
 	
 	app.Listen(":8080")
 }

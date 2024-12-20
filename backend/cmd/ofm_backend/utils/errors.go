@@ -14,4 +14,6 @@ var (
 	ErrEmailDoesNotExist    = errors.New("Email does not exist")
 	ErrUsernameDoesNotExist = errors.New("Username does not exist")
 	ErrBlacklistedToken     = errors.New("Token is blacklisted")
+	ErrInvalidCursor        = errors.New("Cursor is invalid")
+	ErrTooManyRequests      = errors.New("Too many requests")
 )

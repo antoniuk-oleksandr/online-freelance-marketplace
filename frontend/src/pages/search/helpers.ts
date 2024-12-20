@@ -10,6 +10,9 @@ import {SearchFilterArrayAttribute} from "@/types/SearchFilterArrayAttribute.ts"
 import type {SearchFilterArrayInputDataStore} from "@/types/SearchFilterArrayInputDataStore.ts";
 import {GetFilterParamsRequestResponse} from "@/types/GetFilterParamsRequestResponse.ts";
 import {searchFilterDrawerStore} from "@/pages/search/stores/search-filter-drawer-store.ts";
+import {request} from "@/api/request.ts";
+import type {SearchRequestResponse} from "@/types/SearchRequestResponse.ts";
+import {errorStore} from "@/common-stores/error-store.ts";
 
 export const getSearchPageParams = (): SearchPageParams => {
     const params = new URLSearchParams(window.location.search);
@@ -103,18 +106,19 @@ const appendSearchLinkParam = (
     } else if (value) params.append(attribute, value.toString());
 }
 
-const generateSearchLink = (
-    searchPageParams: SearchPageParams
+export const generateSearchLink = (
+    searchPageParams: SearchPageParams,
+    cursor?: string | null,
 ) => {
     const params = new URLSearchParams();
 
-    const attributes = ["query", "page", "sort", "order", "skill", "language", "category", "priceFrom", "priceTo", "levelFrom", "levelTo", "ratingFrom", "ratingTo", "deliveryTimeFrom", "deliveryTimeTo"];
+    const attributes = ["query", "page", "sort", "order", "skill", "language", "category", "priceFrom", "priceTo", "levelFrom", "levelTo", "ratingFrom", "ratingTo", "deliveryTimeFrom", "deliveryTimeTo", "cursor"];
 
     attributes.forEach((item) => {
         appendSearchLinkParam(searchPageParams, item as keyof SearchPageParams, params);
     })
 
-    return "/search?" + params.toString();
+    return  `/search${cursor ? `?cursor=${cursor}&` : "?"}${params.toString()}`;
 }
 
 export const getFormFromInputValue = (
@@ -188,4 +192,18 @@ export const getAllFilterArrayBlockDataElements = (
         item.name.toLowerCase()
             .includes(inputValues[storeData.attribute].toLowerCase())
     )
+}
+
+export const makeSearchRequest = (
+    searchPAgeParams: SearchPageParams,
+    setSearchRequestResponse: (value: SearchRequestResponse) => void,
+) => {
+    const link = generateSearchLink(searchPAgeParams);
+    request<SearchRequestResponse>(link, "GET").then((response) => {
+        if (response.status !== 200) {
+            errorStore.set({shown: true, error: response.data.error});
+        }
+
+        setSearchRequestResponse(response);
+    });
 }

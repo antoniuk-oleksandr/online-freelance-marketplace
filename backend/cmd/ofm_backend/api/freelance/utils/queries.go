@@ -43,7 +43,7 @@ SELECT
                 'first_name', UI.first_name,
                 'surname', UI.surname,
                 'avatar', FI.name,
-                'rating', countRating.avg,
+                'rating', ROUND(countRating.avg, 2),
                 'level', UI.level,
                 'reviews_count', countRating.count
             )

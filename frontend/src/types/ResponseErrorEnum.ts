@@ -16,10 +16,11 @@ export enum ResponseErrorEnum {
     EmailIsTaken = "Email is already taken",
     EmailDoesNotExist = "Email does not exist",
     UsernameDoesNotExist = "Username does not exist",
-    BlacklistedToken = "Token is blacklisted"
+    BlacklistedToken = "Token is blacklisted",
+    InvalidCursor = "Cursor is invalid",
+    ErrTooManyRequests = "Too many requests"
 }
 
 export type ResponseError = {
-    error?: ResponseErrorEnum,
-    message?: ResponseErrorEnum,
+    error: ResponseErrorEnum,
 }

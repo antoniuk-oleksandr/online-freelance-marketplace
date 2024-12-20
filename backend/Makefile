@@ -1,2 +1,3 @@
 run:
-	find -name '*.go' | entr -r go run cmd/ofm_backend/main.go
+	find . \( -name '*.go' -o -name '*.env' \) | entr -r go run cmd/ofm_backend/main.go
+
