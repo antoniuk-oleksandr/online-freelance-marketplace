@@ -16,4 +16,5 @@ var (
 	ErrBlacklistedToken     = errors.New("Token is blacklisted")
 	ErrInvalidCursor        = errors.New("Cursor is invalid")
 	ErrTooManyRequests      = errors.New("Too many requests")
+	ErrInvalidPaymentPublicKey = errors.New("Invalid payment public key")
 )

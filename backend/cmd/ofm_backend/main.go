@@ -6,6 +6,7 @@ import (
 	user_routes "ofm_backend/cmd/ofm_backend/api/user/routes"
 	filter_params_routes "ofm_backend/cmd/ofm_backend/api/filter_params/routes"
 	search_routes "ofm_backend/cmd/ofm_backend/api/search/routes"
+	order_routes "ofm_backend/cmd/ofm_backend/api/order/routes"
 	"ofm_backend/internal/config"
 	"ofm_backend/internal/database"
 	"ofm_backend/cmd/ofm_backend/utils"
@@ -18,8 +19,14 @@ func main() {
 
 	database.ConnectToPostgresDB()
 	database.ConnectToRedisDB()
+	
+	app := Setup()
+	app.Listen(":8080")
+}
 
+func Setup() *fiber.App{
 	app := fiber.New()
+	
 	app.Use(config.ConfigCors())
 	app.Use(config.ConfigRateLimiter())
 
@@ -29,6 +36,7 @@ func main() {
 	user_routes.RegisterUserRoutes(apiGroup)
 	filter_params_routes.RegisterFilterParamsRoutes(apiGroup)
 	search_routes.RegisterSearchRoutes(apiGroup)
+	order_routes.RegisterOrderRoutes(apiGroup)
 	
-	app.Listen(":8080")
+	return app
 }

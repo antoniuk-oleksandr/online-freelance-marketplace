@@ -6,11 +6,11 @@ SELECT
     countRating.count as reviews_count,
     countRating.avg as rating,
     (
-        SELECT
-            COALESCE(json_agg(FI.name), '[]'::json)
-        FROM services_files SFI
-            LEFT JOIN files FI ON SFI.file_id = FI.id
-        WHERE SFI.service_id = S.id
+      SELECT
+        COALESCE(json_agg(FI.name), '[]'::json)
+      FROM services_files SFI
+      LEFT JOIN files FI ON SFI.file_id = FI.id
+      WHERE SFI.service_id = S.id
     ) as images,
     (
         SELECT

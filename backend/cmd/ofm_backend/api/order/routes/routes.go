@@ -10,4 +10,5 @@ func RegisterOrderRoutes(apiGroup fiber.Router) {
 	ordersGroup := apiGroup.Group("/orders")
 
 	ordersGroup.Post("/", controller.CreateOrder)
+	ordersGroup.Get("/public-payment-key", controller.GetPublicPaymentKey)
 }
