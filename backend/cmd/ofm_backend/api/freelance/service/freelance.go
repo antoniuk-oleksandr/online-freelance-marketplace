@@ -3,6 +3,7 @@ package service
 import (
 	"ofm_backend/cmd/ofm_backend/api/freelance/mapper"
 	"ofm_backend/cmd/ofm_backend/api/freelance/repository"
+	"ofm_backend/cmd/ofm_backend/utils"
 	"ofm_backend/internal/database"
 	"strconv"
 
@@ -32,7 +33,8 @@ func GetFreelanceById(c *fiber.Ctx) error {
 		})
 	}
 
-	free := mapper.MapFreelanceModelToDTO(freelanceService, freelanceServiceReviews)
+	freelanceDTO := mapper.MapFreelanceModelToDTO(freelanceService, freelanceServiceReviews)
+	freelanceDTOWithFileLinks := utils.AddServerURLToFiles(&freelanceDTO)
 	
-	return c.JSON(free)
+	return c.JSON(freelanceDTOWithFileLinks)
 }

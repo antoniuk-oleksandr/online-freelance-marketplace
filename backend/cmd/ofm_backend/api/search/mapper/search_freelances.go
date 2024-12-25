@@ -5,11 +5,11 @@ import (
 	"ofm_backend/cmd/ofm_backend/api/search/model"
 )
 
-func MapSearchFreelancesModelToDTO(searchServiceModels []model.SearchService) []dto.SearchFreelance {
-	var freelances []dto.SearchFreelance
+func MapSearchFreelancesModelToDTO(searchServiceModels []model.SearchService) []*dto.SearchFreelance {
+	var freelances []*dto.SearchFreelance
 
 	for _, item := range searchServiceModels {
-		freelances = append(freelances, dto.SearchFreelance{
+		freelances = append(freelances, &dto.SearchFreelance{
 			ID:           item.ID,
 			CreatedAt:    item.CreatedAt,
 			Description:  item.Description,

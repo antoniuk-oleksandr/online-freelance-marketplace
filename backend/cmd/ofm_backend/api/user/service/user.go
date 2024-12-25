@@ -3,6 +3,7 @@ package service
 import (
 	"ofm_backend/cmd/ofm_backend/api/user/mapper"
 	"ofm_backend/cmd/ofm_backend/api/user/repository"
+	"ofm_backend/cmd/ofm_backend/utils"
 	"ofm_backend/internal/database"
 	"strconv"
 
@@ -43,5 +44,7 @@ func GetUserById(c *fiber.Ctx) error {
 		services,
 	)
 
-	return c.JSON(userDto)
+	userDTOWithFileLinks := utils.AddServerURLToFiles(userDto)
+
+	return c.JSON(userDTOWithFileLinks)
 }

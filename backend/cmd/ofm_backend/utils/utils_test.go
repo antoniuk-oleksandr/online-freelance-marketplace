@@ -1,9 +1,9 @@
-package utils_test
+package utils
 
 import (
 	"os"
 	"testing"
-	"ofm_backend/cmd/ofm_backend/utils"
+
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -19,7 +19,7 @@ func TestLoadEnvValues_Success(t *testing.T) {
 	err = os.WriteFile(".env", []byte("DATABASE_URL=test_database_url"), 0644)
 	require.NoError(t, err, "Failed to write test .env file")
 
-	utils.LoadEnvValues()
+	LoadEnvValues()
 
 	databaseURL := os.Getenv("DATABASE_URL")
 	assert.Equal(t, "test_database_url", databaseURL, "Expected DATABASE_URL to be loaded from .env file")

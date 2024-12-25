@@ -38,11 +38,10 @@ func SearchFreelances(searchBody body.Search) (*dto.SearchFreelances, error) {
 	}
 
 	freelanceDTOs := mapper.MapSearchFreelancesModelToDTO(freelanceModels)
-
-
+	
 	cursor, hasMore := buildCursor(searchBody, freelanceModels, maxResults)
 	return &dto.SearchFreelances{
-		Services: freelanceDTOs,
+		Services: main_utils.AddServerURLToFiles(freelanceDTOs),
 		HasMore:  hasMore,
 		Cursor:   cursor,
 	}, nil
