@@ -2,11 +2,18 @@
     import type {UserService} from "@/types/UserService.ts";
 
     let {image, title}: UserService = $props();
-    if (!image) image = '/images/no-image.jpg';
+
+    let imageSrc = $state<string | undefined>();
+
+    $effect(() => {
+        imageSrc = image ? image : '/images/no-image.jpg';
+    })
 </script>
 
-<img
-        src={image}
-        alt={title}
-        class="object-cover aspect-video !rounded-md mb-3"
-/>
+{#if imageSrc}
+    <img
+            src={imageSrc}
+            alt={title}
+            class="object-cover aspect-video !rounded-md mb-3"
+    />
+{/if}

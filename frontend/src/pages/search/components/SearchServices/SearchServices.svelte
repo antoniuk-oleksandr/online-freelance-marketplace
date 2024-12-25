@@ -14,7 +14,7 @@
     {null}
 {:else if searchCursorData.searchRequestResponse.status !== 200}
     {null}
-{:else if !searchCursorData.searchRequestResponse.data.services}
+{:else if !searchCursorData.searchRequestResponse.data.services || searchCursorData.searchRequestResponse.data.services.length == 0}
     <SearchServicesNotFound/>
 {:else}
     <SearchServicesLayout>
