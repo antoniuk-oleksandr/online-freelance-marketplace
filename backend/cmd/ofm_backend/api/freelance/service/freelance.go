@@ -5,6 +5,6 @@ import (
 )
 
 type FreelanceService interface {
-	GetFreelanceById(id int) (*dto.Freelance, error)
-	GetReviewsByFreelanceID(id int, reviewsCursor string) (*dto.FreelanceReviews, error)
+	GetFreelanceById(id int) (*dto.FreelanceByIDResponse, error)
+	GetReviewsByFreelanceID(id int, reviewsCursor string) (*dto.FreelanceReviewsResponse, error)
 }

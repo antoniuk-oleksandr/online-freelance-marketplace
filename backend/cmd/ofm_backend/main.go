@@ -22,14 +22,13 @@ func main() {
 	database.ConnectToRedisDB()
 	
 	app := Setup(db)
+	app.Use(config.ConfigCors())
+	app.Use(config.ConfigRateLimiter())
 	app.Listen(":8080")
 }
 
 func Setup(db *sqlx.DB) *fiber.App{
 	app := fiber.New()
-	
-	app.Use(config.ConfigCors())
-	app.Use(config.ConfigRateLimiter())
 
 	apiGroup := app.Group("/api/v1")
 	auth_routes.RegisterAuthRoutes(apiGroup)

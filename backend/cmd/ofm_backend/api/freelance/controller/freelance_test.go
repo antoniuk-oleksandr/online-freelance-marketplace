@@ -17,37 +17,41 @@ type MockService struct {
 	mock.Mock
 }
 
-func (m *MockService) GetReviewsByFreelanceID(id int, reviewsCursor string) (*dto.FreelanceReviews, error) {
+func (m *MockService) GetReviewsByFreelanceID(id int, reviewsCursor string) (*dto.FreelanceReviewsResponse, error) {
 	args := m.Called(id, reviewsCursor)
 	if args.Get(0) != nil {
-		return args.Get(0).(*dto.FreelanceReviews), args.Error(1)
+		return args.Get(0).(*dto.FreelanceReviewsResponse), args.Error(1)
 	}
 
 	return nil, args.Error(1)
 }
 
-func (m *MockService) GetFreelanceById(id int) (*dto.Freelance, error) {
+func (m *MockService) GetFreelanceById(id int) (*dto.FreelanceByIDResponse, error) {
 	args := m.Called(id)
 	if args.Get(0) != nil {
-		return args.Get(0).(*dto.Freelance), args.Error(1)
+		return args.Get(0).(*dto.FreelanceByIDResponse), args.Error(1)
 	}
 	return nil, args.Error(1)
 }
 
 func TestGetFreelanceById_Success(t *testing.T) {
 	mockService := new(MockService)
-	mockResponse := &dto.Freelance{
-		ID:           1,
-		CreatedAt:    time.Now(),
-		Description:  "test",
-		ReviewsCount: 1,
-		Rating:       5,
-		Title:        "test",
-		Images:       &[]string{"test1.jpg", "test2.jpg"},
-		Category:     &model.Category{ID: 1, Name: "test"},
-		Packages:     &[]dto.Package{{ID: 1, DeliveryDays: 1, Description: "test", Price: 1, Title: "test"}},
-		Freelancer:   &dto.FreelanceServiceFreelancer{ID: 1, Username: "test", FirstName: "test", Surname: "test", Avatar: "test", Rating: 5, Level: 1, ReviewsCount: 1},
-		Reviews:      &[]model.Review{{ID: 1, Content: "test", Rating: 5, CreatedAt: time.Now(), EndedAt: time.Now(), Customer: &model.Customer{ID: 1, Username: "test", Avatar: "test"}, Freelance: &model.ReviewFreelance{Price: 1}}},
+	mockResponse := &dto.FreelanceByIDResponse{
+		Service: &dto.Freelance{
+			ID:           1,
+			CreatedAt:    time.Now(),
+			Description:  "test",
+			ReviewsCount: 1,
+			Rating:       5,
+			Title:        "test",
+			Images:       &[]string{"test1.jpg", "test2.jpg"},
+			Category:     &model.Category{ID: 1, Name: "test"},
+			Packages:     &[]dto.Package{{ID: 1, DeliveryDays: 1, Description: "test", Price: 1, Title: "test"}},
+			Freelancer:   &dto.FreelanceServiceFreelancer{ID: 1, Username: "test", FirstName: "test", Surname: "test", Avatar: "test", Rating: 5, Level: 1, ReviewsCount: 1},
+			Reviews:      &[]model.Review{{ID: 1, Content: "test", Rating: 5, CreatedAt: time.Now(), EndedAt: time.Now(), Customer: &model.Customer{ID: 1, Username: "test", Avatar: "test"}, Freelance: &model.ReviewFreelance{Price: 1}}},
+		},
+		HasMoreReviews: false,
+		ReviewsCursor:  nil,
 	}
 
 	mockService.On("GetFreelanceById", 1).Return(mockResponse, nil)
@@ -88,7 +92,7 @@ func TestGetFreelanceById_ServiceError(t *testing.T) {
 
 func TestGetReviewsByFreelanceID_Success(t *testing.T) {
 	mockService := new(MockService)
-	mockResponse := &dto.FreelanceReviews{
+	mockResponse := &dto.FreelanceReviewsResponse{
 		Reviews:        &[]model.Review{{ID: 1, Content: "test", Rating: 5, CreatedAt: time.Now(), EndedAt: time.Now(), Customer: &model.Customer{ID: 1, Username: "test", Avatar: "test"}, Freelance: &model.ReviewFreelance{Price: 1}}},
 		HasMoreReviews: false,
 	}

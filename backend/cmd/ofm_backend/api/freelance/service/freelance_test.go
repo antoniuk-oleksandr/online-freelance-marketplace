@@ -48,7 +48,7 @@ func TestGetFreelanceById_Success(t *testing.T) {
 	timeNow := time.Now()
 
 	mockRepo := new(MockRepository)
-	mockFreelanceByIdResponse := &model.FreelanceByID{
+	mockRepoFreelanceByIdResponse := &model.FreelanceByID{
 		ID:           1,
 		CreatedAt:    timeNow,
 		Description:  "test",
@@ -60,24 +60,28 @@ func TestGetFreelanceById_Success(t *testing.T) {
 		Packages:     &[]model.Package{{ID: 1, DeliveryDays: 1, Description: "test", Price: 1, Title: "test"}},
 		Freelancer:   &model.FreelanceServiceFreelancer{ID: 1, Username: "test", FirstName: "test", Surname: "test", Avatar: "test", Rating: 5, Level: 1, ReviewsCount: 1},
 	}
-	mockReviewsResponse := &[]model.Review{{ID: 1, Content: "test", Rating: 5, CreatedAt: timeNow, EndedAt: timeNow, Customer: &model.Customer{ID: 1, Username: "test", Avatar: "test"}, Freelance: &model.ReviewFreelance{Price: 1}}}
+	mockRepoReviewsResponse := &[]model.Review{{ID: 1, Content: "test", Rating: 5, CreatedAt: timeNow, EndedAt: timeNow, Customer: &model.Customer{ID: 1, Username: "test", Avatar: "test"}, Freelance: &model.ReviewFreelance{Price: 1}}}
 
-	extectedData := &dto.Freelance{
-		ID:           1,
-		CreatedAt:    timeNow,
-		Description:  "test",
-		ReviewsCount: 1,
-		Rating:       5,
-		Title:        "test",
-		Images:       &[]string{"http://localost:8083/files/test1.jpg", "http://localost:8083/files/test2.jpg"},
-		Category:     &model.Category{ID: 1, Name: "test"},
-		Packages:     &[]dto.Package{{ID: 1, DeliveryDays: 1, Description: "test", Price: 1, Title: "test"}},
-		Freelancer:   &dto.FreelanceServiceFreelancer{ID: 1, Username: "test", FirstName: "test", Surname: "test", Avatar: "test", Rating: 5, Level: 1, ReviewsCount: 1},
-		Reviews:      mockReviewsResponse,
+	extectedData := &dto.FreelanceByIDResponse{
+		Service: &dto.Freelance{
+			ID:           1,
+			CreatedAt:    timeNow,
+			Description:  "test",
+			ReviewsCount: 1,
+			Rating:       5,
+			Title:        "test",
+			Images:       &[]string{"http://localost:8083/files/test1.jpg", "http://localost:8083/files/test2.jpg"},
+			Category:     &model.Category{ID: 1, Name: "test"},
+			Packages:     &[]dto.Package{{ID: 1, DeliveryDays: 1, Description: "test", Price: 1, Title: "test"}},
+			Freelancer:   &dto.FreelanceServiceFreelancer{ID: 1, Username: "test", FirstName: "test", Surname: "test", Avatar: "test", Rating: 5, Level: 1, ReviewsCount: 1},
+			Reviews:      mockRepoReviewsResponse,
+		},
+		HasMoreReviews: false,
+		ReviewsCursor:  nil,
 	}
 
-	mockRepo.On("GetFreelanceServiceById", 1).Return(mockFreelanceByIdResponse)
-	mockRepo.On("GetFreelanceServiceByIdReviews", 1, "", maxReviews+1).Return(mockReviewsResponse)
+	mockRepo.On("GetFreelanceServiceById", 1).Return(mockRepoFreelanceByIdResponse)
+	mockRepo.On("GetFreelanceServiceByIdReviews", 1, "", maxReviews+1).Return(mockRepoReviewsResponse)
 
 	fs := NewFreelanceService(mockRepo)
 	actualData, err := fs.GetFreelanceById(1)
@@ -95,7 +99,7 @@ func TestGetReviewsByFreelanceID_WithoutCursor(t *testing.T) {
 
 	reviews := &[]model.Review{{ID: 1, Content: "test", Rating: 5, CreatedAt: timeNow, EndedAt: timeNow, Customer: &model.Customer{ID: 1, Username: "test", Avatar: "test"}, Freelance: &model.ReviewFreelance{Price: 1}}}
 
-	mockRepoResponse := &dto.FreelanceReviews{
+	mockRepoResponse := &dto.FreelanceReviewsResponse{
 		Reviews:        reviews,
 		HasMoreReviews: false,
 		ReviewsCursor:  nil,
@@ -139,7 +143,7 @@ func TestGetReviewsByFreelanceID_WithCursor(t *testing.T) {
 		{ID: 4, Content: "test", Rating: 5, CreatedAt: timeNow.Add(time.Hour * -24 * 4), EndedAt: timeNow, Customer: &model.Customer{ID: 1, Username: "test", Avatar: "test"}, Freelance: &model.ReviewFreelance{Price: 1}},
 	}
 
-	mockRepoResponse := &dto.FreelanceReviews{
+	mockRepoResponse := &dto.FreelanceReviewsResponse{
 		Reviews:        reviews,
 		HasMoreReviews: false,
 		ReviewsCursor:  nil,

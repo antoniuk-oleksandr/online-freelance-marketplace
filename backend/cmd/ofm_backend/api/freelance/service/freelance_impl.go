@@ -18,7 +18,7 @@ func NewFreelanceService(repo repository.FreelanceRepository) FreelanceService {
 	}
 }
 
-func (fs *freelanceService) GetFreelanceById(id int) (*dto.Freelance, error) {
+func (fs *freelanceService) GetFreelanceById(id int) (*dto.FreelanceByIDResponse, error) {
 	maxReviews := utils.GetMaxReviewsValue()
 
 	freelanceService, err := fs.repository.GetFreelanceServiceById(id)
@@ -26,18 +26,32 @@ func (fs *freelanceService) GetFreelanceById(id int) (*dto.Freelance, error) {
 		return nil, main_utils.ErrNotFound
 	}
 
-	freelanceServiceReviews, err := fs.repository.GetFreelanceServiceByIdReviews(id, "", maxReviews+1)
+	reviews, err := fs.repository.GetFreelanceServiceByIdReviews(id, "", maxReviews+1)
 	if err != nil {
 		return nil, err
 	}
 
-	freelanceDTO := mapper.MapFreelanceModelToDTO(freelanceService, freelanceServiceReviews)
+	freelanceDTO := mapper.MapFreelanceModelToDTO(freelanceService, reviews)
 	freelanceDTOWithFileLinks := main_utils.AddServerURLToFiles(&freelanceDTO)
 
-	return freelanceDTOWithFileLinks, nil
+	var hasMoreReviews bool
+	var newReviewsCursor *string
+	if len(*reviews) == maxReviews+1 {
+		hasMoreReviews = true
+		lastReview := (*reviews)[maxReviews]
+		newReviewsCursor = utils.BuildReviewsCursor(lastReview.EndedAt)
+		reviewsWithoutLast := (*reviews)[:maxReviews]
+		reviews = &reviewsWithoutLast
+	}
+
+	return &dto.FreelanceByIDResponse{
+		Service:        freelanceDTOWithFileLinks,
+		HasMoreReviews: hasMoreReviews,
+		ReviewsCursor:  newReviewsCursor,
+	}, nil
 }
 
-func (fs *freelanceService) GetReviewsByFreelanceID(id int, reviewsCursor string) (*dto.FreelanceReviews, error) {
+func (fs *freelanceService) GetReviewsByFreelanceID(id int, reviewsCursor string) (*dto.FreelanceReviewsResponse, error) {
 	cursorData, err := utils.GetDataFromReviewsCursor(reviewsCursor)
 	if err != nil {
 		return nil, err
@@ -59,7 +73,7 @@ func (fs *freelanceService) GetReviewsByFreelanceID(id int, reviewsCursor string
 		reviews = &reviewsWithoutLast
 	}
 
-	return &dto.FreelanceReviews{
+	return &dto.FreelanceReviewsResponse{
 		Reviews:        reviews,
 		HasMoreReviews: hasMoreReviews,
 		ReviewsCursor:  newReviewsCursor,
