@@ -27,3 +27,27 @@ func TestLoadEnvValues_Success(t *testing.T) {
 	err = os.Remove(".env")
 	require.NoError(t, err, "Failed to remove .env file after test")
 }
+
+func TestContainsPositiveCase(t *testing.T) {
+	arr := []string{"test1", "test2", "test3"}
+	val := Contains(arr, "test2")
+	assert.True(t, val, "Expected true for test2 in the array")
+}
+
+func TestContainsNegativeCase(t *testing.T) {
+	arr := []string{"test1", "test2", "test3"}
+	val := Contains(arr, "test4")
+	assert.False(t, val, "Expected test4 to not be in the array")
+}
+
+func TestContainsSensitivityCase(t *testing.T){
+	arr := []string{"test1", "Test2", "test3"}
+	val := Contains(arr, "test2")
+	assert.False(t, val, "Expected false for case sensitivity")
+}
+
+func TestContainsEmptyArrCase(t* testing.T){
+	arr := []string{}
+	val := Contains(arr, "test")
+	assert.False(t, val, "Expected false for empty array")
+}

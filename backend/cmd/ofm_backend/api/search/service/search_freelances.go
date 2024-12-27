@@ -20,7 +20,7 @@ import (
 func SearchFreelances(searchBody body.Search) (*dto.SearchFreelances, error) {
 	db := database.GetDB()
 	
-	maxResults, err := strconv.Atoi(os.Getenv("MAX_RESULTS"))
+	maxResults, err := strconv.Atoi(os.Getenv("MAX_SEARCH_RESULTS"))
 	if err != nil {
 		return nil, err
 	}

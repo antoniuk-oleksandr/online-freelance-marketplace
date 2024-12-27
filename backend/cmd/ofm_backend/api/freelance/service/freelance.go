@@ -1,40 +1,10 @@
 package service
 
 import (
-	"ofm_backend/cmd/ofm_backend/api/freelance/mapper"
-	"ofm_backend/cmd/ofm_backend/api/freelance/repository"
-	"ofm_backend/cmd/ofm_backend/utils"
-	"ofm_backend/internal/database"
-	"strconv"
-
-	"github.com/gofiber/fiber/v2"
+	"ofm_backend/cmd/ofm_backend/api/freelance/dto"
 )
 
-func GetFreelanceById(c *fiber.Ctx) error {
-	id, err := strconv.Atoi(c.Params("id"))
-	if err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"error": "Invalid freelance service ID",
-		})
-	}
-	db := database.GetDB()
-
-	freelanceService, err := repository.GetFreelanceServiceById(id, db)
-	if err != nil {
-		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
-			"message": "Freelance service not found",
-		})
-	}
-	
-	freelanceServiceReviews, err :=repository.GetFreelanceServiceByIdReviews(id, db)
-	if err != nil {
-		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
-			"error": "Freelance service reviews not found",
-		})
-	}
-
-	freelanceDTO := mapper.MapFreelanceModelToDTO(freelanceService, freelanceServiceReviews)
-	freelanceDTOWithFileLinks := utils.AddServerURLToFiles(&freelanceDTO)
-	
-	return c.JSON(freelanceDTOWithFileLinks)
+type FreelanceService interface {
+	GetFreelanceById(id int) (*dto.Freelance, error)
+	GetReviewsByFreelanceID(id int, reviewsCursor string) (*dto.FreelanceReviews, error)
 }

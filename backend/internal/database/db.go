@@ -10,7 +10,7 @@ import (
 
 var db *sqlx.DB
 
-func ConnectToPostgresDB() {
+func ConnectToPostgresDB() *sqlx.DB {
 	dbUser := os.Getenv("DB_USER")
 	dbName := os.Getenv("DB_NAME")
 	dbPassword := os.Getenv("DB_PASSWORD")
@@ -24,6 +24,8 @@ func ConnectToPostgresDB() {
 	if err != nil {
 		panic(err)
 	}
+
+	return db
 }
 
 func GetDB() *sqlx.DB {

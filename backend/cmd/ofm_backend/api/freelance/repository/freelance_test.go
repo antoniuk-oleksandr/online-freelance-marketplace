@@ -1,7 +1,9 @@
 package repository
 
 import (
+	"fmt"
 	"ofm_backend/cmd/ofm_backend/api/freelance/model"
+	"ofm_backend/cmd/ofm_backend/utils"
 	"regexp"
 	"testing"
 	"time"
@@ -11,12 +13,76 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestGetFreelanceServiceById(t *testing.T) {
+func TestGetGetFreelanceServiceByIdReviews_WithCursor(t *testing.T) {
 	db, mock, err := sqlmock.New()
 	if err != nil {
 		t.Fatalf("an error '%s' was not expected when opening a stub database connection", err)
 	}
 	defer db.Close()
+
+	sqlxDB := sqlx.NewDb(db, "sqlmock")
+
+	endedAt := time.Now().Add(time.Hour * 24)
+	cursorData := utils.GetCurrentTime()
+	id := 1
+	maxReviews := 2
+
+	expectedData := []model.Review{
+		{
+			ID:        1,
+			Content:   "test1",
+			Rating:    5,
+			CreatedAt: time.Now().Add(time.Hour * -24 * 3),
+			EndedAt:   endedAt,
+			Customer:  &model.Customer{ID: 1, Username: "test1", Avatar: "test1.jpg"},
+			Freelance: &model.ReviewFreelance{Price: 1},
+		},
+		{
+			ID:        2,
+			Content:   "test2",
+			Rating:    5,
+			CreatedAt: time.Now().Add(time.Hour * -24 * 2),
+			EndedAt:   endedAt,
+			Customer:  &model.Customer{ID: 2, Username: "test2", Avatar: "test2.jpg"},
+			Freelance: &model.ReviewFreelance{Price: 1},
+		},
+		{
+			ID:        3,
+			Content:   "test3",
+			Rating:    5,
+			CreatedAt: time.Now().Add(time.Hour * -24),
+			EndedAt:   endedAt,
+			Customer:  &model.Customer{ID: 3, Username: "test3", Avatar: "test3.jpg"},
+			Freelance: &model.ReviewFreelance{Price: 1},
+		},
+	}
+
+	rows := sqlmock.
+		NewRows([]string{"id", "content", "rating", "created_at", "ended_at", "customer", "service"})
+	for _, review := range expectedData {
+		rows.AddRow(
+			review.ID,
+			review.Content,
+			review.Rating,
+			review.CreatedAt,
+			review.EndedAt,
+			fmt.Sprintf(`{"id": %d, "username": "%s", "avatar": "%s"}`, review.Customer.ID, review.Customer.Username, review.Customer.Avatar),
+			fmt.Sprintf(`{"price": %f}`, review.Freelance.Price),
+		)
+	}
+
+	mock.ExpectQuery(regexp.QuoteMeta(".")).WillReturnRows(rows)
+
+	freelanceRepo := NewFreelanceRepository(sqlxDB)
+	actualData, err := freelanceRepo.GetFreelanceServiceByIdReviews(id, cursorData, maxReviews+1)
+
+	assert.NoError(t, err, "Error was not expected")
+	assert.Equal(t, expectedData, *actualData, "Fetched reviews do not match expected result")
+}
+
+func TestGetFreelanceServiceById_Success(t *testing.T) {
+	db, mock, err := sqlmock.New()
+	assert.NoError(t, err, "Error was not expected")
 
 	sqlxDB := sqlx.NewDb(db, "sqlmock")
 
@@ -40,17 +106,18 @@ func TestGetFreelanceServiceById(t *testing.T) {
 		Freelancer:   &model.FreelanceServiceFreelancer{ID: 1, Username: "Test", FirstName: "Test", Surname: "Test", Avatar: "avatar1", Rating: 5.0, Level: 1, ReviewsCount: 1},
 	}
 
-	rows := sqlmock.NewRows([]string{"id", "created_at", "description", "title", "reviews_count", "rating", "images", "category", "packages", "freelancer"}).
+	rows := sqlmock.
+		NewRows([]string{"id", "created_at", "description", "title", "reviews_count", "rating", "images", "category", "packages", "freelancer"}).
 		AddRow(freelanceID, createdAt, "Test description", "Test title", 1, 5.0, `["image1", "image2"]`, `{"id": 1, "name": "Test Category"}`, `[{"id": 1, "delivery_days": 1, "description": "Test description", "price": 1, "title": "Test title"}]`, `{"id": 1, "username": "Test", "first_name": "Test", "surname": "Test", "avatar": "avatar1", "rating": 5, "level": 1, "reviews_count": 1}`)
 
 	mock.ExpectQuery(regexp.QuoteMeta(".")).WillReturnRows(rows)
 
-	actualFreelance, err := GetFreelanceServiceById(freelanceID, sqlxDB)
+	freelanceRepo := NewFreelanceRepository(sqlxDB)
+	actualFreelance, err := freelanceRepo.GetFreelanceServiceById(freelanceID)
 	assert.NoError(t, err, "Error was not expected")
-	
+
 	assert.Equal(t, expectedFreelance, *actualFreelance, "Fetched freelance service does not match expected result")
-	
+
 	err = mock.ExpectationsWereMet()
 	assert.NoError(t, err, "Error was not expected")
-	
 }

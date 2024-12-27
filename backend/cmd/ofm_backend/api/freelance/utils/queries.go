@@ -4,7 +4,7 @@ var FreelanceQuery = `
 SELECT
     S.id, S.created_at, S.description,S.title,
     countRating.count as reviews_count,
-    countRating.avg as rating,
+    ROUND((countRating.avg)::numeric, 2) as rating,
     (
       SELECT
         COALESCE(json_agg(FI.name), '[]'::json)
@@ -90,6 +90,12 @@ FROM orders OI
     LEFT JOIN users UI ON UI.id = OI.customer_id
     LEFT JOIN files FI ON UI.avatar_id = FI.id
     LEFT JOIN packages PI ON PI.id = OI.service_package_id
-WHERE OI.service_id = $1 AND OI.ended_at IS NOT NULL
+WHERE
+    OI.service_id = $1
+    AND OI.ended_at IS NOT NULL
+    AND (
+           $2 = '' OR $2 IS NULL OR OI.ended_at <= $2::timestamp
+    )
 ORDER BY OI.ended_at DESC
+LIMIT $3
 `

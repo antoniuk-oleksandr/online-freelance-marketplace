@@ -2,29 +2,30 @@ package main
 
 import (
 	auth_routes "ofm_backend/cmd/ofm_backend/api/auth/routes"
-	freelance_routes "ofm_backend/cmd/ofm_backend/api/freelance/routes"
-	user_routes "ofm_backend/cmd/ofm_backend/api/user/routes"
 	filter_params_routes "ofm_backend/cmd/ofm_backend/api/filter_params/routes"
-	search_routes "ofm_backend/cmd/ofm_backend/api/search/routes"
+	freelance_routes "ofm_backend/cmd/ofm_backend/api/freelance/routes"
 	order_routes "ofm_backend/cmd/ofm_backend/api/order/routes"
+	search_routes "ofm_backend/cmd/ofm_backend/api/search/routes"
+	user_routes "ofm_backend/cmd/ofm_backend/api/user/routes"
+	"ofm_backend/cmd/ofm_backend/utils"
 	"ofm_backend/internal/config"
 	"ofm_backend/internal/database"
-	"ofm_backend/cmd/ofm_backend/utils"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/jmoiron/sqlx"
 )
 
 func main() {
 	utils.LoadEnvValues()
 
-	database.ConnectToPostgresDB()
+	db := database.ConnectToPostgresDB()
 	database.ConnectToRedisDB()
 	
-	app := Setup()
+	app := Setup(db)
 	app.Listen(":8080")
 }
 
-func Setup() *fiber.App{
+func Setup(db *sqlx.DB) *fiber.App{
 	app := fiber.New()
 	
 	app.Use(config.ConfigCors())
@@ -32,7 +33,7 @@ func Setup() *fiber.App{
 
 	apiGroup := app.Group("/api/v1")
 	auth_routes.RegisterAuthRoutes(apiGroup)
-	freelance_routes.RegisterFreelanceRoutes(apiGroup)
+	freelance_routes.RegisterFreelanceRoutes(apiGroup, db)
 	user_routes.RegisterUserRoutes(apiGroup)
 	filter_params_routes.RegisterFilterParamsRoutes(apiGroup)
 	search_routes.RegisterSearchRoutes(apiGroup)
