@@ -25,8 +25,8 @@ func (m *MockRepository) GetFreelanceServiceById(id int) (*model.FreelanceByID, 
 	return nil, args.Error(1)
 }
 
-func (m *MockRepository) GetFreelanceServiceByIdReviews(id int, cursorData string, maxReviews int) (*[]model.Review, error) {
-	args := m.Called(id, cursorData, maxReviews)
+func (m *MockRepository) GetFreelanceServiceByIdReviews(id int, cursorData string, lastID int64, maxReviews int) (*[]model.Review, error) {
+	args := m.Called(id, cursorData, lastID, maxReviews)
 	if args.Get(0) != nil {
 		return args.Get(0).(*[]model.Review), nil
 	}
@@ -60,7 +60,11 @@ func TestGetFreelanceById_Success(t *testing.T) {
 		Packages:     &[]model.Package{{ID: 1, DeliveryDays: 1, Description: "test", Price: 1, Title: "test"}},
 		Freelancer:   &model.FreelanceServiceFreelancer{ID: 1, Username: "test", FirstName: "test", Surname: "test", Avatar: "test", Rating: 5, Level: 1, ReviewsCount: 1},
 	}
-	mockRepoReviewsResponse := &[]model.Review{{ID: 1, Content: "test", Rating: 5, CreatedAt: timeNow, EndedAt: timeNow, Customer: &model.Customer{ID: 1, Username: "test", Avatar: "test"}, Freelance: &model.ReviewFreelance{Price: 1}}}
+	mockRepoReviewsResponse := &[]model.Review{
+		{ID: 1, Content: "test", Rating: 5, CreatedAt: timeNow, EndedAt: timeNow, Customer: &model.Customer{ID: 1, Username: "test", Avatar: "test"}, Freelance: &model.ReviewFreelance{Price: 1}},
+		{ID: 2, Content: "test", Rating: 5, CreatedAt: timeNow, EndedAt: timeNow, Customer: &model.Customer{ID: 1, Username: "test", Avatar: "test"}, Freelance: &model.ReviewFreelance{Price: 1}},
+	}
+	
 
 	extectedData := &dto.FreelanceByIDResponse{
 		Service: &dto.Freelance{
@@ -81,7 +85,7 @@ func TestGetFreelanceById_Success(t *testing.T) {
 	}
 
 	mockRepo.On("GetFreelanceServiceById", 1).Return(mockRepoFreelanceByIdResponse)
-	mockRepo.On("GetFreelanceServiceByIdReviews", 1, "", maxReviews+1).Return(mockRepoReviewsResponse)
+	mockRepo.On("GetFreelanceServiceByIdReviews", 1, "", int64(-1), maxReviews+1).Return(mockRepoReviewsResponse)
 
 	fs := NewFreelanceService(mockRepo)
 	actualData, err := fs.GetFreelanceById(1)
@@ -105,7 +109,7 @@ func TestGetReviewsByFreelanceID_WithoutCursor(t *testing.T) {
 		ReviewsCursor:  nil,
 	}
 
-	mockRepo.On("GetFreelanceServiceByIdReviews", 1, "", maxReviews+1).Return(reviews, nil)
+	mockRepo.On("GetFreelanceServiceByIdReviews", 1, "", int64(-1), maxReviews+1).Return(reviews, nil)
 
 	fs := NewFreelanceService(mockRepo)
 	actualData, err := fs.GetReviewsByFreelanceID(1, "")
@@ -130,8 +134,8 @@ func TestGetReviewsByFreelanceID_WithCursor(t *testing.T) {
 		os.Unsetenv("MAX_FREELANCE_BY_ID_REVIEWS")
 	}()
 
-	cursor := utils.BuildReviewsCursor(timeNow.Add(time.Hour * -24 * 2))
-	cursorData, err := utils.GetDataFromReviewsCursor(*cursor)
+	cursor := utils.BuildReviewsCursor(timeNow.Add(time.Hour*-24*2), -1)
+	cursorData, lastID, err := utils.GetDataFromReviewsCursor(*cursor)
 	assert.NoError(t, err, "Error should be nil")
 
 	mockRepo := new(MockRepository)
@@ -149,7 +153,7 @@ func TestGetReviewsByFreelanceID_WithCursor(t *testing.T) {
 		ReviewsCursor:  nil,
 	}
 
-	mockRepo.On("GetFreelanceServiceByIdReviews", 1, cursorData, maxReviews+1).Return(reviews, nil)
+	mockRepo.On("GetFreelanceServiceByIdReviews", 1, cursorData, lastID, maxReviews+1).Return(reviews, nil)
 
 	fs := NewFreelanceService(mockRepo)
 	actualData, err := fs.GetReviewsByFreelanceID(1, *cursor)

@@ -17,7 +17,7 @@
 {#if errorData && errorData.shown}
     <ErrorComponentLayout>
         <PaperElement
-                styles="flex text-base !border-0 md:!border !bg-transparent md:!bg-light-palette-background-block md:dark:!bg-dark-palette-background-block flex-col items-center gap-4 p-8 max-w-168">
+                styles="flex text-base !border-0 md:!border !bg-transparent md:!bg-light-palette-background-block md:dark:!bg-dark-palette-background-block flex-col items-center gap-4 p-6 max-w-168">
             <Icon icon="material-symbols:error" class="text-red-500" width="64" height="64"/>
             <h1 class="text-2xl font-bold">Error: {errorData.error}</h1>
             <p class="text-center text-light-palette-text-secondary dark:text-dark-palette-text-secondary">

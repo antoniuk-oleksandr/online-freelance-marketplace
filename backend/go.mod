@@ -5,7 +5,6 @@ go 1.23.2
 require (
 	github.com/DATA-DOG/go-sqlmock v1.5.2
 	github.com/gofiber/storage/redis v1.3.4
-	github.com/google/wire v0.6.0
 	gopkg.in/gomail.v2 v2.0.0-20160411212932-81ebce5c23df
 )
 

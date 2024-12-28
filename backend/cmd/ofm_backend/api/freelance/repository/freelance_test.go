@@ -24,6 +24,7 @@ func TestGetGetFreelanceServiceByIdReviews_WithCursor(t *testing.T) {
 
 	endedAt := time.Now().Add(time.Hour * 24)
 	cursorData := utils.GetCurrentTime()
+	var lastID int64 = 5
 	id := 1
 	maxReviews := 2
 
@@ -47,7 +48,7 @@ func TestGetGetFreelanceServiceByIdReviews_WithCursor(t *testing.T) {
 			Freelance: &model.ReviewFreelance{Price: 1},
 		},
 		{
-			ID:        3,
+			ID:        lastID,
 			Content:   "test3",
 			Rating:    5,
 			CreatedAt: time.Now().Add(time.Hour * -24),
@@ -74,7 +75,7 @@ func TestGetGetFreelanceServiceByIdReviews_WithCursor(t *testing.T) {
 	mock.ExpectQuery(regexp.QuoteMeta(".")).WillReturnRows(rows)
 
 	freelanceRepo := NewFreelanceRepository(sqlxDB)
-	actualData, err := freelanceRepo.GetFreelanceServiceByIdReviews(id, cursorData, maxReviews+1)
+	actualData, err := freelanceRepo.GetFreelanceServiceByIdReviews(id, cursorData, lastID, maxReviews+1)
 
 	assert.NoError(t, err, "Error was not expected")
 	assert.Equal(t, expectedData, *actualData, "Fetched reviews do not match expected result")

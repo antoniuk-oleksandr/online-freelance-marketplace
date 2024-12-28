@@ -61,11 +61,11 @@ func (fr *freelanceRepository) GetFreelanceServiceById(id int) (*model.Freelance
 
 func (fr *freelanceRepository) GetFreelanceServiceByIdReviews(
 	id int, cursorData string,
-	maxReviews int,
+	lastID int64, maxReviews int,
 ) (*[]model.Review, error) {
 	var reviews []model.Review
 
-	rows, err := fr.db.Queryx(utils.FreealnceReviewsQuery, id, cursorData, maxReviews)
+	rows, err := fr.db.Queryx(utils.FreealnceReviewsQuery, id, cursorData, lastID, maxReviews)
 	if err != nil {
 		return nil, err
 	}

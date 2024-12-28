@@ -6,5 +6,5 @@ import (
 
 type FreelanceRepository interface {
 	GetFreelanceServiceById(id int) (*model.FreelanceByID, error)
-	GetFreelanceServiceByIdReviews(id int, cursorData string, maxReviews int) (*[]model.Review, error)
+	GetFreelanceServiceByIdReviews(id int, cursorData string, lastID int64, maxReviews int) (*[]model.Review, error)
 }

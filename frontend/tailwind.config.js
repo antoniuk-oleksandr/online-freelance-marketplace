@@ -100,7 +100,7 @@ const config = {
             spacing: {
                 4.5: "1.125rem",
                 packages: "calc(32px)",
-                22: "5.5rem"
+                22: "5.5rem",
             },
             width: {
                 100: "25rem",

@@ -1,13 +1,7 @@
-import {UpdateFunc} from "@/types/UpdateFunc.ts";
-import type {GetUserByIdRequestResponse} from "@/types/GetServiceByIdRequestResponse.ts";
-
 export const getHost = () => {
     return 'localhost:8080';
 }
 
-export const getFileHost = () => {
-    return 'localhost:8030';
-}
 
 export const getHoverClass = () => {
     return "hover:bg-light-palette-action-hover dark:hover:bg-dark-palette-action-hover duration-200 ease-out"
@@ -36,7 +30,8 @@ export const getTimeAgo = (date: number): string => {
         case diffInDays < 365:
             return `${Math.floor(diffInDays / 30)} months ago`;
         default:
-            return `${Math.floor(diffInDays / 365)} years ago`;
+            const rest = Math.floor(diffInDays / 365);
+            return `${rest} year${rest === 1 ? '' : 's'} ago`;
     }
 };
 

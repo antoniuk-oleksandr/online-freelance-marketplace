@@ -36,30 +36,30 @@ func TestBuildReviewsCursor(t *testing.T) {
 	if err != nil {
 		fmt.Println("Error parsing time:", err)
 	}
+	var lastID int64 = 5
 
-	cursor := fmt.Sprintf("reviewsCursor:%s", timeStr)
+	cursor := fmt.Sprintf("reviewsCursor:%s;lastID:%d", timeStr, lastID)
 	expectedEncodedCursor := middleware.EncodeString(cursor)
 
 	lastReview := model.Review{
-		ID:        1,
-		Content:   "test",
-		Rating:    5,
-		CreatedAt: time.Now(),
-		EndedAt:   parsedTime,
+		ID:      lastID,
+		EndedAt: parsedTime,
 	}
 
-	actualCursor := BuildReviewsCursor(lastReview.EndedAt)
+	actualCursor := BuildReviewsCursor(lastReview.EndedAt, lastReview.ID)
 
 	assert.Equal(t, expectedEncodedCursor, *actualCursor, "Expected cursor should be equal to actual cursor")
 }
 
-func TestGetDataFromReviewsCursor(t *testing.T) {
+func TestGetDataFromReviewsCursor_Success(t *testing.T) {
 	expectedData := "2023-12-26 00:42:33.925400897"
-	cursor := fmt.Sprintf("reviewsCursor:%s", expectedData)
+	var expectedLastID int64 = 5
+	cursor := fmt.Sprintf("reviewsCursor:%s;lastID:%d", expectedData, expectedLastID)
 	encodedCursor := middleware.EncodeString(cursor)
 
-	actualData, err := GetDataFromReviewsCursor(encodedCursor)
+	actualData, actualLastID, err := GetDataFromReviewsCursor(encodedCursor)
 
 	assert.NoError(t, err, "Error should be nil")
 	assert.Equal(t, expectedData, actualData, "Expected data should be equal to actual data")
+	assert.Equal(t, expectedLastID, actualLastID, "Expected lastID should be equal to actual lastID")
 }

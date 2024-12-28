@@ -10,29 +10,33 @@ import (
 	"time"
 )
 
-func GetDataFromReviewsCursor(reviewsCursor string) (string, error) {
+func GetDataFromReviewsCursor(reviewsCursor string) (string, int64, error) {
 	if reviewsCursor == "" {
-		return "", nil
+		return "", -1, nil
 	}
 
 	decodedCursor, err := middleware.DecodeString(reviewsCursor)
 	if err != nil {
-		return "", err
+		return "", -1, err
 	}
 
-	colonIndex := strings.Index(decodedCursor, ":")
+	arrOfKeyValues := strings.Split(decodedCursor, ";")
+
+	colonIndex := strings.Index(arrOfKeyValues[0], ":")
 	if colonIndex == -1 {
-		return "", main_utils.ErrParsingError
+		return "", -1, main_utils.ErrParsingError
 	}
 
-	timestamp := decodedCursor[colonIndex+1:]
+	timestamp := arrOfKeyValues[0][colonIndex+1:]
+	lastIDStr := strings.Split(arrOfKeyValues[1], ":")[1]
+	lastID, err := strconv.ParseInt(lastIDStr, 10, 64)
 
-	return timestamp, nil
+	return timestamp, lastID, err
 }
 
-func BuildReviewsCursor(lastReviewEndedAt time.Time) *string {
+func BuildReviewsCursor(lastReviewEndedAt time.Time, lastID int64) *string {
 	lastReviewEndedAtStr := main_utils.ConvertTimeToSting(lastReviewEndedAt)
-	str := fmt.Sprintf("reviewsCursor:%s", lastReviewEndedAtStr)
+	str := fmt.Sprintf("reviewsCursor:%s;lastID:%d", lastReviewEndedAtStr, lastID)
 	encodedStr := middleware.EncodeString(str)
 
 	return &encodedStr

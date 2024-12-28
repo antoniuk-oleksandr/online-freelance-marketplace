@@ -94,8 +94,12 @@ WHERE
     OI.service_id = $1
     AND OI.ended_at IS NOT NULL
     AND (
-           $2 = '' OR $2 IS NULL OR OI.ended_at <= $2::timestamp
+           ($2 = '' OR $2 IS NULL OR $3 = -1 OR $3 IS NULL)
+           OR (
+	           (OI.ended_at = $2::timestamp AND OI.id < $3)
+	           OR OI.ended_at < $2::timestamp
+           )
     )
-ORDER BY OI.ended_at DESC
-LIMIT $3
+ORDER BY OI.ended_at DESC, OI.id DESC
+LIMIT $4
 `

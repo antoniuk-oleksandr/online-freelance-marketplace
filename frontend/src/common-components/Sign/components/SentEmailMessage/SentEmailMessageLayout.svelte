@@ -7,7 +7,7 @@
 
 <div class="grid h-svh place-items-center">
     <PaperElement
-            styles="flex text-base flex-col items-center gap-4 p-8 max-w-168 !border-0 md:!border !bg-transparent md:!bg-light-palette-background-block md:dark:!bg-dark-palette-background-block"
+            styles="flex text-base flex-col items-center gap-4 p-6 max-w-168 !border-0 md:!border !bg-transparent md:!bg-light-palette-background-block md:dark:!bg-dark-palette-background-block"
     >
         {@render children()}
     </PaperElement>

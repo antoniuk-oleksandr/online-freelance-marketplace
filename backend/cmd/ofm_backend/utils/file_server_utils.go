@@ -54,7 +54,11 @@ func handleSlicePointer[T any](elem reflect.Value) T {
 
 		newSlice.Index(i).Set(reflect.ValueOf(modifiedValue))
 	}
-	return newSlice.Interface().(T)
+
+	result := reflect.New(newSlice.Type())
+	result.Elem().Set(newSlice)
+
+	return result.Interface().(T)
 }
 
 func handleSlice[T any](val reflect.Value) T {

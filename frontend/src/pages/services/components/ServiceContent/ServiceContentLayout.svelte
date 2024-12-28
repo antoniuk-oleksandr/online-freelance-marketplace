@@ -4,6 +4,6 @@
     const {children}: LayoutProps = $props();
 </script>
 
-<div class="grid grid-cols-1 lg:grid-cols-service gap-8 mt-8">
+<div class="grid grid-cols-1 lg:grid-cols-service gap-6 mt-6">
     {@render children()}
 </div>

@@ -18,7 +18,7 @@
 </script>
 
 <UserByIdReviewBottomContentLayout>
-    <div class="flex gap-y-1 md:gap-x-8 md:h-12 md:items-center flex-col md:flex-row items-start">
+    <div class="flex gap-y-1 md:gap-x-6 md:h-12 md:items-center flex-col md:flex-row items-start">
         <UserByIdReviewColumn label={"Price"} data={`$${review.service.price}`}/>
         <DividerElement className={"hidden md:block"} orientation={"vertical"}/>
         <UserByIdReviewColumn label={"Duration"} data={getPackageDuration(review.createdAt, review.endedAt)}/>

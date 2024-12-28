@@ -26,7 +26,7 @@ func (fs *freelanceService) GetFreelanceById(id int) (*dto.FreelanceByIDResponse
 		return nil, main_utils.ErrNotFound
 	}
 
-	reviews, err := fs.repository.GetFreelanceServiceByIdReviews(id, "", maxReviews+1)
+	reviews, err := fs.repository.GetFreelanceServiceByIdReviews(id, "", -1, maxReviews+1)
 	if err != nil {
 		return nil, err
 	}
@@ -39,7 +39,7 @@ func (fs *freelanceService) GetFreelanceById(id int) (*dto.FreelanceByIDResponse
 	if len(*reviews) == maxReviews+1 {
 		hasMoreReviews = true
 		lastReview := (*reviews)[maxReviews]
-		newReviewsCursor = utils.BuildReviewsCursor(lastReview.EndedAt)
+		newReviewsCursor = utils.BuildReviewsCursor(lastReview.EndedAt, lastReview.ID)
 		reviewsWithoutLast := (*reviews)[:maxReviews]
 		reviews = &reviewsWithoutLast
 		freelanceDTOWithFileLinks.Reviews = reviews
@@ -53,29 +53,31 @@ func (fs *freelanceService) GetFreelanceById(id int) (*dto.FreelanceByIDResponse
 }
 
 func (fs *freelanceService) GetReviewsByFreelanceID(id int, reviewsCursor string) (*dto.FreelanceReviewsResponse, error) {
-	cursorData, err := utils.GetDataFromReviewsCursor(reviewsCursor)
+	cursorData, lastID, err := utils.GetDataFromReviewsCursor(reviewsCursor)
 	if err != nil {
 		return nil, err
 	}
 	maxReviews := utils.GetMaxReviewsValue()
 
-	reviews, err := fs.repository.GetFreelanceServiceByIdReviews(id, cursorData, maxReviews+1)
+	reviews, err := fs.repository.GetFreelanceServiceByIdReviews(id, cursorData, lastID, maxReviews+1)
 	if err != nil {
 		return nil, err
 	}
 
+	reviewsWithFileLinks := main_utils.AddServerURLToFiles(reviews)
+	
 	var hasMoreReviews bool
 	var newReviewsCursor *string
-	if len(*reviews) == maxReviews+1 {
+	if len(*reviewsWithFileLinks) == maxReviews+1 {
 		hasMoreReviews = true
-		lastReview := (*reviews)[maxReviews]
-		newReviewsCursor = utils.BuildReviewsCursor(lastReview.EndedAt)
-		reviewsWithoutLast := (*reviews)[:maxReviews]
-		reviews = &reviewsWithoutLast
+		lastReview := (*reviewsWithFileLinks)[maxReviews]
+		newReviewsCursor = utils.BuildReviewsCursor(lastReview.EndedAt, lastReview.ID)
+		reviewsWithoutLast := (*reviewsWithFileLinks)[:maxReviews]
+		reviewsWithFileLinks = &reviewsWithoutLast
 	}
 
 	return &dto.FreelanceReviewsResponse{
-		Reviews:        reviews,
+		Reviews:        reviewsWithFileLinks,
 		HasMoreReviews: hasMoreReviews,
 		ReviewsCursor:  newReviewsCursor,
 	}, nil

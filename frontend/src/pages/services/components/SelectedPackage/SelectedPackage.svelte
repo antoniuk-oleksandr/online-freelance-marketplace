@@ -20,7 +20,7 @@
     </div>
     <Link to="/services/{id}/order">
         <MyButton
-                styles={"!mt-8 !w-full"}>
+                styles={"!mt-6 !w-full"}>
             Order Now
         </MyButton>
     </Link>
