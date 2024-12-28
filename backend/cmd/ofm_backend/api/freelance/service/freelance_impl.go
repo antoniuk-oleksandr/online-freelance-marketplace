@@ -42,6 +42,7 @@ func (fs *freelanceService) GetFreelanceById(id int) (*dto.FreelanceByIDResponse
 		newReviewsCursor = utils.BuildReviewsCursor(lastReview.EndedAt)
 		reviewsWithoutLast := (*reviews)[:maxReviews]
 		reviews = &reviewsWithoutLast
+		freelanceDTOWithFileLinks.Reviews = reviews
 	}
 
 	return &dto.FreelanceByIDResponse{

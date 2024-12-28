@@ -106,6 +106,7 @@ const config = {
                 100: "25rem",
                 112: "28rem",
                 "search-sidebar": "23rem",
+                48: "12rem",
             },
             height: {
                 form: "56rem",

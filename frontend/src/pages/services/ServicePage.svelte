@@ -1,32 +1,36 @@
 <script lang="ts">
-    import {onMount} from "svelte";
-    import type {Service} from "@/types/Service.ts";
-    import {getServiceByIdRequest} from "@/api/get-service-by-id-request.ts";
-    import {getFile} from "@/utils/utils.ts";
-    import {tryToGetServiceById} from "@/pages/services/helpers.ts";
     import NotFound from "@/common-components/NotFound/NotFound.svelte";
     import ServicePageLayout from "@/pages/services/ServicePageLayout.svelte";
     import ServiceBreadcrumbs from "@/pages/services/components/ServiceBreadcrumbs/ServiceBreadcrumbs.svelte";
     import ServiceContent from "@/pages/services/components/ServiceContent/ServiceContent.svelte";
+    import {request} from "@/api/request.ts";
+    import type {GetUserByIdRequestResponse} from "@/types/GetServiceByIdRequestResponse.ts";
+    import type {UpdateFunc} from "@/types/UpdateFunc.ts";
 
     type ServicePageProps = { id: string; }
 
     const {id}: ServicePageProps = $props();
 
-    let service = $state<Service | null>(null);
-    const setService = (value: Service) => service = value;
+    let serviceResponse = $state<GetUserByIdRequestResponse | undefined>();
+    let setServiceResponse: UpdateFunc<GetUserByIdRequestResponse | undefined> = (updater) => {
+        (async () => {
+            serviceResponse = await updater(serviceResponse);
+        })();
+    }
 
-    let status = $state<number | null>(null);
-    const setStatus = (value: number) => status = value;
-
-    onMount(() => tryToGetServiceById(id, setService, setStatus))
+    request<GetUserByIdRequestResponse>(`/freelances/${id}`, "GET").then((response) => {
+        serviceResponse = response;
+    });
 </script>
 
-{#if status === 404}
+{#if serviceResponse && serviceResponse.status !== 200}
     <NotFound/>
-{:else if service}
+{:else if serviceResponse && serviceResponse.status === 200}
     <ServicePageLayout>
-        <ServiceBreadcrumbs service={service}/>
-        <ServiceContent {...service}/>
+        <ServiceBreadcrumbs service={serviceResponse.data.service}/>
+        <ServiceContent
+                serviceResponse={serviceResponse}
+                setServiceResponse={setServiceResponse}
+        />
     </ServicePageLayout>
 {/if}

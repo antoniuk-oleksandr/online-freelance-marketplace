@@ -5,13 +5,21 @@
     import ServiceTopLeftSideContent
         from "@/pages/services/components/ServiceTopLeftSideContent/ServiceTopLeftSideContent.svelte";
     import ServicePackagesBlock from "@/pages/services/components/ServicePackagesBlock/ServicePackagesBlock.svelte";
-    import type {Service} from "@/types/Service.ts";
+    import type {UpdateFunc} from "@/types/UpdateFunc.ts";
+    import type {GetUserByIdRequestResponse} from "@/types/GetServiceByIdRequestResponse.ts";
 
-    const serviceProps: Service = $props();
+    type ServiceContentProps = {
+        setServiceResponse: UpdateFunc<GetUserByIdRequestResponse | undefined>,
+        serviceResponse: GetUserByIdRequestResponse
+    };
+
+    const serviceProps: ServiceContentProps = $props();
 </script>
 
-<ServiceContentLayout>
-    <ServiceTopLeftSideContent {...serviceProps}/>
-    <ServiceBottomLeftSideContent {...serviceProps}/>
-    <ServicePackagesBlock {...serviceProps}/>
-</ServiceContentLayout>
+{#if serviceProps.serviceResponse.status === 200}
+    <ServiceContentLayout>
+        <ServiceTopLeftSideContent {...serviceProps.serviceResponse.data.service}/>
+        <ServiceBottomLeftSideContent {...serviceProps}/>
+        <ServicePackagesBlock {...serviceProps.serviceResponse.data.service}/>
+    </ServiceContentLayout>
+{/if}

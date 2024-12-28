@@ -14,6 +14,6 @@
     <img
             src={imageSrc}
             alt={title}
-            class="object-cover aspect-video !rounded-md mb-3"
+            class="object-cover !aspect-video !rounded-md mb-3 size-full"
     />
 {/if}

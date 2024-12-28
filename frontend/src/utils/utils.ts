@@ -1,3 +1,6 @@
+import {UpdateFunc} from "@/types/UpdateFunc.ts";
+import type {GetUserByIdRequestResponse} from "@/types/GetServiceByIdRequestResponse.ts";
+
 export const getHost = () => {
     return 'localhost:8080';
 }
@@ -8,12 +11,6 @@ export const getFileHost = () => {
 
 export const getHoverClass = () => {
     return "hover:bg-light-palette-action-hover dark:hover:bg-dark-palette-action-hover duration-200 ease-out"
-}
-
-export const getFile = (name: string | null) => {
-    if (!name) return '';
-    if (name.includes("http")) return name;
-    else return `http://${getFileHost()}/files/${name}`;
 }
 
 export const getTimeAgo = (date: number): string => {

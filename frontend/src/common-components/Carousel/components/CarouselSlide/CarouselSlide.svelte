@@ -10,7 +10,7 @@
 
 <CarouselSlideLayout>
     <img
-            class="w-full h-auto"
+            class="aspect-video size-full object-cover object-center"
             src={slide}
             alt="Slide"
     />

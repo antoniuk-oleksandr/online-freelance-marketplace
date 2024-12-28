@@ -3,12 +3,25 @@
         from "@/pages/services/components/ServiceBottomLeftSideContent/ServiceBottomLeftSideContentLayout.svelte";
     import ServiceAboutBlock from "@/pages/services/components/ServiceAboutBlock/ServiceAboutBlock.svelte";
     import UserByIdReviewBlock from "@/pages/users/components/UserByIdReviewBlock/UserByIdReviewBlock.svelte";
-    import type {Service} from "@/types/Service.ts";
+    import type {UpdateFunc} from "@/types/UpdateFunc.ts";
+    import type {GetUserByIdRequestResponse} from "@/types/GetServiceByIdRequestResponse.ts";
+    import {handleShowMoreFreelancesButtonClick} from "@/pages/services/handlers.ts";
 
-    const serviceProps: Service = $props();
+    type ServiceBottomLeftSideContentProps = {
+        setServiceResponse: UpdateFunc<GetUserByIdRequestResponse | undefined>,
+        serviceResponse: GetUserByIdRequestResponse
+    };
+
+    const serviceProps: ServiceBottomLeftSideContentProps = $props();
 </script>
 
-<ServiceBottomLeftSideContentLayout>
-    <ServiceAboutBlock {...serviceProps}/>
-    <UserByIdReviewBlock showServices={false} {...serviceProps}/>
-</ServiceBottomLeftSideContentLayout>
+{#if serviceProps.serviceResponse.status === 200}
+    <ServiceBottomLeftSideContentLayout>
+        <ServiceAboutBlock {...serviceProps.serviceResponse.data.service}/>
+        <UserByIdReviewBlock
+                hasMore={serviceProps.serviceResponse.data.hasMoreReviews}
+                showMoreReviewsButtonAction={() => handleShowMoreFreelancesButtonClick(serviceProps.setServiceResponse)}
+                showServices={false}
+                {...serviceProps.serviceResponse.data.service}/>
+    </ServiceBottomLeftSideContentLayout>
+{/if}
