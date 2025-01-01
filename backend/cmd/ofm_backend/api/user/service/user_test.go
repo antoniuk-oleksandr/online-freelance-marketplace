@@ -78,7 +78,7 @@ func TestGetUserById(t *testing.T) {
 			maxValue:       maxValue + 1,
 			mockUser:       createUserModel(now),
 			mockReviews:    createReviewsModels(now, maxValue),
-			mockServices:   createServicesModels(now, maxValue),
+			mockServices:   createServicesModels(maxValue),
 			expectedResult: createExpectedUserDTO(now, maxValue, false),
 			expectedError:  nil,
 		},
@@ -181,8 +181,8 @@ func TestGetServicesByUserId(t *testing.T) {
 	defer os.Unsetenv("MAX_USER_BY_ID_SERVICES")
 
 	mockRepository := new(MockRepository)
-	timeNow := time.Date(2024, 0, 0, 0, 0, 0, 0, time.UTC)
-	serviceModels := createServicesModels(timeNow, maxValue)
+	serviceModels := createServicesModels(maxValue)
+	serviceDtos := createServicesDtos(maxValue)
 
 	tests := []struct {
 		name           string
@@ -210,7 +210,7 @@ func TestGetServicesByUserId(t *testing.T) {
 			mockRepository.On("GetServicesByUserId", 1, tt.expectedOffset, tt.expectedPage, utils.GetMaxServices()+1).Return(serviceModels)
 
 			expectedData := &dto.ServicesResponse{
-				Services:        serviceModels,
+				Services:        serviceDtos,
 				HasMoreServices: false,
 				ServicesCursor:  nil,
 			}
@@ -284,7 +284,7 @@ func createUserDTO(timeNow time.Time, num int) *dto.UserByIdTO {
 		Languages:    &[]model.Language{{ID: int(0), Name: "test"}, {ID: int(0), Name: "test"}},
 		Skills:       &[]model.Skill{{ID: int64(0), Name: "test"}, {ID: int64(0), Name: "test"}},
 		Reviews:      *createReviewsDTOs(timeNow, num),
-		Services:     *createServicesModels(timeNow, num),
+		Services:     *createServicesDtos(num),
 	}
 }
 
@@ -308,11 +308,21 @@ func createReviewsDTOs(timeNow time.Time, num int) *[]dto.UserByIdReviewDto {
 	return &arr
 }
 
-func createServicesModels(timeNow time.Time, num int) *[]model.UserByIdFreelanceService {
+func createServicesModels(num int) *[]model.UserByIdFreelanceService {
 	arr := make([]model.UserByIdFreelanceService, num)
 
 	for i := 0; i < len(arr); i++ {
-		arr[i] = model.UserByIdFreelanceService{ID: int64(i + 1), CreatedAt: timeNow, Description: "test", Title: "test", CategoryId: int64(0), FreelancerId: int64(0), ReviewsCount: int64(0), Rating: float64(0.0), MinPrice: 0.0}
+		arr[i] = model.UserByIdFreelanceService{ID: int64(i + 1), Title: "test", ReviewsCount: int64(0), Rating: float64(0.0), MinPrice: 0.0}
+	}
+
+	return &arr
+}
+
+func createServicesDtos(num int) *[]dto.ServiceByIdDto {
+	arr := make([]dto.ServiceByIdDto, num)
+
+	for i := 0; i < len(arr); i++ {
+		arr[i] = dto.ServiceByIdDto{ID: int64(i + 1), Title: "test", ReviewsCount: int64(0), Rating: float64(0.0), MinPrice: 0.0}
 	}
 
 	return &arr

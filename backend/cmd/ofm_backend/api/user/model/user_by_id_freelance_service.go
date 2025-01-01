@@ -10,7 +10,7 @@ type UserByIdFreelanceService struct {
 	CategoryId   int64     `json:"category_id" db:"category_id"`
 	FreelancerId int64     `json:"freelancer_id" db:"freelancer_id"`
 	Image        *string   `json:"image" db:"image"`
-	ReviewsCount int64     `json:"reviewsCount" db:"reviews_count"`
+	ReviewsCount int64     `json:"reviews_count" db:"reviews_count"`
 	Rating       float64   `json:"rating" db:"rating"`
-	MinPrice     float64   `json:"minPrice" db:"min_price"`
+	MinPrice     float64   `json:"min_price" db:"min_price"`
 }

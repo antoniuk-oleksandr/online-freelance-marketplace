@@ -121,10 +121,9 @@ func TestGetReviewsByUserId_Error(t *testing.T) {
 func TestGetServicesByUserId_WithoutCursor(t *testing.T) {
 	mockService := new(MockService)
 
-	timeNow := time.Date(2024, 0, 0, 0, 0, 0, 0, time.UTC)
-	services := &[]model.UserByIdFreelanceService{
-		{ID: 1, CreatedAt: timeNow, Description: "Service description 1", Title: "Service title 1", CategoryId: 101, FreelancerId: 1001, ReviewsCount: 25, Rating: 4.8, MinPrice: 50.0},
-		{ID: 2, CreatedAt: timeNow, Description: "Service description 2", Title: "Service title 2", CategoryId: 102, FreelancerId: 1002, ReviewsCount: 15, Rating: 4.5, MinPrice: 75.0},
+	services := &[]dto.ServiceByIdDto{
+		{ID: 1, Title: "Service title 1", ReviewsCount: 25, Rating: 4.8, MinPrice: 50.0},
+		{ID: 2, Title: "Service title 2", ReviewsCount: 15, Rating: 4.5, MinPrice: 75.0},
 	}
 
 	mockResponse := &dto.ServicesResponse{
@@ -151,10 +150,9 @@ func TestGetServicesByUserId_WithCursor(t *testing.T) {
 
 	cursor := utils.BuildServicesCursor(0, 1)
 
-	timeNow := time.Date(2024, 0, 0, 0, 0, 0, 0, time.UTC)
-	services := &[]model.UserByIdFreelanceService{
-		{ID: 1, CreatedAt: timeNow, Description: "Service description 1", Title: "Service title 1", CategoryId: 101, FreelancerId: 1001, ReviewsCount: 25, Rating: 4.8, MinPrice: 50.0},
-		{ID: 2, CreatedAt: timeNow, Description: "Service description 2", Title: "Service title 2", CategoryId: 102, FreelancerId: 1002, ReviewsCount: 15, Rating: 4.5, MinPrice: 75.0},
+	services := &[]dto.ServiceByIdDto{
+		{ID: 1, Title: "Service title 1", ReviewsCount: 25, Rating: 4.8, MinPrice: 50.0},
+		{ID: 2, Title: "Service title 2", ReviewsCount: 15, Rating: 4.5, MinPrice: 75.0},
 	}
 	mockResponse := &dto.ServicesResponse{
 		Services:        services,
@@ -184,7 +182,7 @@ func TestGetServicesByUserId_Error(t *testing.T) {
 
 	resp := test_utils.PerformRequest(t, app, "GET", "/api/v1/users/1/services")
 	assert.Equal(t, fiber.StatusInternalServerError, resp.StatusCode)
-	
+
 	mockService.AssertExpectations(t)
 }
 
@@ -192,9 +190,9 @@ func TestGetUserById_Success(t *testing.T) {
 	mockService := new(MockService)
 
 	timeNow := time.Date(2024, 0, 0, 0, 0, 0, 0, time.UTC)
-	services := &[]model.UserByIdFreelanceService{
-		{ID: 1, CreatedAt: timeNow, Description: "Service description 1", Title: "Service title 1", CategoryId: 101, FreelancerId: 1001, ReviewsCount: 25, Rating: 4.8, MinPrice: 50.0},
-		{ID: 2, CreatedAt: timeNow, Description: "Service description 2", Title: "Service title 2", CategoryId: 102, FreelancerId: 1002, ReviewsCount: 15, Rating: 4.5, MinPrice: 75.0},
+	services := &[]dto.ServiceByIdDto{
+		{ID: 1, Title: "Service title 1", ReviewsCount: 25, Rating: 4.8, MinPrice: 50.0},
+		{ID: 2, Title: "Service title 2", ReviewsCount: 15, Rating: 4.5, MinPrice: 75.0},
 	}
 	reviews := &[]dto.UserByIdReviewDto{
 		{ID: int64(1), Rating: 5, Content: "test", CreatedAt: timeNow, EndedAt: timeNow, Customer: dto.ReviewUserDTO{ID: int64(1), Username: "test"}, ReviewService: dto.ReviewService{ID: int64(1), Price: 1, Title: "test"}},
@@ -225,10 +223,10 @@ func TestGetUserById_Success(t *testing.T) {
 	app := test_utils.SetupFiberApp("/api/v1/users/:id", uc.GetUserById)
 	resp := test_utils.PerformRequest(t, app, "GET", "/api/v1/users/1")
 	respBody := test_utils.ParseResponseBody[*dto.UserByIDResponse](t, resp)
-	
+
 	assert.Equal(t, fiber.StatusOK, resp.StatusCode, "Status code should be 200")
 	assert.Equal(t, mockResponse, respBody, "Response body should be equal")
-	
+
 	mockService.AssertExpectations(t)
 }
 
@@ -241,6 +239,6 @@ func TestGetUserById_Error(t *testing.T) {
 
 	resp := test_utils.PerformRequest(t, app, "GET", "/api/v1/users/1")
 	assert.Equal(t, fiber.StatusInternalServerError, resp.StatusCode)
-	
+
 	mockService.AssertExpectations(t)
 }

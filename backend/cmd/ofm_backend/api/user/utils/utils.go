@@ -3,7 +3,6 @@ package utils
 import (
 	"fmt"
 	"ofm_backend/cmd/ofm_backend/api/user/dto"
-	"ofm_backend/cmd/ofm_backend/api/user/model"
 	"ofm_backend/cmd/ofm_backend/utils"
 	main_utils "ofm_backend/cmd/ofm_backend/utils"
 	"ofm_backend/internal/middleware"
@@ -103,7 +102,7 @@ func ParseServicesCursor(cursor string) (int64, int64, error) {
 }
 
 func GetMoreServicesCursorData(
-	services *[]model.UserByIdFreelanceService, maxServices int,
+	services *[]dto.ServiceByIdDto, maxServices int,
 ) (bool, *string) {
 	var hasMoreServices bool
 	var servicesCursor *string

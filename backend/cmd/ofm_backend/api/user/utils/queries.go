@@ -59,7 +59,7 @@ WITH
         ($2 = '' OR $2 IS NULL OR $3 = -1 OR $3 IS NULL)
         OR
         (
-            (ended_at = $2::timestamp AND R.id < $3)
+            (TO_CHAR(O.ended_at AT TIME ZONE 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS.MS+00:00') = TO_CHAR($2::timestamp AT TIME ZONE 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS.MS+00:00') AND R.id < $3)
             OR
             ended_at < $2::timestamp
         )
@@ -129,9 +129,9 @@ WITH services_data AS (
 	    ($2 = -1 OR $2 IS NULL OR $3 = -1 OR $3 IS NULL)
 	    OR
 	    (
-	    	(subCountRating.count = $2 AND S.id < $3)
+	    	(COALESCE(subCountRating.count, 0) = $2 AND S.id < $3)
 	    	OR
-	    	subCountRating.count < $2
+	    	COALESCE(subCountRating.count, 0) < $2
 	    )
     )
 ),
@@ -157,6 +157,4 @@ SELECT
         )
     ) as data
 FROM ranked_services_ordered;
-
-
 `

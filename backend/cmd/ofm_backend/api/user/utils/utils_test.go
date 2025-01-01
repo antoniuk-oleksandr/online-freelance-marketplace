@@ -3,7 +3,6 @@ package utils
 import (
 	"fmt"
 	"ofm_backend/cmd/ofm_backend/api/user/dto"
-	"ofm_backend/cmd/ofm_backend/api/user/model"
 	"ofm_backend/cmd/ofm_backend/utils"
 	main_utils "ofm_backend/cmd/ofm_backend/utils"
 	"ofm_backend/internal/middleware"
@@ -269,10 +268,10 @@ func TestParseServicesCursor(t *testing.T) {
 }
 
 func TestGetMoreServicesCursorData(t *testing.T) {
-	mockServices := func(count int) *[]model.UserByIdFreelanceService {
-		services := make([]model.UserByIdFreelanceService, count)
+	mockServices := func(count int) *[]dto.ServiceByIdDto {
+		services := make([]dto.ServiceByIdDto, count)
 		for i := 0; i < count; i++ {
-			services[i] = model.UserByIdFreelanceService{
+			services[i] = dto.ServiceByIdDto{
 				ID:           int64(i + 1),
 				ReviewsCount: int64(i * 10),
 			}
@@ -282,7 +281,7 @@ func TestGetMoreServicesCursorData(t *testing.T) {
 
 	testCases := []struct {
 		name            string
-		services        *[]model.UserByIdFreelanceService
+		services        *[]dto.ServiceByIdDto
 		maxServices     int
 		expectedHasMore bool
 		expectedCursor  *string

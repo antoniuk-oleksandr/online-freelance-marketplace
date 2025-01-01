@@ -62,10 +62,29 @@ func MapReviewUsersServicesToUserByIdReviewDTOs(
 	return &reviewDTOs
 }
 
+func MapUserByIdServiceModelsToDTO(
+	services *[]modelPac.UserByIdFreelanceService,
+) *[]dto.ServiceByIdDto {
+	servicesArr := make([]dto.ServiceByIdDto, len(*services))
+
+	for i, elem := range *services {
+		servicesArr[i] = dto.ServiceByIdDto{
+			ID:           elem.ID,
+			Title:        elem.Title,
+			Image:        elem.Image,
+			ReviewsCount: elem.ReviewsCount,
+			Rating:       elem.Rating,
+			MinPrice:     elem.MinPrice,
+		}
+	}
+
+	return &servicesArr
+}
+
 func MapUserByIdModelToDTO(
 	model *modelPac.User,
 	reviews *[]dto.UserByIdReviewDto,
-	services *[]modelPac.UserByIdFreelanceService,
+	services *[]dto.ServiceByIdDto,
 ) *dto.UserByIdTO {
 	var reviewsArr []dto.UserByIdReviewDto
 	if reviews == nil || (reviews != nil && len(*reviews) == 0) {
@@ -74,9 +93,9 @@ func MapUserByIdModelToDTO(
 		reviewsArr = *reviews
 	}
 
-	var servicesArr []modelPac.UserByIdFreelanceService
+	var servicesArr []dto.ServiceByIdDto
 	if services == nil || (services != nil && len(*services) == 0) {
-		servicesArr = make([]modelPac.UserByIdFreelanceService, 0)
+		servicesArr = make([]dto.ServiceByIdDto, 0)
 	} else {
 		servicesArr = *services
 	}
