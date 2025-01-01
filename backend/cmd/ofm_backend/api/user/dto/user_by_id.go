@@ -5,7 +5,7 @@ import (
 	"time"
 )
 
-type UserByIdDTO struct {
+type UserByIdTO struct {
 	ID           int64                             `json:"id"`
 	About        *string                           `json:"about"`
 	CreatedAt    time.Time                         `json:"createdAt"`
@@ -18,6 +18,6 @@ type UserByIdDTO struct {
 	ReviewsCount *int64                            `json:"reviewsCount"`
 	Skills       *[]model.Skill                    `json:"skills"`
 	Languages    *[]model.Language                 `json:"languages"`
-	Reviews      *[]UserByIdReviewDto              `json:"reviews"`
-	Services     *[]model.UserByIdFreelanceService `json:"services"`
+	Reviews      []UserByIdReviewDto              `json:"reviews"`
+	Services     []model.UserByIdFreelanceService `json:"services"`
 }

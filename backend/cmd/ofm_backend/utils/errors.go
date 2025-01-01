@@ -20,4 +20,5 @@ var (
 	ErrInvalidFreelanceServiceID = errors.New("Invalid freelance service ID")
 	ErrNotFound                  = errors.New("Not found")
 	ErrParsingError              = errors.New("Parsing error")
+	ErrUserNotFound               = errors.New("User not found")
 )

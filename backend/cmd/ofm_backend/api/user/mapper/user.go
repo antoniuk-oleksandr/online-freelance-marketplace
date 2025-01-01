@@ -2,17 +2,17 @@ package mapper
 
 import (
 	"ofm_backend/cmd/ofm_backend/api/user/dto"
-	"ofm_backend/cmd/ofm_backend/api/user/model"
+	modelPac "ofm_backend/cmd/ofm_backend/api/user/model"
 )
 
-func MapUserByIdReviewModelsToReviewUserDTOs(reviews *[]model.UserByIdReview) *[]dto.ReviewUserDTO {
+func MapUserByIdReviewModelsToReviewUserDTOs(reviews *[]modelPac.UserByIdReview) *[]dto.ReviewUserDTO {
 	var reviewUsers []dto.ReviewUserDTO
 
 	for _, review := range *reviews {
 		user := dto.ReviewUserDTO{
-			ID:        review.UserID,
-			Avatar:    review.Avatar,
-			Username:  review.Username,
+			ID:       review.UserID,
+			Avatar:   review.Avatar,
+			Username: review.Username,
 		}
 
 		reviewUsers = append(reviewUsers, user)
@@ -21,7 +21,7 @@ func MapUserByIdReviewModelsToReviewUserDTOs(reviews *[]model.UserByIdReview) *[
 	return &reviewUsers
 }
 
-func MapUserByIdReviewModelToReviewServiceDTOs(reviews *[]model.UserByIdReview) *[]dto.ReviewService {
+func MapUserByIdReviewModelToReviewServiceDTOs(reviews *[]modelPac.UserByIdReview) *[]dto.ReviewService {
 	var reviewServices []dto.ReviewService
 
 	for _, review := range *reviews {
@@ -39,7 +39,7 @@ func MapUserByIdReviewModelToReviewServiceDTOs(reviews *[]model.UserByIdReview) 
 }
 
 func MapReviewUsersServicesToUserByIdReviewDTOs(
-	reviews *[]model.UserByIdReview,
+	reviews *[]modelPac.UserByIdReview,
 	users *[]dto.ReviewUserDTO,
 	services *[]dto.ReviewService,
 ) *[]dto.UserByIdReviewDto {
@@ -63,25 +63,38 @@ func MapReviewUsersServicesToUserByIdReviewDTOs(
 }
 
 func MapUserByIdModelToDTO(
-	model *model.User,
+	model *modelPac.User,
 	reviews *[]dto.UserByIdReviewDto,
-	services *[]model.UserByIdFreelanceService,
-) *dto.UserByIdDTO {
-	return &dto.UserByIdDTO{
-		ID:        model.ID,
-		About:     model.About,
-		CreatedAt: model.CreatedAt,
-		FirstName: model.FirstName,
-		Level:     model.Level,
-		Surname:   model.Surname,
-		Username:  model.Username,
-		Avatar:    model.Avatar,
-		Languages: model.Languages,
-		Skills:    model.Skills,
+	services *[]modelPac.UserByIdFreelanceService,
+) *dto.UserByIdTO {
+	var reviewsArr []dto.UserByIdReviewDto
+	if reviews == nil || (reviews != nil && len(*reviews) == 0) {
+		reviewsArr = make([]dto.UserByIdReviewDto, 0)
+	} else {
+		reviewsArr = *reviews
+	}
 
+	var servicesArr []modelPac.UserByIdFreelanceService
+	if services == nil || (services != nil && len(*services) == 0) {
+		servicesArr = make([]modelPac.UserByIdFreelanceService, 0)
+	} else {
+		servicesArr = *services
+	}
+
+	return &dto.UserByIdTO{
+		ID:           model.ID,
+		About:        model.About,
+		CreatedAt:    model.CreatedAt,
+		FirstName:    model.FirstName,
+		Level:        model.Level,
+		Surname:      model.Surname,
+		Username:     model.Username,
+		Avatar:       model.Avatar,
+		Languages:    model.Languages,
+		Skills:       model.Skills,
 		Rating:       &model.Rating,
 		ReviewsCount: &model.Count,
-		Reviews:      reviews,
-		Services:     services,
+		Reviews:      reviewsArr,
+		Services:     servicesArr,
 	}
 }

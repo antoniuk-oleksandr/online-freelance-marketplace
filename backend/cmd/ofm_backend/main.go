@@ -20,23 +20,23 @@ func main() {
 
 	db := database.ConnectToPostgresDB()
 	database.ConnectToRedisDB()
-	
+
 	app := Setup(db)
 	app.Use(config.ConfigCors())
 	app.Use(config.ConfigRateLimiter())
 	app.Listen(":8080")
 }
 
-func Setup(db *sqlx.DB) *fiber.App{
+func Setup(db *sqlx.DB) *fiber.App {
 	app := fiber.New()
 
 	apiGroup := app.Group("/api/v1")
 	auth_routes.RegisterAuthRoutes(apiGroup)
 	freelance_routes.RegisterFreelanceRoutes(apiGroup, db)
-	user_routes.RegisterUserRoutes(apiGroup)
+	user_routes.RegisterUserRoutes(apiGroup, db)
 	filter_params_routes.RegisterFilterParamsRoutes(apiGroup)
 	search_routes.RegisterSearchRoutes(apiGroup)
 	order_routes.RegisterOrderRoutes(apiGroup)
-	
+
 	return app
 }

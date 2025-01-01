@@ -1,11 +1,9 @@
 package controller
 
-import (
-	"ofm_backend/cmd/ofm_backend/api/user/service"
+import "github.com/gofiber/fiber/v2"
 
-	"github.com/gofiber/fiber/v2"
-)
-
-func GetUserById(c *fiber.Ctx) error {
-	return service.GetUserById(c)
+type UserController interface {
+	GetUserById(ctx *fiber.Ctx) error
+	GetReviewsByUserId(ctx *fiber.Ctx) error
+	GetServicesByUserId(ctx *fiber.Ctx) error
 }
