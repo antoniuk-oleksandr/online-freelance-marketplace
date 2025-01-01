@@ -1,10 +1,10 @@
-import type {User} from "@/types/User.ts";
-import {ResponseError} from "@/types/ResponseErrorEnum.ts";
+import {ResponseErrorEnum} from "@/types/ResponseErrorEnum.ts";
+import {UserByIdData} from "@/types/GetUserByIdData.ts";
 
 export type GetUserByIdRequestResponse = {
-    data: User,
+    data: UserByIdData,
     status: 200
 } | {
-    data: ResponseError,
+    error: ResponseErrorEnum,
     status: 429 | 404
 }

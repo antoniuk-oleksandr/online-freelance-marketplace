@@ -1,5 +1,4 @@
 <script lang="ts">
-    import type {User} from "@/types/User";
     import UserPageLayout from "@/pages/users/UserPageLayout.svelte";
     import UserAboutBlock from "@/pages/users/components/UserAboutBlock/UserAboutBlock.svelte";
     import UserSkillsBlock from "@/pages/users/components/UserSkillsBlock/UserSkillsBlock.svelte";
@@ -7,7 +6,9 @@
     import UserByIdServicesBlock from "@/pages/users/components/UserByIdServicesBlock/UserByIdServicesBlock.svelte";
     import UserByIdReviewBlock from "@/pages/users/components/UserByIdReviewBlock/UserByIdReviewBlock.svelte";
     import NotFound from "@/common-components/NotFound/NotFound.svelte";
-    import {tryToGetUserById} from "@/pages/users/helpers.ts";
+    import {getMoreReviewsByUserId, getMoreServicesByUserId, tryToGetUserById} from "@/pages/users/helpers.ts";
+    import {userByIdStore} from "@/pages/users/stores/user-by-id-store.ts";
+    import type {UserByIdData} from "@/types/GetUserByIdData.ts";
 
     type UserPageProps = {
         id: string,
@@ -15,22 +16,28 @@
 
     let {id}: UserPageProps = $props();
 
-    let user = $state<User | null | undefined>();
-    const setUser = (newUser: User | null | undefined) => user = newUser;
+    let userData = $state<UserByIdData | null | undefined>();
+    userByIdStore.subscribe((val) => userData = val);
 
-    $effect(() => {
-        tryToGetUserById(id, setUser);
-    })
+    tryToGetUserById(id);
 </script>
 
-{#if user === null}
+{#if userData === null}
     <NotFound/>
-{:else if user !== undefined}
+{:else if userData !== undefined}
     <UserPageLayout>
-        <UserInfoBlock size={"large"} user={user}/>
-        <UserAboutBlock about={user.about}/>
-        <UserSkillsBlock skills={user.skills}/>
-        <UserByIdServicesBlock services={user.services}/>
-        <UserByIdReviewBlock showServices={true} reviews={user.reviews}/>
+        <UserInfoBlock size={"large"} user={userData.user}/>
+        <UserAboutBlock about={userData.user.about}/>
+        <UserSkillsBlock skills={userData.user.skills}/>
+        <UserByIdServicesBlock
+                showMoreServicesButtonAction={() => getMoreServicesByUserId(userData)}
+                hasMore={userData.hasMoreServices}
+                services={userData.user.services}/>
+        <UserByIdReviewBlock
+                showMoreReviewsButtonAction={() => getMoreReviewsByUserId(userData)}
+                hasMore={userData.hasMoreReviews}
+                reviews={userData.user.reviews}
+                showServices={true}
+        />
     </UserPageLayout>
 {/if}

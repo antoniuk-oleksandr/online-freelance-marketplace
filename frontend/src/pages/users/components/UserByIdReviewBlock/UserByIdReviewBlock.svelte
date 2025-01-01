@@ -33,6 +33,7 @@
                 />
             {/each}
             <ShowMoreReviewsButton
+                    buttonSuffix="reviews"
                     showMoreReviewsButtonAction={showMoreReviewsButtonAction}
                     hasMore={hasMore}
             />

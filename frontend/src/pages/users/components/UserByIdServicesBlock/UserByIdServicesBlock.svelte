@@ -3,12 +3,16 @@
     import UserByIdService
         from "@/pages/users/components/UserByIdServicesBlock/components/UserByIdService/UserByIdService.svelte";
     import type {UserService} from "@/types/UserService.ts";
+    import ShowMoreReviewsButton
+        from "@/pages/users/components/UserByIdReviewBlock/components/ShowMoreReviewsButton/ShowMoreReviewsButton.svelte";
 
     type UserByIdServicesBlockProps = {
-        services: UserService[] | null
+        services: UserService[] | null,
+        hasMore: boolean,
+        showMoreServicesButtonAction: () => Promise<void>,
     }
 
-    const {services}: UserByIdServicesBlockProps = $props();
+    const {services, showMoreServicesButtonAction, hasMore}: UserByIdServicesBlockProps = $props();
 </script>
 
 {#if services && services.length > 0}
@@ -18,7 +22,11 @@
             {#each services as service}
                 <UserByIdService service={service}/>
             {/each}
+            <ShowMoreReviewsButton
+                    buttonSuffix="services"
+                    showMoreReviewsButtonAction={showMoreServicesButtonAction}
+                    hasMore={hasMore}
+            />
         </div>
-
     </UserComponentLayout>
 {/if}
