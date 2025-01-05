@@ -7,12 +7,12 @@ import (
 	order_routes "ofm_backend/cmd/ofm_backend/api/order/routes"
 	search_routes "ofm_backend/cmd/ofm_backend/api/search/routes"
 	user_routes "ofm_backend/cmd/ofm_backend/api/user/routes"
+	home_data_routes "ofm_backend/cmd/ofm_backend/api/home_data/routes"
 	"ofm_backend/cmd/ofm_backend/utils"
 	"ofm_backend/internal/config"
 	"ofm_backend/internal/database"
 
 	"github.com/gofiber/fiber/v2"
-	"github.com/jmoiron/sqlx"
 )
 
 func main() {
@@ -21,14 +21,10 @@ func main() {
 	db := database.ConnectToPostgresDB()
 	database.ConnectToRedisDB()
 
-	app := Setup(db)
+	app := fiber.New()
+	
 	app.Use(config.ConfigCors())
 	app.Use(config.ConfigRateLimiter())
-	app.Listen(":8080")
-}
-
-func Setup(db *sqlx.DB) *fiber.App {
-	app := fiber.New()
 
 	apiGroup := app.Group("/api/v1")
 	auth_routes.RegisterAuthRoutes(apiGroup)
@@ -37,6 +33,6 @@ func Setup(db *sqlx.DB) *fiber.App {
 	filter_params_routes.RegisterFilterParamsRoutes(apiGroup)
 	search_routes.RegisterSearchRoutes(apiGroup)
 	order_routes.RegisterOrderRoutes(apiGroup)
-
-	return app
+	home_data_routes.RegisterHomeDataRoutes(apiGroup, db)
+	app.Listen(":8080")
 }

@@ -56,7 +56,7 @@ func TestGetGetFreelanceServiceByIdReviews_WithCursor(t *testing.T) {
 			Customer:  &model.Customer{ID: 3, Username: "test3", Avatar: "test3.jpg"},
 			Freelance: &model.ReviewFreelance{Price: 1},
 		},
-	}
+	}	
 
 	rows := sqlmock.
 		NewRows([]string{"id", "content", "rating", "created_at", "ended_at", "customer", "service"})

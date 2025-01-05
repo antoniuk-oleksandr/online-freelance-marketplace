@@ -22,3 +22,7 @@ var (
 	ErrParsingError              = errors.New("Parsing error")
 	ErrUserNotFound               = errors.New("User not found")
 )
+
+type ErrorResponse struct {
+	Error string `json:"error"`
+}
