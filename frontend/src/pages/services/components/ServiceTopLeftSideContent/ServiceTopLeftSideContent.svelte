@@ -3,10 +3,10 @@
         from "@/pages/services/components/ServiceTopLeftSideContent/ServiceTopLeftSideContentLayout.svelte";
     import type {Service} from "@/types/Service.ts";
     import UserInfoBlock from "@/pages/users/components/UserInfoBlock/UserInfoBlock.svelte";
-    import Carousel from "@/common-components/Carousel/Carousel.svelte";
     import DividerElement from "@/common-components/DividerElement/DividerElement.svelte";
     import ServiceTopLeftSideContentUserInfoBlockLayout
         from "@/pages/services/components/ServiceTopLeftSideContent/components/ServiceTopLeftSideContentUserInfoBlockLayout.svelte";
+    import ImageCarousel from "@/common-components/ImageCarousel/ImageCarousel.svelte";
 
     const {title, freelancer, images}: Service = $props();
 </script>
@@ -22,5 +22,5 @@
         />
     </ServiceTopLeftSideContentUserInfoBlockLayout>
     <DividerElement className={"my-6"}/>
-    <Carousel slides={images}/>
+    <ImageCarousel slides={images}/>
 </ServiceTopLeftSideContentLayout>

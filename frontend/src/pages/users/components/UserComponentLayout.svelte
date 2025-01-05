@@ -5,6 +5,6 @@
 </script>
 
 
-<div class="flex flex-col gap-y-2 h-fit">
+<div class="flex flex-col gap-y-3 h-fit">
     {@render children()}
 </div>

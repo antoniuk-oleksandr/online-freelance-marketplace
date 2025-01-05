@@ -1,5 +1,5 @@
 // import Image from "next/image";
-// import {Carousel} from "@mantine/carousel";
+// import {ImageCarousel} from "@mantine/carousel";
 //
 // type ServiceImageCarouselSlideProps = {
 //     src: string,
@@ -9,7 +9,7 @@
 //     const {src} = props;
 //
 //     return (
-//         <Carousel.Slide className={"aspect-video flex size-full"}>
+//         <ImageCarousel.Slide className={"aspect-video flex size-full"}>
 //             <Image
 //                 priority
 //                 sizes="full"
@@ -18,7 +18,7 @@
 //                 fill
 //                 style={{ objectFit: "cover" }}
 //             />
-//         </Carousel.Slide>
+//         </ImageCarousel.Slide>
 //     )
 // }
 //

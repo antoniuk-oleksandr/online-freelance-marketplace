@@ -110,6 +110,7 @@ const config = {
             },
             height: {
                 form: "56rem",
+                128: "32rem",
             },
             translate: {
                 "search-sidebar": "23rem",
@@ -121,15 +122,15 @@ const config = {
                 168: "42rem",
             },
             minHeight: {
-                app: "calc(100svh - 4rem - 3rem - 4rem)",
+                app: "calc(100vh - 4rem - 3rem - 4rem)",
                 212: "53rem",
-                "search-left-side-mobile": "calc(100svh - 4rem - 3rem)",
+                "search-left-side-mobile": "calc(100vh - 4rem - 3rem)",
             },
             maxHeight: {
-                "search-sidebar": "calc(100svh - 4rem - 3rem)",
-                app: "calc(100svh - 12.1625rem)",
-                "search-array": "calc(100svh - 4rem  - 3rem - 4rem - 6rem  - 3rem)",
-                "search-array-mobile": "calc(100svh - 4rem - 6rem - 3rem)",
+                "search-sidebar": "calc(100vh - 4rem - 3rem)",
+                app: "calc(100vh - 12.1625rem)",
+                "search-array": "calc(100vh - 4rem  - 3rem - 4rem - 6rem  - 3rem)",
+                "search-array-mobile": "calc(100vh - 4rem - 6rem - 3rem)",
             },
             colors: {
                 dark: {

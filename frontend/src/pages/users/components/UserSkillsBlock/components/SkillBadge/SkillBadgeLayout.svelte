@@ -14,7 +14,7 @@
 
 <Link
         to={"/search?skill=" + id}
-        class={`rounded-xl border border-light-palette-divider dark:border-dark-palette-divider px-3 py-1 bg-light-palette-background-block dark:bg-dark-palette-background-block ${hoverClass}}`}
+        class={`rounded-xl grid place-items-center text-center border border-light-palette-divider dark:border-dark-palette-divider px-3 py-1 bg-light-palette-background-block dark:bg-dark-palette-background-block ${hoverClass}}`}
 >
     {@render children()}
 </Link>

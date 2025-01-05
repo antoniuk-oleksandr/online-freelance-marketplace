@@ -8,7 +8,7 @@ export const request = async <T>(
     body?: any,
 ) => {
     const host = getHost();
-    const url = `http://${host}/api/v1${endpoint}`;
+    const url = `${host}/api/v1${endpoint}`;
 
     const methodFunc = method === "GET"
         ? axios.get : method === "POST"

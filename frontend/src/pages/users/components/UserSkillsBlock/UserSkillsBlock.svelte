@@ -13,7 +13,7 @@
 {#if skills !== null}
     <UserComponentLayout>
         <p class="text-xl font-bold">Skills</p>
-        <div class="flex gap-x-2">
+        <div class="flex gap-x-3">
             {#each skills as skill }
                 <SkillBadge skill={skill}/>
             {/each}

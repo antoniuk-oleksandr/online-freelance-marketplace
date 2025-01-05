@@ -1,22 +1,18 @@
 <script lang="ts">
     import CarouselSlideListLayout
-        from "@/common-components/Carousel/components/CarouselSlideList/CarouselSlideListLayout.svelte";
-    import CarouselSlide from "@/common-components/Carousel/components/CarouselSlide/CarouselSlide.svelte";
+        from "@/common-components/ImageCarousel/components/ImageCarouselSlideList/ImageCarouselSlideListLayout.svelte";
+    import CarouselSlide
+        from "@/common-components/ImageCarousel/components/ImageCarouselSlide/ImageCarouselSlide.svelte";
+    import type {LayoutProps} from "@/types/LayoutProps.ts";
 
-    type CarouselSlideListProps = {
+    type CarouselSlideListProps = LayoutProps & {
         currentIndex: number,
-        slides: string[],
     };
 
-    let {slides, currentIndex}: CarouselSlideListProps = $props();
+    let {children, currentIndex}: CarouselSlideListProps = $props();
+
 </script>
 
 <CarouselSlideListLayout currentIndex={currentIndex}>
-    {#if !slides || slides.length === 0}
-        <CarouselSlide slide="/images/no-image.jpg"/>
-    {:else}
-        {#each slides as slide}
-            <CarouselSlide slide={slide}/>
-        {/each}
-    {/if}
+    {@render children()}
 </CarouselSlideListLayout>

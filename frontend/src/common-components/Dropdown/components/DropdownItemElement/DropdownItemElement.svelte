@@ -12,7 +12,7 @@
 </script>
 
 <button
-        class="text-start text-base flex gap-x-2 items-center hover:bg-light-palette-action-hover dark:hover:bg-dark-palette-action-hover px-3 rounded-[4px] duration-200 ease-out py-1"
+        class="text-start text-base flex gap-x-3 items-center hover:bg-light-palette-action-hover dark:hover:bg-dark-palette-action-hover px-3 rounded-[4px] duration-200 ease-out py-1"
         onclick={() => handleDropdownClick(clickAction, title, setSelectedItem)}
 >
     {#if selectedItem === title}

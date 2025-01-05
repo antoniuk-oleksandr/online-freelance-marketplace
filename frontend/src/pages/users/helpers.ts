@@ -9,7 +9,7 @@ import {GetServicesByUserIdRequestResponse} from "@/types/GetServicesByUserIdReq
 export const tryToGetUserById = async (id: string) => {
     const response = await request<GetUserByIdRequestResponse>(`/users/${id}`, 'GET');
     if (response.status != 200) {
-        errorStore.set({shown: true, error: response.error});
+        errorStore.set({shown: true, error: response.data.error});
     } else userByIdStore.set(response.data)
 }
 

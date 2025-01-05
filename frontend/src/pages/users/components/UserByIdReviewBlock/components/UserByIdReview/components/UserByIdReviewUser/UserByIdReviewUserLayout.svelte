@@ -4,6 +4,6 @@
     const {children}: LayoutProps = $props();
 </script>
 
-<div class="flex items-center gap-4 text-base font-semibold">
+<div class="flex items-center gap-3 text-base font-semibold">
     {@render children()}
 </div>

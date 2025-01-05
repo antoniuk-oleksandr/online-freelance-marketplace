@@ -1047,7 +1047,6 @@
         "npm:@types/js-cookie@^3.0.6",
         "npm:autoprefixer@^10.4.20",
         "npm:axios@^1.7.7",
-        "npm:braintree-web@^3.112.1",
         "npm:clsx@^2.1.1",
         "npm:dotenv@^16.4.5",
         "npm:felte@^1.3.0",

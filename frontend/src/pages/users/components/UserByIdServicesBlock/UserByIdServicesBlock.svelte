@@ -18,15 +18,15 @@
 {#if services && services.length > 0}
     <UserComponentLayout>
         <h2 class="text-xl font-bold">Services</h2>
-        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
             {#each services as service}
                 <UserByIdService service={service}/>
             {/each}
-            <ShowMoreReviewsButton
-                    buttonSuffix="services"
-                    showMoreReviewsButtonAction={showMoreServicesButtonAction}
-                    hasMore={hasMore}
-            />
         </div>
+        <ShowMoreReviewsButton
+                buttonSuffix="services"
+                showMoreReviewsButtonAction={showMoreServicesButtonAction}
+                hasMore={hasMore}
+        />
     </UserComponentLayout>
 {/if}

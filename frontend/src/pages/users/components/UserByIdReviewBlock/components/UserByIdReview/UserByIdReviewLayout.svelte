@@ -5,6 +5,6 @@
     const {children}: LayoutProps = $props();
 </script>
 
-<PaperElement styles="flex flex-col gap-4">
+<PaperElement styles="flex flex-col gap-3">
     {@render children()}
 </PaperElement>

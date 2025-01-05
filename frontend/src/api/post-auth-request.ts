@@ -8,7 +8,7 @@ export const postAuthRequest = async (
     body?: any,
 ): Promise<PostAuthRequestResponse> => {
     const host = getHost();
-    const url = `http://${host}/api/v1/auth/${endpoint}`;
+    const url = `${host}/api/v1/auth/${endpoint}`;
 
     const config = token !== undefined ? {
         headers: {

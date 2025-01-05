@@ -4,6 +4,6 @@
     const {children}: LayoutProps = $props();
 </script>
 
-<div class={"flex gap-x-2 items-center"}>
+<div class={"flex gap-x-3 items-center"}>
     {@render children()}
 </div>

@@ -1,4 +1,4 @@
-import {ResponseErrorEnum} from "@/types/ResponseErrorEnum.ts";
+import {ResponseError} from "@/types/ResponseErrorEnum.ts";
 import {Service} from "@/types/Service.ts";
 
 export type GetUserByIdRequestResponse = {
@@ -9,6 +9,6 @@ export type GetUserByIdRequestResponse = {
     },
     status: 200
 } | {
-    error: ResponseErrorEnum,
+    data: ResponseError,
     status: 404 | 500
 }

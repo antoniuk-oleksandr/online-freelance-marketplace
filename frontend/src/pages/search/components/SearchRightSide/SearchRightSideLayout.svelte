@@ -42,7 +42,7 @@
     <div class="fixed lg:sticky lg:top-22 lg:max-h-search-sidebar {!isMobile ? '' : isFiltersModalOpen ? 'animate-[fade-in_300ms]' : 'animate-[fade-out_300ms]'} z-30 lg:z-10 left-0 top-0 h-svh lg:h-full w-full text-base">
         <SearchLeftSideBackdrop/>
         <PaperElement
-                styles="absolute overflow-hidden !p-0 flex {!isMobile ? '' : isFiltersModalOpen ? 'animate-drawer-open' : 'animate-drawer-close'}  shadow-lg lg:shadow-none right-0 top-0 w-full sm:w-112 rounded-none h-svh lg:h-full ring-0 w-full lg:ring-1 lg:rounded-lg lg:static lg:w-full"
+                styles="absolute overflow-hidden !p-0 flex {!isMobile ? '' : isFiltersModalOpen ? 'animate-drawer-open' : 'animate-drawer-close'}  shadow-lg lg:dark:shadow-none right-0 top-0 w-full sm:w-112 !rounded-none h-svh lg:h-full ring-0 w-full lg:dark:ring-1 lg:!rounded-xl lg:static lg:w-full"
         >
             <div class="flex h-full duration-200 ease-out {isSearchFilterArrOpened ? '-translate-x-[100svw] sm:-translate-x-112 lg:-translate-x-search-sidebar' : ''}">
                 {@render children()}

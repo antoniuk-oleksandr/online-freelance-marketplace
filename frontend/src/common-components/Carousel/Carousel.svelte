@@ -1,26 +1,29 @@
 <script lang="ts">
+    import type {LayoutProps} from "@/types/LayoutProps.ts";
     import CarouselLayout from "@/common-components/Carousel/CarouselLayout.svelte";
-    import CarouselControl from "@/common-components/Carousel/components/CarouselControl/CarouselControl.svelte";
     import CarouselSlideList from "@/common-components/Carousel/components/CarouselSlideList/CarouselSlideList.svelte";
+    import CarouselControl from "@/common-components/Carousel/components/CarouselControl/CarouselControl.svelte";
 
-    type CarouselProps = {
-        slides: string[];
+    type CarouselProps = LayoutProps & {
+        slideNumber: number,
     };
 
-    const {slides}: CarouselProps = $props();
+    const {children, slideNumber}: CarouselProps = $props();
 
     let currentIndex = $state(0);
 
     const nextSlide = () => {
-        currentIndex = (currentIndex + 1) % slides.length;
+        currentIndex = (currentIndex + 1) % slideNumber;
     };
 
     const prevSlide = () => {
-        currentIndex = (currentIndex - 1 + slides.length) % slides.length;
+        currentIndex = (currentIndex - 1 + slideNumber) % slideNumber;
     };
 </script>
 
 <CarouselLayout>
-    <CarouselSlideList currentIndex={currentIndex} slides={slides}/>
+    <CarouselSlideList currentIndex={currentIndex}>
+        {@render children()}
+    </CarouselSlideList>
     <CarouselControl nextSlide={nextSlide} prevSlide={prevSlide}/>
 </CarouselLayout>

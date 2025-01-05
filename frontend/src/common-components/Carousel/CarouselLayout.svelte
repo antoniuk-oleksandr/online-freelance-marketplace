@@ -4,6 +4,6 @@
     const {children}: LayoutProps = $props();
 </script>
 
-<div class="relative w-full max-w-4xl mx-auto overflow-hidden">
+<div class="relative w-full overflow-hidden">
     {@render children()}
 </div>

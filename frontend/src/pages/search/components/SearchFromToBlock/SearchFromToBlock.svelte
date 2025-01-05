@@ -16,7 +16,7 @@
 
 <SearchFromToBlockLayout>
     <div class="font-semibold">{title}</div>
-    <div class="flex items-center gap-x-2">
+    <div class="flex items-center gap-x-3">
         <SearchFromToBlockInput
                 type="From"
                 value={from}

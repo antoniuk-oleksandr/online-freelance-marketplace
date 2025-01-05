@@ -1,19 +1,22 @@
 <script lang="ts">
     import type {LayoutProps} from "@/types/LayoutProps.ts";
     import Spinner from "@/common-components/Spinner/Spinner.svelte";
+    import {Link} from "svelte-routing";
 
     type MyButtonProps = LayoutProps & {
         clickAction?: () => void,
         styles?: string,
         type?: "button" | "submit" | "reset",
         loading?: boolean,
-        color?: "red" | "default" | "grey" | "outline"
+        color?: "red" | "default" | "grey" | "outline" | "white",
+        link?: string
     };
 
-    const {children, clickAction, styles, type, loading, color}: MyButtonProps = $props();
+    const {children, clickAction, styles, type, loading, color, link}: MyButtonProps = $props();
 
     const colorStyles = {
         red: {buttonStyle: "!bg-red-500 text-white", hoverColor: "hover:!bg-red-400"},
+        white: {buttonStyle: "!bg-white text-cyan-500", hoverColor: "hover:!bg-gray-200"},
         default: {buttonStyle: "!bg-cyan-500 text-white", hoverColor: "hover:!bg-cyan-400"},
         grey: { buttonStyle: "!bg-gray-300 dark:!bg-zinc-700", hoverColor: "hover:!bg-gray-200 hover:dark:!bg-zinc-600" },
         outline: {buttonStyle: "ring-1 ring-light-palette-divider dark:ring-dark-palette-divider", hoverColor: "hover:!bg-light-palette-action-hover hover:dark:!bg-dark-palette-action-hover"}
@@ -22,6 +25,7 @@
     let selectedStyle = color ? colorStyles[color] : colorStyles.default;
 
 </script>
+
 
 <button
         style="transition: all 0.2s ease-out !important;"

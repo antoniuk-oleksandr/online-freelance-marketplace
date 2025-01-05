@@ -4,13 +4,13 @@
     type AvatarProps = {
         src: string | null,
         alt: string,
-        size?: "extra small" | "small" | "large",
+        size?: "extra small" | "small" | "large" | "24",
     }
 
     const {src, alt, size}: AvatarProps = $props();
 
     let sizeClass = $state("");
-    switch (size){
+    switch (size) {
         case "extra small":
             sizeClass = "size-12";
             break;
@@ -19,6 +19,9 @@
             break;
         case "large":
             sizeClass = "size-32";
+            break;
+        case "24":
+            sizeClass = "size-24";
             break;
     }
 

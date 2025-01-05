@@ -5,6 +5,6 @@
 
 </script>
 
-<div class="flex gap-x-2.5 items-center">
+<div class="flex gap-x-1 items-center flex-wrap">
     {@render children()}
 </div>

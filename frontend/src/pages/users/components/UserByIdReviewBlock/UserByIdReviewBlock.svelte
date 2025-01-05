@@ -22,7 +22,7 @@
 
 <UserComponentLayout>
     <p class="text-xl font-bold">Reviews</p>
-    <div class="flex flex-col gap-y-6">
+    <div class="flex flex-col gap-y-3">
         {#if !reviews || reviews.length === 0}
             <NoReviewsMessage/>
         {:else}
@@ -32,11 +32,11 @@
                         showServices={showServices}
                 />
             {/each}
-            <ShowMoreReviewsButton
-                    buttonSuffix="reviews"
-                    showMoreReviewsButtonAction={showMoreReviewsButtonAction}
-                    hasMore={hasMore}
-            />
         {/if}
+        <ShowMoreReviewsButton
+                buttonSuffix="reviews"
+                showMoreReviewsButtonAction={showMoreReviewsButtonAction}
+                hasMore={hasMore}
+        />
     </div>
 </UserComponentLayout>

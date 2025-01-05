@@ -13,6 +13,6 @@
 <button
         type="button"
         onclick={() => handleKeepsSignedInClick(keepSignedIn, setKeepSignedIn)}
-        class="flex gap-x-2 items-center">
+        class="flex gap-x-3 items-center">
     {@render children()}
 </button>

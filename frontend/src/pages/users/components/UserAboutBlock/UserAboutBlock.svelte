@@ -14,7 +14,7 @@
         <h2 class="text-xl font-bold">About</h2>
         <Spoiler>
             <p
-                    class="text-base h-fit text-light-palette-text-secondary dark:text-dark-palette-text-secondary"
+                    class="text-justify sm:text-pretty text-base h-fit text-light-palette-text-secondary dark:text-dark-palette-text-secondary"
             >{@html about}</p>
         </Spoiler>
     </UserComponentLayout>

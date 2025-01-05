@@ -1,7 +1,10 @@
 export const getHost = () => {
-    return 'localhost:8080';
+    return 'http://78.137.55.236:8080';
 }
 
+export const getFileServerHost = () => {
+    return 'http://78.137.55.236:8030';
+}
 
 export const getHoverClass = () => {
     return "hover:bg-light-palette-action-hover dark:hover:bg-dark-palette-action-hover duration-200 ease-out"
@@ -65,4 +68,8 @@ export const getPackageDuration = (before: number, after: number) => {
 
 export const capitalize = (str: string) => {
     return str.charAt(0).toUpperCase() + str.slice(1);
+}
+
+export const formatText = (text: string)  => {
+    return text.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }

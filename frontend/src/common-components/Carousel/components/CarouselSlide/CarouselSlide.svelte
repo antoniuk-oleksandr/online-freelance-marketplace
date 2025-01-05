@@ -1,17 +1,11 @@
 <script lang="ts">
+    import type {LayoutProps} from "@/types/LayoutProps.ts";
     import CarouselSlideLayout from "@/common-components/Carousel/components/CarouselSlide/CarouselSlideLayout.svelte";
 
-    type CarouselSlideProps = {
-        slide: string;
-    };
 
-    const {slide}: CarouselSlideProps = $props();
+    const {children}: LayoutProps = $props();
 </script>
 
 <CarouselSlideLayout>
-    <img
-            class="aspect-video size-full object-cover object-center"
-            src={slide}
-            alt="Slide"
-    />
+    {@render children()}
 </CarouselSlideLayout>

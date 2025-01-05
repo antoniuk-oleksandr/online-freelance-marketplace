@@ -1,0 +1,9 @@
+<script lang="ts">
+    import type {LayoutProps} from "@/types/LayoutProps.ts";
+
+    const {children}: LayoutProps = $props();
+</script>
+
+<div class="flex justify-center gap-3">
+    {@render children()}
+</div>
