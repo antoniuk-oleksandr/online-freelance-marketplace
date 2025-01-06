@@ -19,8 +19,9 @@ func ConfigCors() func(*fiber.Ctx) error {
 
 	return cors.New(cors.Config{
 		AllowOrigins: fmt.Sprintf("http://%s:%s", host, port),
-		AllowMethods: "GET,POST,HEAD,PUT,DELETE,PATCH",
-		AllowHeaders: "Origin, Content-Type, Accept",
+		AllowMethods: "GET,POST,HEAD,PUT,DELETE,PATCH,OPTIONS",
+		AllowHeaders: "Origin, Content-Type, Accept, Authorization",
+		AllowCredentials: true,
 	})
 }
 
