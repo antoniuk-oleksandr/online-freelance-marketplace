@@ -111,6 +111,7 @@ const config = {
             height: {
                 form: "56rem",
                 128: "32rem",
+                "order-overview": "23.3125rem",
             },
             translate: {
                 "search-sidebar": "23rem",

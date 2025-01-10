@@ -6,10 +6,11 @@
     import type {Package} from "@/types/Package.ts";
 
     type ServicePackagesBlockProps = {
-        packages: Package[]
+        packages: Package[],
+        id: number,
     }
 
-    const {packages}: ServicePackagesBlockProps = $props();
+    const {packages, id}: ServicePackagesBlockProps = $props();
     const tabs = ['Basic', 'Standard', 'Premium'];
     let selectedTab = $state<number>(0);
     const setSelectedTab = (value: number) => selectedTab = value;
@@ -22,5 +23,7 @@
             packages={packages}
             tabs={tabs}
     />
-    <SelectedPackage {...packages[selectedTab]}/>
+    <SelectedPackage
+            serviceId={id}
+            {...packages[selectedTab]}/>
 </ServicePackagesBlockLayout>

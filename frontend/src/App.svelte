@@ -10,9 +10,10 @@
     import ConfirmEmailPage from "@/pages/confirm-email/ConfirmEmailPage.svelte";
     import ForgotPasswordPage from "@/pages/forgot-password/ForgotPasswordPage.svelte";
     import ResetPasswordPage from "@/pages/reset-password/ResetPasswordPage.svelte";
-    import OrderPage from "@/pages/order/OrderPage.svelte";
-    import PaymentPage from "@/pages/payment/PaymentPage.svelte";
+    import OrderRequestPage from "@/pages/order-request/OrderRequestPage.svelte";
     import SearchPage from "@/pages/search/SearchPage.svelte";
+    import OrderConfirmPayPage from "@/pages/order-confirm-pay/OrderConfirmPayPage.svelte";
+    import OrderSubmitRequirementsPage from "@/pages/order-submit-requirements/OrderSubmitRequirementsPage.svelte";
 </script>
 
 <Router>
@@ -23,11 +24,14 @@
         <Route path="/services/:id" let:params>
             <ServicePage id={params.id}/>
         </Route>
-        <Route path="/services/:id/order" let:params>
-            <OrderPage id={params.id}/>
+        <Route path="/order/request/:serviceId" let:params>
+            <OrderRequestPage serviceId={params.serviceId}/>
         </Route>
-        <Route path="/services/:id/payment">
-            <PaymentPage/>
+        <Route path="/order/:serviceId/confirm-pay" let:params>
+            <OrderConfirmPayPage serviceId={params.serviceId}/>
+        </Route>
+        <Route path="/order/:serviceId/submit-requirements" let:params>
+            <OrderSubmitRequirementsPage serviceId={params.serviceId}/>
         </Route>
         <Route path="/users/:id" let:params>
             <UserPage id={params.id}/>

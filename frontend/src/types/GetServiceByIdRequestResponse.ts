@@ -1,7 +1,7 @@
 import {ResponseError} from "@/types/ResponseErrorEnum.ts";
 import {Service} from "@/types/Service.ts";
 
-export type GetUserByIdRequestResponse = {
+export type GetServiceByUserIdRequestResponse = {
     data: {
         service: Service,
         hasMoreReviews: boolean

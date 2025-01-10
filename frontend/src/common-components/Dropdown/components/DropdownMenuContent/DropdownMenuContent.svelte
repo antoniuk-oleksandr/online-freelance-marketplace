@@ -23,7 +23,7 @@
         setSelectedItem={props.setSelectedItem}
 />
 {#if props.additionalItems && props.selectedAdditionalItem}
-    <DividerElement className="dropdown-menu"/>
+    <DividerElement styles="dropdown-menu"/>
     <DropdownItemElementList
             selectedItem={props.selectedAdditionalItem}
             setSelectedItem={props.setSelectedAdditionalItem}

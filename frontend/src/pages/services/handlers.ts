@@ -1,12 +1,12 @@
 import type {UpdateFunc} from "@/types/UpdateFunc.ts";
-import type {GetUserByIdRequestResponse} from "@/types/GetServiceByIdRequestResponse.ts";
+import type {GetServiceByUserIdRequestResponse} from "@/types/GetServiceByIdRequestResponse.ts";
 import {request} from "@/api/request.ts";
 import {GetReviewsByServiceIdResponse} from "@/types/GetReviewsByServiceIdResponse.ts";
 import {errorStore} from "@/common-stores/error-store.ts";
 import {Review} from "@/types/Review.ts";
 
 export const handleShowMoreFreelancesButtonClick = async (
-    setServiceResponse: UpdateFunc<GetUserByIdRequestResponse | undefined>
+    setServiceResponse: UpdateFunc<GetServiceByUserIdRequestResponse | undefined>
 ) => {
     setServiceResponse(async (prev) => {
         if (!prev || prev.status !== 200) return prev;

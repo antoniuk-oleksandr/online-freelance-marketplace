@@ -4,12 +4,12 @@
     import ServiceAboutBlock from "@/pages/services/components/ServiceAboutBlock/ServiceAboutBlock.svelte";
     import UserByIdReviewBlock from "@/pages/users/components/UserByIdReviewBlock/UserByIdReviewBlock.svelte";
     import type {UpdateFunc} from "@/types/UpdateFunc.ts";
-    import type {GetUserByIdRequestResponse} from "@/types/GetServiceByIdRequestResponse.ts";
+    import type {GetServiceByUserIdRequestResponse} from "@/types/GetServiceByIdRequestResponse.ts";
     import {handleShowMoreFreelancesButtonClick} from "@/pages/services/handlers.ts";
 
     type ServiceBottomLeftSideContentProps = {
-        setServiceResponse: UpdateFunc<GetUserByIdRequestResponse | undefined>,
-        serviceResponse: GetUserByIdRequestResponse
+        setServiceResponse: UpdateFunc<GetServiceByUserIdRequestResponse | undefined>,
+        serviceResponse: GetServiceByUserIdRequestResponse
     };
 
     const serviceProps: ServiceBottomLeftSideContentProps = $props();

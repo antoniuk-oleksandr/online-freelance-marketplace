@@ -12,7 +12,7 @@
         {
             icon: "hugeicons:credit-card",
             title: "Place an Order",
-            description: "Pay securely and place your order to get started."
+            description: "Pay securely and place your order-request to get started."
         },
         {
             icon: "hugeicons:bubble-chat",
@@ -22,7 +22,7 @@
         {
             icon: "hugeicons:checkmark-circle-01",
             title: "Review & Accept Work",
-            description: "Approve the completed work or request changes. Cancel if needed."
+            description: "Approve the completed work or order-request changes. Cancel if needed."
         }
     ];
 </script>

@@ -20,10 +20,10 @@
 <UserByIdReviewBottomContentLayout>
     <div class="flex gap-y-1 md:gap-x-6 md:h-12 md:items-center flex-col md:flex-row items-start">
         <UserByIdReviewColumn label={"Price"} data={`$${review.service.price}`}/>
-        <DividerElement className={"hidden md:block"} orientation={"vertical"}/>
+        <DividerElement styles={"hidden md:block"} orientation={"vertical"}/>
         <UserByIdReviewColumn label={"Duration"} data={getPackageDuration(review.createdAt, review.endedAt)}/>
         {#if showServices}
-            <DividerElement className={"hidden md:block"} orientation={"vertical"}/>
+            <DividerElement styles={"hidden md:block"} orientation={"vertical"}/>
             <p class="text-light-palette-text-secondary dark:text-dark-palette-text-secondary mt-2 md:hidden">
                 Ordered</p>
             <UserByIdReviewService {...review.service}/>

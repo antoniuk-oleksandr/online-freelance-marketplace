@@ -1,0 +1,18 @@
+<script lang="ts">
+    import Rating from "@/common-components/Rating/Rating.svelte";
+    import OrderRequestServiceInfoBottomLineLayout
+        from "@/pages/order-request/components/OrderRequestServiceInfo/components/OrderRequestServiceInfoBottomLine/OrderRequestServiceInfoBottomLineLayout.svelte";
+    import type {Service} from "@/types/Service.ts";
+
+    type OrderRequestServiceInfoBottomLineProps = {
+        serviceData: Service,
+    };
+
+    const {serviceData}: OrderRequestServiceInfoBottomLineProps = $props();
+</script>
+
+<OrderRequestServiceInfoBottomLineLayout>
+    <Rating value={serviceData.rating}/>
+    <span class="font-semibold ml-1">{serviceData.rating}</span>
+    <span>({123} reviews)</span>
+</OrderRequestServiceInfoBottomLineLayout>

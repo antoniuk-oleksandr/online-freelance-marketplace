@@ -21,6 +21,6 @@
                 user={freelancer}
         />
     </ServiceTopLeftSideContentUserInfoBlockLayout>
-    <DividerElement className={"my-6"}/>
+    <DividerElement styles={"my-6"}/>
     <ImageCarousel slides={images}/>
 </ServiceTopLeftSideContentLayout>

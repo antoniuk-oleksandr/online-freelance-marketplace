@@ -1,9 +1,9 @@
 export const getHost = () => {
-    return 'http://78.137.55.236:8080';
+    return 'http://localhost:8080';
 }
 
 export const getFileServerHost = () => {
-    return 'http://78.137.55.236:8030';
+    return 'http://localhost:8030';
 }
 
 export const getHoverClass = () => {
@@ -70,6 +70,11 @@ export const capitalize = (str: string) => {
     return str.charAt(0).toUpperCase() + str.slice(1);
 }
 
-export const formatText = (text: string)  => {
+export const formatText = (text: string) => {
     return text.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
+
+export const round = (value: number, precision: number) => {
+    const multiplier = Math.pow(10, precision || 0);
+    return Math.floor(value * multiplier + 0.0000001) / multiplier;
+};

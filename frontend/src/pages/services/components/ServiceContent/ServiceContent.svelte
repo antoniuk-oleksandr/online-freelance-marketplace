@@ -6,11 +6,11 @@
         from "@/pages/services/components/ServiceTopLeftSideContent/ServiceTopLeftSideContent.svelte";
     import ServicePackagesBlock from "@/pages/services/components/ServicePackagesBlock/ServicePackagesBlock.svelte";
     import type {UpdateFunc} from "@/types/UpdateFunc.ts";
-    import type {GetUserByIdRequestResponse} from "@/types/GetServiceByIdRequestResponse.ts";
+    import type {GetServiceByUserIdRequestResponse} from "@/types/GetServiceByIdRequestResponse.ts";
 
     type ServiceContentProps = {
-        setServiceResponse: UpdateFunc<GetUserByIdRequestResponse | undefined>,
-        serviceResponse: GetUserByIdRequestResponse
+        setServiceResponse: UpdateFunc<GetServiceByUserIdRequestResponse | undefined>,
+        serviceResponse: GetServiceByUserIdRequestResponse
     };
 
     const serviceProps: ServiceContentProps = $props();

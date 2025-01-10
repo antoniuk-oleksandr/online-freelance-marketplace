@@ -4,7 +4,11 @@
     import MyButton from "@/common-components/Button/Button.svelte";
     import {Link} from "svelte-routing";
 
-    const {title, price, description, deliveryDays, id}: Package = $props();
+    type SelectedPackageProps = Package & {
+        serviceId: number
+    }
+
+    const {title, price, description, deliveryDays, id, serviceId}: SelectedPackageProps = $props();
 
     const primaryTextStyle = "text-light-palette-text-primary dark:text-dark-palette-text-primary";
 </script>
@@ -18,10 +22,10 @@
     </span>
         <p class="font-bold">{price}$</p>
     </div>
-    <Link to="/services/{id}/order">
+    <Link to="/order/request/{serviceId}?packageId={id}">
         <MyButton
                 styles={"!mt-6 !w-full"}>
-            Order Now
+            Request Order
         </MyButton>
     </Link>
 </SelectedPackageLayout>

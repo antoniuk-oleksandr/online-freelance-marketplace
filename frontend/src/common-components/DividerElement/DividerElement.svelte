@@ -1,16 +1,16 @@
 <script lang="ts">
     type DividerElementProps = {
         orientation?: "horizontal" | "vertical",
-        className?: string,
+        styles?: string,
     };
 
-    const {orientation, className}: DividerElementProps = $props();
+    const {orientation, styles}: DividerElementProps = $props();
 
-    let styles = $state('');
-    if (orientation === "horizontal" || !orientation) styles = 'border-t w-full';
-    else styles = 'border-l h-full';
+    let classStyles = $state('');
+    if (orientation === "horizontal" || !orientation) classStyles = 'border-t w-full';
+    else classStyles = 'border-l h-full';
 </script>
 
 <div
-        class={`${className} ${styles} border-light-palette-divider dark:border-dark-palette-divider`}
+        class={`${styles} ${classStyles} border-light-palette-divider dark:border-dark-palette-divider`}
 ></div>
