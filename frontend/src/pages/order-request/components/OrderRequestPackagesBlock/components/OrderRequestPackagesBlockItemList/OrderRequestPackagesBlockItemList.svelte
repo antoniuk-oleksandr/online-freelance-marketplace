@@ -2,11 +2,11 @@
     import OrderRequestPackagesBlockItem
         from "@/pages/order-request/components/OrderRequestPackagesBlock/components/OrderRequestPackagesBlockItem/OrderRequestPackagesBlockItem.svelte";
     import DividerElement from "@/common-components/DividerElement/DividerElement.svelte";
-    import type {Service} from "@/types/Service.ts";
     import type {Package} from "@/types/Package.ts";
+    import type {RestrictedService} from "@/types/RestrictedService.ts";
 
     type OrderRequestPackagesBlockItemListProps = {
-        serviceData: Service,
+        serviceData: RestrictedService,
         selectedPackage: Package,
         setSelectedPackage: (newPackage: Package) => void,
     };

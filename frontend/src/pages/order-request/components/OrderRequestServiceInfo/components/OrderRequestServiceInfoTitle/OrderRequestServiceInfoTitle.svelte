@@ -1,8 +1,8 @@
 <script lang="ts">
-    import type {Service} from "@/types/Service.ts";
+    import type {RestrictedService} from "@/types/RestrictedService.ts";
 
     type OrderRequestServiceInfoTitleProps = {
-        serviceData: Service,
+        serviceData: RestrictedService,
     };
 
     const {serviceData}: OrderRequestServiceInfoTitleProps = $props();

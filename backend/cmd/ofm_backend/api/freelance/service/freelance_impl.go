@@ -18,6 +18,18 @@ func NewFreelanceService(repo repository.FreelanceRepository) FreelanceService {
 	}
 }
 
+func (fs *freelanceService) GetResrictedFreelanceById(id int) (*dto.FreelanceByIdRestricted, error) {
+	freelanceService, err := fs.repository.GetResrictedFreelanceById(id)
+	if err != nil {
+		return nil, err
+	}
+	
+	restrictedFreelanceDto := mapper.MapRestrictedFreelanceModelToDto(*freelanceService)
+	restrictedFreelanceDtoLinks := main_utils.AddServerURLToFiles(&restrictedFreelanceDto)
+	
+	return restrictedFreelanceDtoLinks, nil
+}
+
 func (fs *freelanceService) GetFreelanceById(id int) (*dto.FreelanceByIDResponse, error) {
 	maxReviews := utils.GetMaxReviewsValue()
 
@@ -65,7 +77,7 @@ func (fs *freelanceService) GetReviewsByFreelanceID(id int, reviewsCursor string
 	}
 
 	reviewsWithFileLinks := main_utils.AddServerURLToFiles(reviews)
-	
+
 	var hasMoreReviews bool
 	var newReviewsCursor *string
 	if len(*reviewsWithFileLinks) == maxReviews+1 {

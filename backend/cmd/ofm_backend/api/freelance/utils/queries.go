@@ -103,3 +103,39 @@ WHERE
 ORDER BY OI.ended_at DESC, OI.id DESC
 LIMIT $4
 `
+var RestrictedFreelanceQuery = `
+SELECT
+    S.id, S.title,
+    countRating.count as reviews_count,
+    ROUND((countRating.avg)::numeric, 2) as rating,
+    (
+      SELECT FI.name
+      FROM services_files SFI
+      LEFT JOIN files FI ON SFI.file_id = FI.id
+      WHERE SFI.service_id = S.id
+      LIMIT 1
+    ) as image,
+    (
+        SELECT json_agg
+            (json_build_object(
+                'id', PI.id,
+                'delivery_days', PI.delivery_days,
+                'description', PI.description,
+                'price', PI.price,
+                'title', PI.title
+            ))
+        FROM services SI
+            LEFT JOIN services_packages SPI ON SPI.service_id = SI.id
+            LEFT JOIN packages PI ON PI.id = SPI.package_id
+        WHERE SI.ID = S.id
+    ) as packages
+FROM services S
+LEFT JOIN LATERAL
+    (
+        SELECT COALESCE(COUNT(RI.id), 0) as count, COALESCE(AVG(RI.rating), 0) as avg
+        FROM orders OI
+            LEFT JOIN reviews RI ON RI.id = OI.review_id
+        WHERE OI.service_id = S.id AND ended_at IS NOT NULL
+    ) as countRating ON True
+WHERE S.id = $1;
+`

@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"ofm_backend/cmd/ofm_backend/api/freelance/model"
 	"ofm_backend/cmd/ofm_backend/api/freelance/utils"
+	main_utils "ofm_backend/cmd/ofm_backend/utils"
 
 	"github.com/jmoiron/sqlx"
 )
@@ -16,6 +17,35 @@ func NewFreelanceRepository(db *sqlx.DB) FreelanceRepository {
 	return &freelanceRepository{
 		db: db,
 	}
+}
+
+func (fr *freelanceRepository) GetResrictedFreelanceById(id int) (*model.FreelanceByIdRestricted, error) {
+	rows, err := fr.db.Queryx(utils.RestrictedFreelanceQuery, id)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var packagesJSON []byte
+	var restrictedFreelance model.FreelanceByIdRestricted
+
+	if rows.Next() {
+		rows.Scan(
+			&restrictedFreelance.Id, &restrictedFreelance.Title,
+			&restrictedFreelance.ReviewsCount, &restrictedFreelance.Rating,
+			&restrictedFreelance.Image, &packagesJSON,
+		)
+
+		if packagesJSON != nil {
+			if err := json.Unmarshal(packagesJSON, &restrictedFreelance.Packages); err != nil {
+				return nil, err
+			}
+		}
+	} else {
+		return nil, main_utils.ErrNotFound
+	}
+
+	return &restrictedFreelance, nil
 }
 
 func (fr *freelanceRepository) GetFreelanceServiceById(id int) (*model.FreelanceByID, error) {

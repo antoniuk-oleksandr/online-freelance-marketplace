@@ -13,6 +13,9 @@ import {searchFilterDrawerStore} from "@/pages/search/stores/search-filter-drawe
 import {request} from "@/api/request.ts";
 import type {SearchRequestResponse} from "@/types/SearchRequestResponse.ts";
 import {errorStore} from "@/common-stores/error-store.ts";
+import {Skill} from "@/types/Skill.ts";
+import {Category} from "@/types/Category.ts";
+import {Language} from "@/types/Language.ts";
 
 export const getSearchPageParams = (): SearchPageParams => {
     const params = new URLSearchParams(window.location.search);
@@ -118,7 +121,7 @@ export const generateSearchLink = (
         appendSearchLinkParam(searchPageParams, item as keyof SearchPageParams, params);
     })
 
-    return  `/search${cursor ? `?cursor=${cursor}&` : "?"}${params.toString()}`;
+    return `/search${cursor ? `?cursor=${cursor}&` : "?"}${params.toString()}`;
 }
 
 export const getFormFromInputValue = (
@@ -182,7 +185,7 @@ export const resetSearchArrayParam = (
 }
 
 export const getAllFilterArrayBlockDataElements = (
-    defaultFilterParams: GetFilterParamsRequestResponse["data"],
+    defaultFilterParams: { skill: Skill[], category: Category[], language: Language[] },
     storeData: SearchFilterArrayStore,
     inputValues: SearchFilterArrayInputDataStore | undefined,
 ) => {

@@ -1,5 +1,4 @@
 <script lang="ts">
-    import type {Service} from "@/types/Service.ts";
     import OrderRequestServiceInfoLayout
         from "@/pages/order-request/components/OrderRequestServiceInfo/OrderRequestServiceInfoLayout.svelte";
     import Title from "@/common-components/Title/Title.svelte";
@@ -13,9 +12,10 @@
         from "@/pages/order-request/components/OrderRequestServiceInfo/components/OrderRequestServiceInfoRightSide/OrderRequestServiceInfoRightSide.svelte";
     import OrderRequestServiceInfoBottomLine
         from "@/pages/order-request/components/OrderRequestServiceInfo/components/OrderRequestServiceInfoBottomLine/OrderRequestServiceInfoBottomLine.svelte";
+    import type {RestrictedService} from "@/types/RestrictedService.ts";
 
     type OrderRequestServiceInfoProps = {
-        serviceData: Service,
+        serviceData: RestrictedService,
     };
 
     const props: OrderRequestServiceInfoProps = $props();

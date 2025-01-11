@@ -6,8 +6,8 @@
     import OrderOverview from "@/pages/order-confirm-pay/components/OrderOverview/OrderOverview.svelte";
     import {fetchServiceDetailsAndPackage} from "@/pages/order-request/helpers.ts";
     import type {Package} from "@/types/Package.ts";
-    import type {Service} from "@/types/Service.ts";
     import type {StepperItem} from "@/types/StepperItem.ts";
+    import type {RestrictedService} from "@/types/RestrictedService.ts";
 
     type OrderConfirmPayPageParams = {
         serviceId: string,
@@ -18,8 +18,8 @@
     let selectedPackage = $state<Package | undefined>();
     const setSelectedPackage = (newPackage: Package) => selectedPackage = newPackage;
 
-    let serviceData = $state<Service | undefined>();
-    const setServiceData = (newServiceData: Service) => serviceData = newServiceData;
+    let serviceData = $state<RestrictedService | undefined>();
+    const setServiceData = (newServiceData: RestrictedService) => serviceData = newServiceData;
 
     fetchServiceDetailsAndPackage(serviceId, setServiceData, setSelectedPackage);
 

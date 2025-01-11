@@ -1,20 +1,17 @@
 <script lang="ts">
     import PaperElement from "@/common-components/PaperElement/PaperElement.svelte";
     import Button from "@/common-components/Button/Button.svelte";
-    import type {Service} from "@/types/Service.ts";
     import Spinner from "@/common-components/Spinner/Spinner.svelte";
     import type {Package} from "@/types/Package.ts";
     import DividerElement from "@/common-components/DividerElement/DividerElement.svelte";
-    import {round} from "@/utils/utils.ts";
-    import OrderRequestSummaryItem
-        from "@/pages/order-request/components/OrderRequestSummary/components/OrderRequestSummaryItem/OrderRequestSummaryItem.svelte";
     import OrderOverviewTopBlock
         from "@/pages/order-confirm-pay/components/OrderOverview/components/OrderOverviewTopBlock/OrderOverviewTopBlock.svelte";
     import OrderOverviewBottomBlock
         from "@/pages/order-confirm-pay/components/OrderOverview/components/OrderOverviewBottomBlock/OrderOverviewBottomBlock.svelte";
+    import type {RestrictedService} from "@/types/RestrictedService.ts";
 
     type OrderOverviewProps = {
-        serviceData?: Service,
+        serviceData?: RestrictedService,
         pkg?: Package,
     };
 

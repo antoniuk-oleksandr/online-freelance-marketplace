@@ -1,15 +1,15 @@
 <script lang="ts">
-    import type {Service} from "@/types/Service.ts";
+    import type {RestrictedService} from "@/types/RestrictedService.ts";
 
     type OrderRequestServiceInfoImageProps = {
-        serviceData: Service,
+        serviceData: RestrictedService,
     };
 
     const {serviceData}: OrderRequestServiceInfoImageProps = $props();
 </script>
 
 <img
-        src={serviceData.images[0]}
+        src={serviceData.image}
         alt={serviceData.title}
         class="h-32 aspect-video object-cover"
 />

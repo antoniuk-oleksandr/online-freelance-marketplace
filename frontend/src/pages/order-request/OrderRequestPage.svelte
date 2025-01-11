@@ -1,5 +1,4 @@
 <script lang="ts">
-    import type {Service} from "@/types/Service.ts";
     import Stepper from "@/common-components/Stepper/Stepper.svelte";
     import type {Package} from "@/types/Package.ts";
     import OrderRequestPageLayout from "@/pages/order-request/OrderRequestPageLayout.svelte";
@@ -7,6 +6,7 @@
         from "@/pages/order-request/components/OrderRequestPageContent/OrderRequestPageContent.svelte";
     import {fetchServiceDetailsAndPackage} from "@/pages/order-request/helpers.ts";
     import type {StepperItem} from "@/types/StepperItem.ts";
+    import type {RestrictedService} from "@/types/RestrictedService.ts";
 
     type RequestPageParams = {
         serviceId: string;
@@ -14,8 +14,8 @@
 
     const {serviceId}: RequestPageParams = $props();
 
-    let serviceData = $state<Service | undefined>();
-    const setServiceData = (newServiceData: Service) => serviceData = newServiceData;
+    let serviceData = $state<RestrictedService | undefined>();
+    const setServiceData = (newServiceData: RestrictedService) => serviceData = newServiceData;
 
     let selectedPackage = $state<Package | undefined>();
     const setSelectedPackage = (newPackage: Package) => selectedPackage = newPackage;

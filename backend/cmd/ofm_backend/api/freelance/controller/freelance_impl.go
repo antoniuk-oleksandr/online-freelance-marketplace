@@ -21,7 +21,7 @@ func NewFreelanceController(
 	}
 }
 
-func (fc *freelanceController) GetFreelanceById(ctx *fiber.Ctx) error {
+func (fc *freelanceController) GetResrictedFreelanceById(ctx *fiber.Ctx) error {
 	id, err := strconv.Atoi(ctx.Params("id"))
 	if err != nil {
 		return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
@@ -29,6 +29,30 @@ func (fc *freelanceController) GetFreelanceById(ctx *fiber.Ctx) error {
 		})
 	}
 	
+	freelanceByID, err := fc.service.GetResrictedFreelanceById(id)
+	if err != nil {
+		if errors.Is(err, utils.ErrNotFound) {
+			return ctx.Status(fiber.StatusNotFound).JSON(fiber.Map{
+				"error": utils.ErrNotFound.Error(),
+			})
+		}
+
+		return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error": utils.ErrUnexpectedError.Error(),
+		})
+	}
+
+	return ctx.Status(fiber.StatusOK).JSON(freelanceByID)
+}
+
+func (fc *freelanceController) GetFreelanceById(ctx *fiber.Ctx) error {
+	id, err := strconv.Atoi(ctx.Params("id"))
+	if err != nil {
+		return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error": utils.ErrUnexpectedError.Error(),
+		})
+	}
+
 	freelanceByID, err := fc.service.GetFreelanceById(id)
 	if err != nil {
 		if errors.Is(err, utils.ErrNotFound) {
@@ -45,7 +69,7 @@ func (fc *freelanceController) GetFreelanceById(ctx *fiber.Ctx) error {
 	return ctx.Status(fiber.StatusOK).JSON(freelanceByID)
 }
 
-func (fc *freelanceController) GetReviewsByFreelanceID(ctx *fiber.Ctx) error {
+func (fc *freelanceController) GetReviewsByFreelanceId(ctx *fiber.Ctx) error {
 	id, err := strconv.Atoi(ctx.Params("id"))
 	if err != nil {
 		return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{

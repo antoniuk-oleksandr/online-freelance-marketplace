@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"fmt"
 	"net/http"
 	"ofm_backend/cmd/ofm_backend/api/freelance/dto"
 	"ofm_backend/cmd/ofm_backend/api/freelance/model"
@@ -11,10 +12,21 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
+
+	test_utils "ofm_backend/cmd/ofm_backend/test_utils"
 )
 
 type MockService struct {
 	mock.Mock
+}
+
+func (m *MockService) GetResrictedFreelanceById(id int) (*dto.FreelanceByIdRestricted, error) {
+	args := m.Called(id)
+	if args.Get(0) != nil {
+		return args.Get(0).(*dto.FreelanceByIdRestricted), args.Error(1)
+	}
+
+	return nil, args.Error(1)
 }
 
 func (m *MockService) GetReviewsByFreelanceID(id int, reviewsCursor string) (*dto.FreelanceReviewsResponse, error) {
@@ -101,7 +113,7 @@ func TestGetReviewsByFreelanceID_Success(t *testing.T) {
 	fc := NewFreelanceController(mockService)
 
 	app := fiber.New()
-	app.Get("/freelances/:id/reviews", fc.GetReviewsByFreelanceID)
+	app.Get("/freelances/:id/reviews", fc.GetReviewsByFreelanceId)
 
 	req, err := http.NewRequest("GET", "/freelances/1/reviews", nil)
 	assert.NoError(t, err, "Error creating request")
@@ -121,7 +133,7 @@ func TestGetReviewsByFreelanceID_Error(t *testing.T) {
 	fc := NewFreelanceController(mockService)
 
 	app := fiber.New()
-	app.Get("/freelances/:id/reviews", fc.GetReviewsByFreelanceID)
+	app.Get("/freelances/:id/reviews", fc.GetReviewsByFreelanceId)
 
 	req, err := http.NewRequest("GET", "/freelances/1/reviews", nil)
 	assert.NoError(t, err, "Error creating request")
@@ -132,4 +144,81 @@ func TestGetReviewsByFreelanceID_Error(t *testing.T) {
 	assert.Equal(t, fiber.StatusNotFound, resp.StatusCode, "Status code should be 404")
 
 	mockService.AssertExpectations(t)
+}
+
+func TestGetResrictedFreelanceById(t *testing.T) {
+	testCases := []struct {
+		name               string
+		mockResponse       *dto.FreelanceByIdRestricted
+		mockId             int
+		requestid          int
+		mockError          error
+		expectedBody       interface{}
+		expectedStatusCode int
+	}{
+		{
+			name:               "Success",
+			mockResponse:       ptr(createResrictedFreelanceByIdDto(1)),
+			mockId:             1,
+			requestid:          1,
+			mockError:          nil,
+			expectedBody:       createResrictedFreelanceByIdDto(1),
+			expectedStatusCode: fiber.StatusOK,
+		},
+		{
+			name:         "Error not found",
+			mockResponse: nil,
+			mockId:       1,
+			requestid:    1,
+			mockError:    utils.ErrNotFound,
+			expectedBody: utils.ErrorResponse{
+				Error: utils.ErrNotFound.Error(),
+			},
+			expectedStatusCode: fiber.StatusNotFound,
+		},
+	}
+
+	for _, tc := range testCases {
+		t.Run(tc.name, func(t *testing.T) {
+			mockService := new(MockService)
+
+			if tc.mockError != nil {
+				mockService.On("GetResrictedFreelanceById", tc.mockId).Return(nil, tc.mockError)
+			} else {
+				mockService.On("GetResrictedFreelanceById", 1).Return(tc.mockResponse, tc.mockError)
+			}
+
+			fc := NewFreelanceController(mockService)
+
+			app := test_utils.SetupFiberApp("/freelances/:id/restricted", fc.GetResrictedFreelanceById)
+			resp := test_utils.PerformRequest(t, app, "GET", fmt.Sprintf("/freelances/%d/restricted", tc.requestid))
+
+			var actualBody interface{}
+			if tc.mockError != nil {
+				actualBody = test_utils.ParseResponseBody[utils.ErrorResponse](t, resp)
+			} else {
+				actualBody = test_utils.ParseResponseBody[dto.FreelanceByIdRestricted](t, resp)
+			}
+
+			assert.Equal(t, tc.expectedBody, actualBody, "Response body should be equal")
+			assert.Equal(t, tc.expectedStatusCode, resp.StatusCode, "Status code should be equal")
+
+			mockService.AssertExpectations(t)
+		})
+	}
+}
+
+func createResrictedFreelanceByIdDto(id int) dto.FreelanceByIdRestricted {
+	return dto.FreelanceByIdRestricted{
+		Id:           int64(id),
+		ReviewsCount: 0,
+		Rating:       0,
+		Title:        "test",
+		Image:        ptr("test.jpg"),
+		Packages:     &[]dto.Package{{ID: 1, DeliveryDays: 0, Description: "test", Price: 0, Title: "test"}},
+	}
+}
+
+func ptr[T any](data T) *T {
+	return &data
 }

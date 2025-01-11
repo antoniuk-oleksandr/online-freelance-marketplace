@@ -2,10 +2,10 @@
     import Rating from "@/common-components/Rating/Rating.svelte";
     import OrderRequestServiceInfoBottomLineLayout
         from "@/pages/order-request/components/OrderRequestServiceInfo/components/OrderRequestServiceInfoBottomLine/OrderRequestServiceInfoBottomLineLayout.svelte";
-    import type {Service} from "@/types/Service.ts";
+    import type {RestrictedService} from "@/types/RestrictedService.ts";
 
     type OrderRequestServiceInfoBottomLineProps = {
-        serviceData: Service,
+        serviceData: RestrictedService,
     };
 
     const {serviceData}: OrderRequestServiceInfoBottomLineProps = $props();

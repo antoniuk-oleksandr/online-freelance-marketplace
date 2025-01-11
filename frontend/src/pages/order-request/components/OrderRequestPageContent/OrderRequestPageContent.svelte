@@ -5,13 +5,13 @@
     import OrderRequestSummary from "@/pages/order-request/components/OrderRequestSummary/OrderRequestSummary.svelte";
     import OrderRequestServiceInfo
         from "@/pages/order-request/components/OrderRequestServiceInfo/OrderRequestServiceInfo.svelte";
-    import type {Service} from "@/types/Service.ts";
     import type {Package} from "@/types/Package.ts";
     import OrderRequestPageContentLayout
         from "@/pages/order-request/components/OrderRequestPageContent/OrderRequestPageContentLayout.svelte";
+    import type {RestrictedService} from "@/types/RestrictedService.ts";
 
     type OrderRequestPageContentProps = {
-        serviceData: Service,
+        serviceData: RestrictedService,
         selectedPackage: Package,
         setSelectedPackage: (newPackage: Package) => void,
     };

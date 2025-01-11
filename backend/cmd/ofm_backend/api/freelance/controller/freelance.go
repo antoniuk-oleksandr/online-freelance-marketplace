@@ -6,5 +6,6 @@ import (
 
 type FreelanceController interface {
 	GetFreelanceById(ctx *fiber.Ctx) error
-	GetReviewsByFreelanceID(ctx *fiber.Ctx) error
+	GetReviewsByFreelanceId(ctx *fiber.Ctx) error
+	GetResrictedFreelanceById(ctx *fiber.Ctx) error
 }

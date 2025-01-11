@@ -1,5 +1,7 @@
 import {getCreditCardMaxLength, getCreditCardType} from "@/pages/order-confirm-pay/helpers.ts";
 import {CreditCardType} from "@/types/CreditCardType.ts";
+import type {PaymentData} from "@/types/PaymentData.ts";
+import {JSEncrypt} from "jsencrypt";
 
 export const handleCardNumberInput = (
     newValue: string,
@@ -101,13 +103,34 @@ export const handleCardHolderNameInput = (
         .replace(/\s+/g, " ")
         .slice(0, maxLength);
 
-    // Set the formatted value only if it's different from the original input
     if (newValue !== formattedValue) {
         setFields("cardHolderName", formattedValue);
     }
 };
 
+export const handlePaymentFormSubmit = (data: PaymentData) => {
+    const publicKey = "-----BEGIN PUBLIC KEY-----\n" +
+        "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA7C+L6+LMftNkTzIzg0iJ\n" +
+        "w8Fvhlp0bjb29wLVu1Hyz4J4sjNsPqIMh6uw9hxHtpLwF9hPhxXHHLJQ/s1BpxQ3\n" +
+        "oz0OU7nSgAOhmC3e23QbC5xhHnn9VTh/q9mpuLszXHl4XGEJhS3OnR5z7m6cQdzV\n" +
+        "Bd+VoZSkX4PBLtJzYOlfZZuM7p8OkjwTnV/RVVGwleplKw+wgiPItpqu/KvHk6df\n" +
+        "vUoA9HEz6mhGoJivEZrI3NRb3zqsUwmDZvH9fL7dxkRL+MOvGBY2yRAwxiFc07fF\n" +
+        "6M3LsFTk9APanKhpMlZHo4hANct6lgT9FhZEF5KHlPvS3jrV6vjsftbEXgXKHZ2B\n" +
+        "GQIDAQAB\n" +
+        "-----END PUBLIC KEY-----\n"
 
+    const encryptor = new JSEncrypt();
+    encryptor.setPublicKey(publicKey);
+
+    // Encrypt the card details
+    const encrypted = encryptor.encrypt(JSON.stringify(data));
+    if (!encrypted) {
+        alert("Encryption failed!");
+        return;
+    }
+
+    console.log(encrypted);
+}
 
 
 

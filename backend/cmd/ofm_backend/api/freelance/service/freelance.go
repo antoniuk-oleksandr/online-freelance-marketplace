@@ -7,4 +7,5 @@ import (
 type FreelanceService interface {
 	GetFreelanceById(id int) (*dto.FreelanceByIDResponse, error)
 	GetReviewsByFreelanceID(id int, reviewsCursor string) (*dto.FreelanceReviewsResponse, error)
+	GetResrictedFreelanceById(id int) (*dto.FreelanceByIdRestricted, error)
 }

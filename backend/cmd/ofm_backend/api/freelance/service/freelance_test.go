@@ -4,6 +4,7 @@ import (
 	"ofm_backend/cmd/ofm_backend/api/freelance/dto"
 	"ofm_backend/cmd/ofm_backend/api/freelance/model"
 	"ofm_backend/cmd/ofm_backend/api/freelance/utils"
+	main_utils "ofm_backend/cmd/ofm_backend/utils"
 	"os"
 	"strconv"
 	"testing"
@@ -15,6 +16,14 @@ import (
 
 type MockRepository struct {
 	mock.Mock
+}
+
+func (m *MockRepository) GetResrictedFreelanceById(id int) (*model.FreelanceByIdRestricted, error) {
+	args := m.Called(id)
+	if args.Get(0) != nil {
+		return args.Get(0).(*model.FreelanceByIdRestricted), args.Error(1)
+	}
+	return nil, args.Error(1)
 }
 
 func (m *MockRepository) GetFreelanceServiceById(id int) (*model.FreelanceByID, error) {
@@ -64,7 +73,6 @@ func TestGetFreelanceById_Success(t *testing.T) {
 		{ID: 1, Content: "test", Rating: 5, CreatedAt: timeNow, EndedAt: timeNow, Customer: &model.Customer{ID: 1, Username: "test", Avatar: "test"}, Freelance: &model.ReviewFreelance{Price: 1}},
 		{ID: 2, Content: "test", Rating: 5, CreatedAt: timeNow, EndedAt: timeNow, Customer: &model.Customer{ID: 1, Username: "test", Avatar: "test"}, Freelance: &model.ReviewFreelance{Price: 1}},
 	}
-	
 
 	extectedData := &dto.FreelanceByIDResponse{
 		Service: &dto.Freelance{
@@ -162,4 +170,78 @@ func TestGetReviewsByFreelanceID_WithCursor(t *testing.T) {
 	assert.Equal(t, mockRepoResponse, actualData, "Data should be equal")
 
 	mockRepo.AssertExpectations(t)
+}
+
+func TestGetResrictedFreelanceById(t *testing.T) {
+	os.Setenv("FILE_SERVER_HOST", "localost")
+	os.Setenv("FILE_SERVER_PORT", "8030")
+
+	defer func() {
+		os.Unsetenv("FILE_SERVER_HOST")
+		os.Unsetenv("FILE_SERVER_PORT")
+	}()
+
+	testcases := []struct {
+		Name         string
+		MockId       int
+		MockError    error
+		MockData     *model.FreelanceByIdRestricted
+		ExpectedData *dto.FreelanceByIdRestricted
+	}{
+		{
+			Name:         "Success",
+			MockId:       1,
+			MockError:    nil,
+			MockData:     ptr(createRestrictedFreelanceByIdModel(1)),
+			ExpectedData: ptr(createResrictedFreelanceByIdDto(1)),
+		},
+		{
+			Name:         "Error Not Found",
+			MockId:       1,
+			MockError:    main_utils.ErrNoFound,
+			MockData:     nil,
+			ExpectedData: nil,
+		},
+	}
+
+	for _, tc := range testcases {
+		t.Run(tc.Name, func(t *testing.T) {
+			mockRepo := new(MockRepository)
+
+			fs := NewFreelanceService(mockRepo)
+			mockRepo.On("GetResrictedFreelanceById", tc.MockId).Return(tc.MockData, tc.MockError)
+			actualData, err := fs.GetResrictedFreelanceById(tc.MockId)
+
+			assert.Equal(t, tc.ExpectedData, actualData, "Data should be equal")
+			assert.Equal(t, tc.MockError, err, "Error should be equal")
+
+			mockRepo.AssertExpectations(t)
+		})
+	}
+}
+
+func createResrictedFreelanceByIdDto(id int) dto.FreelanceByIdRestricted {
+	return dto.FreelanceByIdRestricted{
+		Id:           int64(id),
+		ReviewsCount: 0,
+		Rating:       0,
+		Title:        "test",
+		Image:        ptr("http://localost:8030/files/test.jpg"),
+		Packages:     &[]dto.Package{{ID: 1, DeliveryDays: 0, Description: "test", Price: 0, Title: "test"}},
+	}
+}
+
+func createRestrictedFreelanceByIdModel(id int) model.FreelanceByIdRestricted {
+	return model.FreelanceByIdRestricted{
+		Id:           int64(id),
+		ReviewsCount: 0,
+		Rating:       0,
+		Title:        "test",
+		Image:        ptr("test.jpg"),
+		Packages:     &[]model.Package{{ID: 1, DeliveryDays: 0, Description: "test", Price: 0, Title: "test"}},
+	}
+}
+
+func ptr[T any](data T) *T {
+	return &data
 }

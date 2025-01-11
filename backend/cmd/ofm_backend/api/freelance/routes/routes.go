@@ -16,5 +16,6 @@ func RegisterFreelanceRoutes(apiGroup fiber.Router, db *sqlx.DB) {
 
 	freelancesGroup := apiGroup.Group("/freelances")
 	freelancesGroup.Get("/:id", freelanceController.GetFreelanceById)
-	freelancesGroup.Get("/:id/reviews", freelanceController.GetReviewsByFreelanceID)
+	freelancesGroup.Get("/:id/reviews", freelanceController.GetReviewsByFreelanceId)
+	freelancesGroup.Get("/:id/restricted", freelanceController.GetResrictedFreelanceById)
 }

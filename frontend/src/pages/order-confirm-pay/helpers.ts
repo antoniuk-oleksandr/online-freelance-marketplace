@@ -81,28 +81,28 @@ const cvvRegex = /^[0-9]{3,4}$/;
 const cardNameRegex = /^[a-zA-Z\s'-]+$/;
 
 export const paymentFormSchema = z.object({
-    cardNumber: z
-        .string()
-        .min(1, {message: "Card number is required."})
-        .refine((value) => testCardNumberLength(value), {message: "Invalid card number length."})
-        .refine((value) => testCardNumber(value), {message: "Invalid card number."}),
-
-    cardHolderName: z
-        .string()
-        .min(1, {message: "Cardholder name is required."})
-        .regex(cardNameRegex, {message: "Invalid cardholder name. Only letters, spaces, apostrophes, and hyphens are allowed."}),
-
-    expiryDate: z
-        .string()
-        .min(1, {message: "Expiration date is required."})
-        .regex(cardExpirationRegex, {message: "Invalid expiration date format. Use MM/YY."}),
-
-    securityCode: z
-        .string()
-        .min(1, {message: "CVV is required."})
-        .regex(cvvRegex, {message: "Invalid CVV format. Enter 3 or 4 digits."})
-        .length(3, {message: "CVV must be 3 digits."})
-        .refine((value) => value.length === 3 || value.length === 4, {
-            message: "CVV must be 3 or 4 digits.",
-        }),
+    // cardNumber: z
+    //     .string()
+    //     .min(1, {message: "Card number is required."})
+    //     .refine((value) => testCardNumberLength(value), {message: "Invalid card number length."})
+    //     .refine((value) => testCardNumber(value), {message: "Invalid card number."}),
+    //
+    // cardHolderName: z
+    //     .string()
+    //     .min(1, {message: "Cardholder name is required."})
+    //     .regex(cardNameRegex, {message: "Invalid cardholder name. Only letters, spaces, apostrophes, and hyphens are allowed."}),
+    //
+    // expiryDate: z
+    //     .string()
+    //     .min(1, {message: "Expiration date is required."})
+    //     .regex(cardExpirationRegex, {message: "Invalid expiration date format. Use MM/YY."}),
+    //
+    // securityCode: z
+    //     .string()
+    //     .min(1, {message: "CVV is required."})
+    //     .regex(cvvRegex, {message: "Invalid CVV format. Enter 3 or 4 digits."})
+    //     .length(3, {message: "CVV must be 3 digits."})
+    //     .refine((value) => value.length === 3 || value.length === 4, {
+    //         message: "CVV must be 3 or 4 digits.",
+    //     }),
 });

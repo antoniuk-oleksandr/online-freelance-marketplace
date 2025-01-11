@@ -1,14 +1,14 @@
 <script lang="ts">
-    import type {Service} from "@/types/Service.ts";
     import OrderRequestPackagesBlockItemList
         from "@/pages/order-request/components/OrderRequestPackagesBlock/components/OrderRequestPackagesBlockItemList/OrderRequestPackagesBlockItemList.svelte";
     import type {Package} from "@/types/Package.ts";
     import Title from "@/common-components/Title/Title.svelte";
     import OrderRequestPackagesBlockLayout
         from "@/pages/order-request/components/OrderRequestPackagesBlock/OrderRequestPackagesBlockLayout.svelte";
+    import type {RestrictedService} from "@/types/RestrictedService.ts";
 
     type OrderRequestPackagesBlockProps = {
-        serviceData: Service,
+        serviceData: RestrictedService,
         selectedPackage: Package,
         setSelectedPackage: (newPackage: Package) => void,
     };

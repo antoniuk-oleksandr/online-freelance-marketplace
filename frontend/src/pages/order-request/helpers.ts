@@ -1,22 +1,22 @@
 import {request} from "@/api/request.ts";
-import type {GetServiceByUserIdRequestResponse} from "@/types/GetServiceByIdRequestResponse.ts";
 import {errorStore} from "@/common-stores/error-store.ts";
-import {Service} from "@/types/Service.ts";
 import type {Package} from "@/types/Package.ts";
+import type {GetRestrictedServiceByIdResponse} from "@/types/GetRestrictedServiceByIdResponse.ts";
+import {RestrictedService} from "@/types/RestrictedService.ts";
 
 export const fetchServiceDetailsAndPackage = (
     serviceId: string,
-    setServiceData: (data: Service) => void,
+    setServiceData: (data: RestrictedService) => void,
     setSelectedPackage: (newPackage: Package) => void
 ) => {
     const packageId = new URLSearchParams(window.location.search).get("packageId");
 
-    request<GetServiceByUserIdRequestResponse>(`/freelances/${serviceId}`, "GET").then((response) => {
+    request<GetRestrictedServiceByIdResponse>(`/freelances/${serviceId}/restricted/`, "GET").then((response) => {
         if (response.status === 200) {
-            const data = response.data.service;
+            const data = response.data;
             setServiceData(data);
 
-            if (!packageId) setSelectedPackage(response.data.service.packages[0]);
+            if (!packageId) setSelectedPackage(response.data.packages[0]);
             else {
                 const selectedPackage = data.packages.find((pkg) => pkg.id === parseInt(packageId))
                     || data.packages[0];

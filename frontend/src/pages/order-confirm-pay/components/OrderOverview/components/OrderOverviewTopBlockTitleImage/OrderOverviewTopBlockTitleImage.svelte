@@ -1,10 +1,10 @@
 <script lang="ts">
     import OrderOverviewTopBlockTitleImageLayout
         from "@/pages/order-confirm-pay/components/OrderOverview/components/OrderOverviewTopBlockTitleImage/OrderOverviewTopBlockTitleImageLayout.svelte";
-    import type {Service} from "@/types/Service.ts";
+    import type {RestrictedService} from "@/types/RestrictedService.ts";
 
     type OrderOverviewTopBlockTitleImageProps = {
-        serviceData: Service,
+        serviceData: RestrictedService,
     };
 
     const {serviceData}: OrderOverviewTopBlockTitleImageProps = $props();
@@ -14,7 +14,7 @@
     <img
             class="aspect-video object-center object-cover rounded-sm w-32"
             alt="service"
-            src={serviceData.images[0]}
+            src={serviceData.image}
     />
     <p class="line-clamp-3">{serviceData.title}</p>
 </OrderOverviewTopBlockTitleImageLayout>

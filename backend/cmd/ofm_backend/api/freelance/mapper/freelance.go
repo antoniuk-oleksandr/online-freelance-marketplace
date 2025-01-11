@@ -44,3 +44,28 @@ func MapFreelanceModelToDTO(
 		Packages: &packages,
 	}
 }
+
+func MapRestrictedFreelanceModelToDto(
+	freelanceByIdRestrictedModel model.FreelanceByIdRestricted,
+) dto.FreelanceByIdRestricted {
+	var packages []dto.Package
+
+	for _, p := range *freelanceByIdRestrictedModel.Packages {
+		packages = append(packages, dto.Package{
+			ID:           p.ID,
+			DeliveryDays: p.DeliveryDays,
+			Description:  p.Description,
+			Price:        p.Price,
+			Title:        p.Title,
+		})
+	}
+	
+	return dto.FreelanceByIdRestricted{
+		Id: freelanceByIdRestrictedModel.Id,
+		ReviewsCount: freelanceByIdRestrictedModel.ReviewsCount,
+		Rating: freelanceByIdRestrictedModel.Rating,
+		Title: freelanceByIdRestrictedModel.Title,
+		Image: freelanceByIdRestrictedModel.Image,
+		Packages: &packages,
+	}
+}
