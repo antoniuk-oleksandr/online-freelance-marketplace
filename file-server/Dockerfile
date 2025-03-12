@@ -1,21 +1,12 @@
-FROM golang:1.20-alpine AS builder
+FROM golang:1.24
 
 WORKDIR /app
 
-COPY go.mod ./
-run go mod download
+COPY go.mod go.sum ./
+RUN go mod download
 
 COPY . .
 
-RUN go build -o /go-file-server main.go
+RUN go build -o bin/file-server ./cmd/file-server
 
-FROM alpine:latest
-
-WORKDIR /app
-
-COPY --from=builder /go-file-server ./
-COPY uploads/ ./uploads/
-
-EXPOSE 8030
-
-CMD ["./go-file-server"]
+CMD ["/app/bin/file-server"]
