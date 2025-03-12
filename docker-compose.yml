@@ -16,11 +16,11 @@ services:
     restart: always
     build:
       context: ./file-server
-    container_name: freelance-marketplace-file-server
+    container_name: go-file-server
     ports:
       - "8030:8030"
     volumes:
-      - ./file-server/uploads:/app/uploads
+      - ./file-server/storage/uploads:/app/storage/uploads
     networks:
       - backend-network
 

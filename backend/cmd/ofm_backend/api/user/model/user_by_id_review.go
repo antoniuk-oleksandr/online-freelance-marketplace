@@ -3,7 +3,7 @@ package model
 import "time"
 
 type UserByIdReview struct {
-	ID           int64     `db:"id" json:"id"`
+	ID           int64     `db:"review_id" json:"review_id"`
 	Content      string    `db:"content" json:"content"`
 	Rating       int       `db:"rating" json:"rating"`
 	CreatedAt    time.Time `db:"created_at" json:"created_at"`

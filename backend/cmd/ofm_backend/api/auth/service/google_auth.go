@@ -6,7 +6,6 @@ import (
 	"ofm_backend/cmd/ofm_backend/api/auth/utils"
 	"ofm_backend/internal/database"
 	"ofm_backend/internal/middleware"
-	fileRepo "ofm_backend/cmd/ofm_backend/api/file/repository"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/jmoiron/sqlx"
@@ -48,15 +47,17 @@ func handleUserAccount(claims *body.GoogleJwtClaims, db *sqlx.DB) (string, error
 		return username, nil
 	}
 	
-	avatarID, err := fileRepo.AddFile(claims.PicURL, db)
-	if err != nil {
-		return "", err
-	}
+	panic("unimplemented")
 	
-	err = repository.AddUserWithGoogleAuth(claims, avatarID, db)
-	if err != nil {
-		return "", err
-	}
+	// avatarID, err := fileRepo.AddFile(claims.PicURL, db)
+	// if err != nil {
+	// 	return "", err
+	// }
+	
+	// err = repository.AddUserWithGoogleAuth(claims, avatarID, db)
+	// if err != nil {
+	// 	return "", err
+	// }
 
-	return claims.Email, nil
+	// return claims.Email, nil
 }

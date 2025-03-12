@@ -19,7 +19,7 @@ import (
 
 func SearchFreelances(searchBody body.Search) (*dto.SearchFreelances, error) {
 	db := database.GetDB()
-	
+
 	maxResults, err := strconv.Atoi(os.Getenv("MAX_SEARCH_RESULTS"))
 	if err != nil {
 		return nil, err
@@ -38,8 +38,12 @@ func SearchFreelances(searchBody body.Search) (*dto.SearchFreelances, error) {
 	}
 
 	freelanceDTOs := mapper.MapSearchFreelancesModelToDTO(freelanceModels)
-	
+
 	cursor, hasMore := buildCursor(searchBody, freelanceModels, maxResults)
+	if hasMore {
+		freelanceDTOs = freelanceDTOs[:maxResults]
+	}
+
 	return &dto.SearchFreelances{
 		Services: main_utils.AddServerURLToFiles(freelanceDTOs),
 		HasMore:  hasMore,
@@ -100,10 +104,10 @@ func getDataFromCursor(searchBody body.Search) (*[]string, error) {
 	if len(keyArr) != 2 {
 		return nil, main_utils.ErrInvalidCursor
 	}
-	
+
 	valueArr := make([]string, 2)
 	valueArr[0] = strings.Split(keyArr[0], ":")[1]
 	valueArr[1] = strings.Split(keyArr[1], ":")[1]
-	
+
 	return &valueArr, nil
 }

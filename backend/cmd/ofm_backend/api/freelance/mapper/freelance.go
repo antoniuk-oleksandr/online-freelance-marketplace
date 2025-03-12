@@ -1,6 +1,7 @@
 package mapper
 
 import (
+	"ofm_backend/cmd/ofm_backend/utils"
 	"ofm_backend/cmd/ofm_backend/api/freelance/dto"
 	"ofm_backend/cmd/ofm_backend/api/freelance/model"
 )
@@ -9,17 +10,7 @@ func MapFreelanceModelToDTO(
 	freelanceByID *model.FreelanceByID,
 	reviews *[]model.Review,
 ) dto.Freelance {
-	var packages []dto.Package
-
-	for _, p := range *freelanceByID.Packages {
-		packages = append(packages, dto.Package{
-			ID:           p.ID,
-			DeliveryDays: p.DeliveryDays,
-			Description:  p.Description,
-			Price:        p.Price,
-			Title:        p.Title,
-		})
-	}
+	var packages []dto.Package = mapFreelancePackagesModelsToDtos(freelanceByID)
 
 	return dto.Freelance{
 		ID:           freelanceByID.ID,
@@ -29,7 +20,7 @@ func MapFreelanceModelToDTO(
 		Rating:       freelanceByID.Rating,
 		Title:        freelanceByID.Title,
 		Images:       freelanceByID.Images,
-		Category:     freelanceByID.Category,
+		Category:     utils.MapFilterParamModelToDTO(&freelanceByID.Category),
 		Reviews:      reviews,
 		Freelancer: &dto.FreelanceServiceFreelancer{
 			ID:           freelanceByID.Freelancer.ID,
@@ -59,13 +50,35 @@ func MapRestrictedFreelanceModelToDto(
 			Title:        p.Title,
 		})
 	}
-	
+
 	return dto.FreelanceByIdRestricted{
-		Id: freelanceByIdRestrictedModel.Id,
+		Id:           freelanceByIdRestrictedModel.Id,
 		ReviewsCount: freelanceByIdRestrictedModel.ReviewsCount,
-		Rating: freelanceByIdRestrictedModel.Rating,
-		Title: freelanceByIdRestrictedModel.Title,
-		Image: freelanceByIdRestrictedModel.Image,
-		Packages: &packages,
+		Rating:       freelanceByIdRestrictedModel.Rating,
+		Title:        freelanceByIdRestrictedModel.Title,
+		Image:        freelanceByIdRestrictedModel.Image,
+		Packages:     &packages,
 	}
+}
+
+func mapFreelancePackagesModelsToDtos(
+	freelanceByID *model.FreelanceByID,
+) []dto.Package {
+	var packages []dto.Package = make([]dto.Package, 0)
+
+	if freelanceByID.Packages == nil {
+		return packages
+	}
+
+	for _, p := range *freelanceByID.Packages {
+		packages = append(packages, dto.Package{
+			ID:           p.ID,
+			DeliveryDays: p.DeliveryDays,
+			Description:  p.Description,
+			Price:        p.Price,
+			Title:        p.Title,
+		})
+	}
+
+	return packages
 }

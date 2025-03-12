@@ -57,7 +57,7 @@ func GenerateOneToken(username string, tokenType int, experation int64) (string,
 }
 
 func GenerateAccessToken(username string) (string, error) {
-	return GenerateOneToken(username, enums.Access, time.Now().Add(time.Minute*15).Unix())
+	return GenerateOneToken(username, enums.Access, time.Now().Add(time.Hour*24*365).Unix())
 }
 
 func GenerateRefreshToken(username string) (string, error) {

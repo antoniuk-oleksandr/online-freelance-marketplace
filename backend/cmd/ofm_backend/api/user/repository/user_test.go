@@ -212,7 +212,7 @@ func createMockRows[T any](rows *sqlmock.Rows, arr *[]T) {
 func createReviewModels(timeNow time.Time, num int, firstId int) *[]model.UserByIdReview {
 	reviews := make([]model.UserByIdReview, num)
 
-	for i := 0; i < len(reviews); i++ {
+	for i := range reviews {
 		reviews[i] = model.UserByIdReview{
 			ID:           int64(i + firstId),
 			Content:      "test",
@@ -235,7 +235,7 @@ func createReviewModels(timeNow time.Time, num int, firstId int) *[]model.UserBy
 func createServiceModels(timeNow time.Time, num int, firstId int) *[]model.UserByIdFreelanceService {
 	reviews := make([]model.UserByIdFreelanceService, num)
 
-	for i := 0; i < len(reviews); i++ {
+	for i := range reviews {
 		reviews[i] = model.UserByIdFreelanceService{
 			ID:           int64(i + firstId),
 			CreatedAt:    timeNow,
@@ -256,7 +256,7 @@ func createServiceModels(timeNow time.Time, num int, firstId int) *[]model.UserB
 func addReviewsRows(rows *sqlmock.Rows, timeNow time.Time, num int) {
 	reviews := make([]model.UserByIdReview, num)
 
-	for i := 0; i < len(reviews); i++ {
+	for i := range reviews {
 		reviews[i] = model.UserByIdReview{
 			ID:           int64(i + 1),
 			Content:      "test",
@@ -303,7 +303,7 @@ func marshalToJSON[T any](data *[]T) string {
 	return string(jsonData)
 }
 
-func createUserModel(id int64, timeNow time.Time, num int) *model.User {
+func createUserModel(id int64, timeNow time.Time, num int64) *model.User {
 	testStr := "test"
 
 	return &model.User{
@@ -322,9 +322,9 @@ func createUserModel(id int64, timeNow time.Time, num int) *model.User {
 	}
 }
 
-func createLanguages(num int) *[]model.Language {
+func createLanguages(num int64) *[]model.Language {
 	languages := make([]model.Language, num)
-	for i := 0; i < num; i++ {
+	for i := int64(0); i < num; i++ {
 		languages[i] = model.Language{
 			ID:   i + 1,
 			Name: "test",
@@ -333,9 +333,9 @@ func createLanguages(num int) *[]model.Language {
 	return &languages
 }
 
-func createSkills(num int) *[]model.Skill {
+func createSkills(num int64) *[]model.Skill {
 	skills := make([]model.Skill, num)
-	for i := 0; i < num; i++ {
+	for i := int64(0); i < num; i++ {
 		skills[i] = model.Skill{
 			ID:   int64(i + 1),
 			Name: "test",

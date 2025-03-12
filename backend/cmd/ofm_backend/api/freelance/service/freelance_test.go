@@ -2,6 +2,7 @@ package service
 
 import (
 	"ofm_backend/cmd/ofm_backend/api/freelance/dto"
+	filter_params_dto "ofm_backend/cmd/ofm_backend/api/filter_params/dto"
 	"ofm_backend/cmd/ofm_backend/api/freelance/model"
 	"ofm_backend/cmd/ofm_backend/api/freelance/utils"
 	main_utils "ofm_backend/cmd/ofm_backend/utils"
@@ -83,7 +84,7 @@ func TestGetFreelanceById_Success(t *testing.T) {
 			Rating:       5,
 			Title:        "test",
 			Images:       &[]string{"http://localost:8083/files/test1.jpg", "http://localost:8083/files/test2.jpg"},
-			Category:     &model.Category{ID: 1, Name: "test"},
+			Category:     &filter_params_dto.FilterItem{ID: 1, Name: "test"},
 			Packages:     &[]dto.Package{{ID: 1, DeliveryDays: 1, Description: "test", Price: 1, Title: "test"}},
 			Freelancer:   &dto.FreelanceServiceFreelancer{ID: 1, Username: "test", FirstName: "test", Surname: "test", Avatar: "test", Rating: 5, Level: 1, ReviewsCount: 1},
 			Reviews:      mockRepoReviewsResponse,
@@ -198,7 +199,7 @@ func TestGetResrictedFreelanceById(t *testing.T) {
 		{
 			Name:         "Error Not Found",
 			MockId:       1,
-			MockError:    main_utils.ErrNoFound,
+			MockError:    main_utils.ErrNotFound,
 			MockData:     nil,
 			ExpectedData: nil,
 		},

@@ -3,7 +3,7 @@ package model
 import "time"
 
 type User struct {
-	ID         int64       `json:"id" db:"id"`
+	ID         int64       `json:"user_id" db:"user_id"`
 	About      *string     `json:"about" db:"about"`
 	CreatedAt  time.Time   `json:"created_at" db:"created_at"`
 	Email      string      `json:"email" db:"email"`

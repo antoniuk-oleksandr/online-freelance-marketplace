@@ -1,59 +1,67 @@
 package utils
 
 const initialSearchServicesQuery = `
-SELECT
-	DISTINCT (S.id),
-    S.created_at, S.title,
-    S.category_id, S.freelancer_id,
-    (SELECT name
-    FROM services_files SF
-             INNER JOIN files F ON F.id = SF.file_id
-    WHERE SF.service_id = S.id
-    ORDER BY SF.file_id
-    LIMIT 1) as image,
+SELECT DISTINCT
+    S.service_id,
+    S.created_at,
+    S.title,
+    S.category_id,
+    S.freelancer_id,
+    (
+        SELECT name
+        FROM services_files SF
+        INNER JOIN files F ON F.file_id = SF.file_id
+        WHERE SF.service_id = S.service_id
+        ORDER BY SF.file_id
+        LIMIT 1
+    ) AS image,
     COALESCE(subCountRating.count, 0) AS reviews_count,
     COALESCE(ROUND(subCountRating.rating, 2), 0) AS rating,
     COALESCE(subMinPrice.minPrice, 0) AS min_price,
-    last_month_orders.last_month_completed_orders_count AS last_month_completed_orders_count,
-    freelancer.level as level
+    COALESCE(last_month_orders.last_month_completed_orders_count, 0) AS last_month_completed_orders_count,
+    freelancer.level AS level
 FROM services S
+
+-- Count Ratings
 LEFT JOIN (
     SELECT
-        S.id,
-        COUNT(R.id) AS count,
+        O.service_id,
+        COUNT(R.review_id) AS count,
         AVG(R.rating) AS rating
-    FROM services S
-        LEFT JOIN orders O ON S.id = O.service_id
-        LEFT JOIN reviews R ON O.review_id = R.id
-    WHERE R.id IS NOT NULL
-    GROUP BY S.id
-) subCountRating ON S.id = subCountRating.id
+    FROM orders O
+    LEFT JOIN reviews R ON O.review_id = R.review_id
+    WHERE R.review_id IS NOT NULL
+    GROUP BY O.service_id
+) subCountRating ON S.service_id = subCountRating.service_id
+
+-- Min Price
 LEFT JOIN (
     SELECT
-        SP.service_id AS id,
-        MIN(P.price) as minPrice,
-        MIN(P.delivery_days) as delivery_days
-    FROM services_packages SP
-        LEFT JOIN packages P ON P.id = SP.package_id
+        SP.service_id,
+        MIN(SP.price) AS minPrice,
+        MIN(SP.delivery_days) AS delivery_days
+    FROM packages SP
     GROUP BY SP.service_id
-    ) subMinPrice ON S.id = subMinPrice.id
-    
+) subMinPrice ON S.service_id = subMinPrice.service_id
+
+-- Last Month Completed Orders
 LEFT JOIN (
     SELECT
-        SER.id AS service_id,
-        COUNT(O.id) AS last_month_completed_orders_count
-    FROM services SER
-        LEFT JOIN orders O
-            ON SER.id = O.service_id
-            AND O.status_id IN (3)
-            AND O.ended_at >= DATE_TRUNC('month', CURRENT_DATE - INTERVAL '1 month')
-    GROUP BY SER.id
-) last_month_orders ON S.id = last_month_orders.service_id    
-    
+        O.service_id,
+        COUNT(O.order_id) AS last_month_completed_orders_count
+    FROM orders O
+    WHERE O.status_id IN (3)
+      AND O.ended_at >= DATE_TRUNC('month', CURRENT_DATE - INTERVAL '1 month')
+    GROUP BY O.service_id
+) last_month_orders ON S.service_id = last_month_orders.service_id
+
+-- Freelancer Info
 INNER JOIN LATERAL (
-    SELECT * FROM users U
-    WHERE U.id = S.freelancer_id
-) as freelancer ON S.freelancer_id = S.freelancer_id
+    SELECT U.user_id, U.level
+    FROM users U
+    WHERE U.user_id = S.freelancer_id
+) AS freelancer ON TRUE
+
 `
 
 // WHERE

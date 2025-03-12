@@ -111,7 +111,7 @@ func TestGetFreelanceServiceById_Success(t *testing.T) {
 
 	rows := sqlmock.
 		NewRows([]string{"id", "created_at", "description", "title", "reviews_count", "rating", "images", "category", "packages", "freelancer"}).
-		AddRow(freelanceID, createdAt, "Test description", "Test title", 1, 5.0, `["image1", "image2"]`, `{"id": 1, "name": "Test Category"}`, `[{"id": 1, "delivery_days": 1, "description": "Test description", "price": 1, "title": "Test title"}]`, `{"id": 1, "username": "Test", "first_name": "Test", "surname": "Test", "avatar": "avatar1", "rating": 5, "level": 1, "reviews_count": 1}`)
+		AddRow(freelanceID, createdAt, "Test description", "Test title", 1, 5.0, `["image1", "image2"]`, `{"category_id": 1, "name": "Test Category"}`, `[{"id": 1, "delivery_days": 1, "description": "Test description", "price": 1, "title": "Test title"}]`, `{"id": 1, "username": "Test", "first_name": "Test", "surname": "Test", "avatar": "avatar1", "rating": 5, "level": 1, "reviews_count": 1}`)
 
 	mock.ExpectQuery(regexp.QuoteMeta(".")).WillReturnRows(rows)
 
@@ -141,7 +141,7 @@ func TestGetResrictedFreelanceById(t *testing.T) {
 		{
 			name:      "Error Not Found",
 			mockId:    1,
-			mockError: main_utils.ErrNoFound,
+			mockError: main_utils.ErrNotFound,
 			mockData:  nil,
 		},
 	}

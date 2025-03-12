@@ -8,5 +8,5 @@ import (
 func RegisterFilterParamsRoutes(apiGroup fiber.Router){
 	filterParamsGroup := apiGroup.Group("/filter-params")
 	
-	filterParamsGroup.Get("/get-all", controller.FilterParamsGetAll)
+	filterParamsGroup.Get("/all", controller.FilterParamsGetAll)
 }

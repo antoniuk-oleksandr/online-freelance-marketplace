@@ -3,7 +3,7 @@ package model
 import "time"
 
 type SearchService struct {
-	ID                            int64     `json:"id" db:"id"`
+	ID                            int64     `json:"service_id" db:"service_id"`
 	CreatedAt                     time.Time `json:"created_at" db:"created_at"`
 	Description                   string    `json:"description" db:"description"`
 	Title                         string    `json:"title" db:"title"`
@@ -14,5 +14,5 @@ type SearchService struct {
 	Rating                        float64   `json:"rating" db:"rating"`
 	MinPrice                      float64   `json:"minPrice" db:"min_price"`
 	LastMonthCompletedOrdersCount int64     `db:"last_month_completed_orders_count"`
-	Level                         float64     `db:"level"`
+	Level                         float64   `db:"level"`
 }

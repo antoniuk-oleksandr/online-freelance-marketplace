@@ -1,6 +1,7 @@
 package mapper
 
 import (
+	"ofm_backend/cmd/ofm_backend/utils"
 	"ofm_backend/cmd/ofm_backend/api/user/dto"
 	modelPac "ofm_backend/cmd/ofm_backend/api/user/model"
 )
@@ -87,14 +88,14 @@ func MapUserByIdModelToDTO(
 	services *[]dto.ServiceByIdDto,
 ) *dto.UserByIdTO {
 	var reviewsArr []dto.UserByIdReviewDto
-	if reviews == nil || (reviews != nil && len(*reviews) == 0) {
+	if reviews == nil || (len(*reviews) == 0) {
 		reviewsArr = make([]dto.UserByIdReviewDto, 0)
 	} else {
 		reviewsArr = *reviews
 	}
 
 	var servicesArr []dto.ServiceByIdDto
-	if services == nil || (services != nil && len(*services) == 0) {
+	if services == nil || (len(*services) == 0) {
 		servicesArr = make([]dto.ServiceByIdDto, 0)
 	} else {
 		servicesArr = *services
@@ -109,8 +110,8 @@ func MapUserByIdModelToDTO(
 		Surname:      model.Surname,
 		Username:     model.Username,
 		Avatar:       model.Avatar,
-		Languages:    model.Languages,
-		Skills:       model.Skills,
+		Languages:    utils.MapFilterParamModelsToDTOs(model.Languages),
+		Skills:       utils.MapFilterParamModelsToDTOs(model.Skills),
 		Rating:       &model.Rating,
 		ReviewsCount: &model.Count,
 		Reviews:      reviewsArr,

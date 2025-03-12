@@ -6,8 +6,8 @@ import (
 	"github.com/jmoiron/sqlx"
 )
 
-func FilterParamsGetAll(db *sqlx.DB) (*model.FilterParams, error) {
-	var rawFilterParams model.FilterParams
+func FilterParamsGetAll(db *sqlx.DB) (*model.FilterParamsJSON, error) {
+	var rawFilterParams model.FilterParamsJSON
 
 	query := `SELECT
 			(SELECT json_agg(L) FROM languages L)  as languages,

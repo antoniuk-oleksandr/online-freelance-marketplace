@@ -3,6 +3,7 @@ package controller
 import (
 	"fmt"
 	"net/http"
+	filter_params_dto "ofm_backend/cmd/ofm_backend/api/filter_params/dto"
 	"ofm_backend/cmd/ofm_backend/api/freelance/dto"
 	"ofm_backend/cmd/ofm_backend/api/freelance/model"
 	"ofm_backend/cmd/ofm_backend/utils"
@@ -57,7 +58,7 @@ func TestGetFreelanceById_Success(t *testing.T) {
 			Rating:       5,
 			Title:        "test",
 			Images:       &[]string{"test1.jpg", "test2.jpg"},
-			Category:     &model.Category{ID: 1, Name: "test"},
+			Category:     &filter_params_dto.FilterItem{ID: 1, Name: "test"},
 			Packages:     &[]dto.Package{{ID: 1, DeliveryDays: 1, Description: "test", Price: 1, Title: "test"}},
 			Freelancer:   &dto.FreelanceServiceFreelancer{ID: 1, Username: "test", FirstName: "test", Surname: "test", Avatar: "test", Rating: 5, Level: 1, ReviewsCount: 1},
 			Reviews:      &[]model.Review{{ID: 1, Content: "test", Rating: 5, CreatedAt: time.Now(), EndedAt: time.Now(), Customer: &model.Customer{ID: 1, Username: "test", Avatar: "test"}, Freelance: &model.ReviewFreelance{Price: 1}}},

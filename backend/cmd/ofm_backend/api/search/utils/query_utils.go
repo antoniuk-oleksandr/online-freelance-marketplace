@@ -84,7 +84,7 @@ func addExistsCondition(
 		EXISTS (
 			SELECT 1
 			FROM %s
-			WHERE user_id = freelancer.id
+			WHERE user_id = freelancer.user_id
 			AND %s_id IN (%s)
 		)`, table, field, strings.Join(values, ", ")))
 	}
@@ -107,9 +107,9 @@ func addOrderClause(queryBuilder *strings.Builder, searchBody body.Search) {
 	}
 
 	if searchBody.Order == nil || *searchBody.Order == enum.Descending {
-		queryBuilder.WriteString(fmt.Sprintf("ORDER BY %s DESC, id DESC", orderBy))
+		queryBuilder.WriteString(fmt.Sprintf("ORDER BY %s DESC, service_id DESC", orderBy))
 	} else {
-		queryBuilder.WriteString(fmt.Sprintf("ORDER BY %s, id", orderBy))
+		queryBuilder.WriteString(fmt.Sprintf("ORDER BY %s, service_id", orderBy))
 	}
 }
 
@@ -142,20 +142,20 @@ func determineCursorSign(order *int) string {
 
 func determineCursorIdKey(sort *int) string {
 	if sort == nil {
-		return "last_month_completed_orders_count"
+		return "COALESCE(last_month_completed_orders_count, 0)"
 	}
 
 	switch *sort {
 	case enum.Name:
 		return "S.title"
 	case enum.Rating:
-		return "rating"
+		return "COALESCE(rating, 0)"
 	case enum.Level:
 		return "level"
 	case enum.Price:
 		return "COALESCE(subMinPrice.minPrice, 0)"
 	case enum.Popularity:
-		return "last_month_completed_orders_count"
+		return "COALESCE(last_month_completed_orders_count, 0)"
 	default:
 		return ""
 	}
@@ -172,8 +172,8 @@ func appendCursorCondition(
 	queryBuilder *strings.Builder,
 	idKey, value, sign, cursorId string,
 ) {
-	queryBuilder.WriteString(fmt.Sprintf("(%s = %s AND S.id %s %s) \nOR\n", idKey, value, sign, cursorId))
-	queryBuilder.WriteString(fmt.Sprintf("(%s %s %s)\n", idKey, sign, value))
+	queryBuilder.WriteString(fmt.Sprintf("((%s = %s AND S.service_id %s %s) \nOR\n", idKey, value, sign, cursorId))
+	queryBuilder.WriteString(fmt.Sprintf("(%s %s %s))\n", idKey, sign, value))
 }
 
 

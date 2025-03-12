@@ -3,13 +3,13 @@ package controller
 import (
 	"fmt"
 	"ofm_backend/cmd/ofm_backend/api/user/dto"
-	"ofm_backend/cmd/ofm_backend/api/user/model"
 	"ofm_backend/cmd/ofm_backend/api/user/utils"
 	"ofm_backend/cmd/ofm_backend/test_utils"
 	main_utils "ofm_backend/cmd/ofm_backend/utils"
 	"testing"
 	"time"
 
+	filter_params_dto "ofm_backend/cmd/ofm_backend/api/filter_params/dto"
 	"github.com/gofiber/fiber/v2"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
@@ -210,8 +210,8 @@ func TestGetUserById_Success(t *testing.T) {
 			Avatar:       nil,
 			Rating:       nil,
 			ReviewsCount: nil,
-			Skills:       &[]model.Skill{{ID: 1, Name: "test1"}, {ID: 2, Name: "test2"}},
-			Languages:    &[]model.Language{{ID: 1, Name: "test1"}, {ID: 2, Name: "test2"}},
+			Skills:       &[]filter_params_dto.FilterItem{{ID: int64(1), Name: "test1"}, {ID: int64(2), Name: "test2"}},
+			Languages:    &[]filter_params_dto.FilterItem{{ID: 1, Name: "test1"}, {ID: 2, Name: "test2"}},
 			Services:     *services,
 			Reviews:      *reviews,
 		},
@@ -241,4 +241,8 @@ func TestGetUserById_Error(t *testing.T) {
 	assert.Equal(t, fiber.StatusInternalServerError, resp.StatusCode)
 
 	mockService.AssertExpectations(t)
+}
+
+func pointer[T any](val T) *T{
+	return &val
 }

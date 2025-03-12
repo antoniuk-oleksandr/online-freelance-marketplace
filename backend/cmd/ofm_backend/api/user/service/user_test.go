@@ -2,6 +2,7 @@ package service
 
 import (
 	"ofm_backend/cmd/ofm_backend/api/user/dto"
+	filter_params_dto "ofm_backend/cmd/ofm_backend/api/filter_params/dto"
 	"ofm_backend/cmd/ofm_backend/api/user/model"
 	"ofm_backend/cmd/ofm_backend/api/user/utils"
 	main_utils "ofm_backend/cmd/ofm_backend/utils"
@@ -281,8 +282,8 @@ func createUserDTO(timeNow time.Time, num int) *dto.UserByIdTO {
 		Avatar:       nil,
 		Rating:       &rating,
 		ReviewsCount: &reviewsCount,
-		Languages:    &[]model.Language{{ID: int(0), Name: "test"}, {ID: int(0), Name: "test"}},
-		Skills:       &[]model.Skill{{ID: int64(0), Name: "test"}, {ID: int64(0), Name: "test"}},
+		Languages:    &[]filter_params_dto.FilterItem{{ID: int64(0), Name: "test"}, {ID: int64(0), Name: "test"}},
+		Skills:       &[]filter_params_dto.FilterItem{{ID: int64(0), Name: "test"}, {ID: int64(0), Name: "test"}},
 		Reviews:      *createReviewsDTOs(timeNow, num),
 		Services:     *createServicesDtos(num),
 	}

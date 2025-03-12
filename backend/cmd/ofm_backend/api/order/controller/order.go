@@ -1,21 +1,15 @@
 package controller
 
 import (
-	"ofm_backend/cmd/ofm_backend/api/order/service"
-	"ofm_backend/cmd/ofm_backend/utils"
+	"ofm_backend/cmd/ofm_backend/api/order/body"
 
 	"github.com/gofiber/fiber/v2"
 )
 
-func CreateOrder(ctx *fiber.Ctx) error {
-	err := service.CreateOrder()
-	if err != nil {
-		return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-			"error": utils.ErrUnexpectedError,
-		})
-	}
-
-	return ctx.Status(fiber.StatusCreated).JSON(fiber.Map{
-		"message": "Order created",
-	})
+type OrderController interface {
+	GetOrderById(ctx *fiber.Ctx) error
+	SubmitOrderRequirements(ctx *fiber.Ctx) error
+	getRequiredFormValue(name string, ctx *fiber.Ctx) (string, error)
+	parseSubmitOrderRequirementsRequestBody(ctx *fiber.Ctx) (*body.OrderRequirementsBody, error)
+	getRequiredFormIntValue(name string, ctx *fiber.Ctx) (int, error)
 }
