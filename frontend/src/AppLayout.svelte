@@ -7,6 +7,7 @@
     import ToastElement from "@/common-components/ToastElement/ToastElement.svelte";
     import Modal from "@/common-components/Modal/Modal.svelte";
     import ErrorComponent from "@/common-components/ErrorComponent/ErrorComponent.svelte";
+    import {errorStore} from "@/common-stores/error-store.ts";
 
     let {children}: LayoutProps = $props();
 
@@ -21,6 +22,8 @@
     $effect(() => {
         hideHeaderFooter = pagesToHideHeaderFooter.includes($location.pathname.split("/")[1]);
         hideFooter = pagesToHideFooter.includes($location.pathname.split("/")[1]);
+
+        errorStore.set({shown: false, error: undefined});
     });
 </script>
 

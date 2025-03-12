@@ -24,14 +24,14 @@
         <Route path="/services/:id" let:params>
             <ServicePage id={params.id}/>
         </Route>
-        <Route path="/order/request/:serviceId" let:params>
-            <OrderRequestPage serviceId={params.serviceId}/>
+        <Route path="/orders/request">
+            <OrderRequestPage/>
         </Route>
-        <Route path="/order/:serviceId/confirm-pay" let:params>
-            <OrderConfirmPayPage serviceId={params.serviceId}/>
+        <Route path="/orders/confirm-pay">
+            <OrderConfirmPayPage/>
         </Route>
-        <Route path="/order/:serviceId/submit-requirements" let:params>
-            <OrderSubmitRequirementsPage serviceId={params.serviceId}/>
+        <Route path="/orders/:orderId/submit-requirements" let:params>
+            <OrderSubmitRequirementsPage orderId={params.orderId}/>
         </Route>
         <Route path="/users/:id" let:params>
             <UserPage id={params.id}/>

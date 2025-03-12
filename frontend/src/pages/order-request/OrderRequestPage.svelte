@@ -4,24 +4,27 @@
     import OrderRequestPageLayout from "@/pages/order-request/OrderRequestPageLayout.svelte";
     import OrderRequestPageContent
         from "@/pages/order-request/components/OrderRequestPageContent/OrderRequestPageContent.svelte";
-    import {fetchServiceDetailsAndPackage} from "@/pages/order-request/helpers.ts";
+    import {fetchServiceDetailsAndPackage, parseOrderRequestQuery} from "@/pages/order-request/helpers.ts";
     import type {StepperItem} from "@/types/StepperItem.ts";
     import type {RestrictedService} from "@/types/RestrictedService.ts";
-
-    type RequestPageParams = {
-        serviceId: string;
-    };
-
-    const {serviceId}: RequestPageParams = $props();
+    import {derived} from "svelte/store";
 
     let serviceData = $state<RestrictedService | undefined>();
     const setServiceData = (newServiceData: RestrictedService) => serviceData = newServiceData;
 
+    let serviceId = $state<string | undefined>();
+    const setServiceId = (value: string) => serviceId = value;
+    let packageId = $state<string | undefined>();
+    const setPackageId = (value: string) => packageId = value;
+    parseOrderRequestQuery(setServiceId, setPackageId);
+
     let selectedPackage = $state<Package | undefined>();
     const setSelectedPackage = (newPackage: Package) => selectedPackage = newPackage;
 
-    fetchServiceDetailsAndPackage(serviceId, setServiceData, setSelectedPackage);
-
+    $effect(() => {
+        if(!serviceId || !packageId) return;
+        fetchServiceDetailsAndPackage(serviceId, packageId, setServiceData, setSelectedPackage);
+    })
 
     const steps: StepperItem[] = [{text: "Order details",}, {text: "Confirm & pay"}, {text: "Submit requirements"}];
 </script>

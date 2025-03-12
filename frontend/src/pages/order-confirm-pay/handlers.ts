@@ -1,7 +1,14 @@
-import {getCreditCardMaxLength, getCreditCardType} from "@/pages/order-confirm-pay/helpers.ts";
-import {CreditCardType} from "@/types/CreditCardType.ts";
-import type {PaymentData} from "@/types/PaymentData.ts";
-import {JSEncrypt} from "jsencrypt";
+import { getCreditCardMaxLength, getCreditCardType } from "@/pages/order-confirm-pay/helpers";
+import { CreditCardType } from "@/types/CreditCardType";
+import type { PaymentData } from "@/types/PaymentData.ts";
+import JSEncrypt from 'jsencrypt';
+import { request } from "@/api/request";
+import Cookies from "js-cookie";
+import { PostPaymentRequestResponse } from "@/types/PostPaymentRequestResponse";
+import { errorStore } from "@/common-stores/error-store";
+import { ResponseErrorEnum } from "@/types/ResponseErrorEnum";
+import { GetPublicKeyRequestResponse } from "@/types/GetPublicKeyRequestResponse";
+import { navigate } from "svelte-routing";
 
 export const handleCardNumberInput = (
     newValue: string,
@@ -108,28 +115,85 @@ export const handleCardHolderNameInput = (
     }
 };
 
-export const handlePaymentFormSubmit = (data: PaymentData) => {
-    const publicKey = "-----BEGIN PUBLIC KEY-----\n" +
-        "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA7C+L6+LMftNkTzIzg0iJ\n" +
-        "w8Fvhlp0bjb29wLVu1Hyz4J4sjNsPqIMh6uw9hxHtpLwF9hPhxXHHLJQ/s1BpxQ3\n" +
-        "oz0OU7nSgAOhmC3e23QbC5xhHnn9VTh/q9mpuLszXHl4XGEJhS3OnR5z7m6cQdzV\n" +
-        "Bd+VoZSkX4PBLtJzYOlfZZuM7p8OkjwTnV/RVVGwleplKw+wgiPItpqu/KvHk6df\n" +
-        "vUoA9HEz6mhGoJivEZrI3NRb3zqsUwmDZvH9fL7dxkRL+MOvGBY2yRAwxiFc07fF\n" +
-        "6M3LsFTk9APanKhpMlZHo4hANct6lgT9FhZEF5KHlPvS3jrV6vjsftbEXgXKHZ2B\n" +
-        "GQIDAQAB\n" +
-        "-----END PUBLIC KEY-----\n"
+export const handlePaymentFormSubmit = async (
+    cardCredentials: PaymentData,
+    serviceId: string,
+    packageId: string
+) => {
+    const data = processPaymentData(cardCredentials, serviceId, packageId)
+    const publicKey = await getPublicKey();
 
-    const encryptor = new JSEncrypt();
-    encryptor.setPublicKey(publicKey);
-
-    // Encrypt the card details
-    const encrypted = encryptor.encrypt(JSON.stringify(data));
-    if (!encrypted) {
-        alert("Encryption failed!");
+    const encryptedData = encryptData(publicKey, data);
+    if (!encryptedData) {
+        errorStore.set(
+            { shown: true, error: ResponseErrorEnum.ErrEncryption }
+        );
         return;
     }
 
-    console.log(encrypted);
+    const response = await processPayment(encryptedData as string);
+    handlePaymentResponse(response);
+}
+
+const processPaymentData = (
+    cardCredentials: PaymentData,
+    serviceId: string,
+    packageId: string
+) => {
+    cardCredentials.cardNumber = cardCredentials.cardNumber.replace(/\s+/g, '');
+    const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
+    return {
+        cardCredentials,
+        serviceId: parseInt(serviceId),
+        packageId: parseInt(packageId),
+        userTimezone
+    }
+}
+
+const getPublicKey = async (): Promise<string> => {
+    const resp = await request<GetPublicKeyRequestResponse>("/payment/public-key", "GET");
+    if (resp.status !== 200) {
+        errorStore.set(
+            { shown: true, error: ResponseErrorEnum.ErrEncryption }
+        );
+        return "";
+    }
+    return resp.data;
+}
+
+const processPayment = async (
+    encryptedData: string
+): Promise<PostPaymentRequestResponse> => {
+    const accessToken = Cookies.get("accessToken");
+    if (!accessToken || accessToken === "") errorStore.set(
+        { shown: true, error: ResponseErrorEnum.ErrInvalidAccessTokens }
+    );
+
+    return await request<PostPaymentRequestResponse>(
+        "/payment/process-payment", "POST", accessToken, { data: encryptedData }
+    );
+}
+
+const handlePaymentResponse = (response: PostPaymentRequestResponse) => {
+    if (response.status !== 201) {
+        errorStore.set({ shown: true, error: response.data.error });
+    } else {
+        navigate(`/orders/${response.data.orderId}/submit-requirements`);
+    }
+}
+
+const encryptData = (publicKey: string, data: object) => {
+    const dataString = JSON.stringify(data);
+
+    const encrypt = new JSEncrypt();
+    const cleanKey = publicKey
+        .replace('-----BEGIN PUBLIC KEY-----', '')
+        .replace('-----END PUBLIC KEY-----', '')
+        .replace(/\s+/g, '');
+
+    encrypt.setPublicKey(`-----BEGIN PUBLIC KEY-----${cleanKey}-----END PUBLIC KEY-----`);
+    return encrypt.encrypt(dataString);
 }
 
 

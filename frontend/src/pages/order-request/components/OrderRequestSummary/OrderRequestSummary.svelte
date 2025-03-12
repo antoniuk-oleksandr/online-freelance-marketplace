@@ -55,7 +55,7 @@
             title="delivery time"
             value="{pkg.deliveryDays} {pkg.deliveryDays === 1 ? 'day' : 'days'}"
     />
-    <Link to="/order/{serviceId}/confirm-pay?packageId={pkg.id}">
+    <Link to="/orders/confirm-pay?serviceId={serviceId}&packageId={pkg.id}">
         <Button styles="w-full">Continue to Checkout</Button>
     </Link>
 </PaperElement>

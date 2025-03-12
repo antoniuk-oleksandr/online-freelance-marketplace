@@ -21,7 +21,7 @@
 
     let defaultFilterParamsRequestResponse = $state<GetFilterParamsRequestResponse | undefined>();
 
-    request<GetFilterParamsRequestResponse>("/filter-params/get-all", "GET").then((response) => {
+    request<GetFilterParamsRequestResponse>("/filter-params/all", "GET").then((response) => {
         if (response.status !== 200) {
             errorStore.set({shown: true, error: response.error});
         }

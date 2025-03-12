@@ -4,6 +4,11 @@ const config = {
         "./index.html",
         "./src/**/*.svelte",
     ],
+    safelist: [
+        "bg-red-500",
+        "bg-green-500",
+        "bg-orange-500",
+    ],
     theme: {
         extend: {
             transitionProperty: {

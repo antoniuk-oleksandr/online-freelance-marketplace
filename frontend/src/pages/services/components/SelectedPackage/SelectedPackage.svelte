@@ -22,7 +22,7 @@
     </span>
         <p class="font-bold">{price}$</p>
     </div>
-    <Link to="/order/request/{serviceId}?packageId={id}">
+    <Link to="/orders/request?serviceId={serviceId}&packageId={id}">
         <MyButton
                 styles={"!mt-6 !w-full"}>
             Request Order

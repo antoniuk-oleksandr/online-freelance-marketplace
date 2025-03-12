@@ -18,7 +18,9 @@ export enum ResponseErrorEnum {
     UsernameDoesNotExist = "Username does not exist",
     BlacklistedToken = "Token is blacklisted",
     InvalidCursor = "Cursor is invalid",
-    ErrTooManyRequests = "Too many requests"
+    ErrTooManyRequests = "Too many requests",
+    ErrEncryption = "Encryption error",
+    ErrInvalidAccessTokens = "Invalid access tokens",
 }
 
 export type ResponseError = {

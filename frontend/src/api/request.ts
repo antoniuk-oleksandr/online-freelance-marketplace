@@ -1,4 +1,4 @@
-import {getHost} from "@/utils/utils.ts";
+import { getHost } from "@/utils/utils";
 import axios from "axios";
 
 export const request = async <T>(
@@ -15,14 +15,20 @@ export const request = async <T>(
             ? axios.post : method === "PUT"
                 ? axios.put : axios.delete;
 
-    const config = token !== undefined
-        ? {headers: {Authorization: `Bearer ${token}`}}
-        : undefined;
+    const headers: Record<string, string> = token
+        ? { Authorization: `Bearer ${token}` }
+        : {};
+
+    if (body instanceof FormData) {
+        headers["Content-Type"] = "multipart/form-data";
+    } else if (body) {
+        headers["Content-Type"] = "application/json";
+    }
 
     try {
         let response = ["GET", "DELETE"].includes(method)
-            ? await methodFunc(url, config)
-            : await methodFunc(url, body, config);
+            ? await methodFunc(url, { headers })
+            : await methodFunc(url, body, { headers });
 
         return {
             data: response.data,

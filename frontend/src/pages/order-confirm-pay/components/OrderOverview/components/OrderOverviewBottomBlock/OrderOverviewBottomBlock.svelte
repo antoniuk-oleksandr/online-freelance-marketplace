@@ -1,5 +1,5 @@
 <script lang="ts">
-    import {round} from "@/utils/utils.ts";
+    import {calcPriceWithServiceFees, getServiceFees, round} from "@/utils/utils.ts";
     import OrderRequestSummaryItem
         from "@/pages/order-request/components/OrderRequestSummary/components/OrderRequestSummaryItem/OrderRequestSummaryItem.svelte";
     import OrderOverviewBottomBlockLayout
@@ -10,7 +10,7 @@
         pkg: Package,
     };
 
-    const serviceFees = parseFloat(import.meta.env.VITE_SERVICE_FEES as string);
+    const serviceFees = getServiceFees();
 
 
     const {pkg}: OrderOverviewBottomBlockProps = $props();
@@ -24,7 +24,7 @@
     <OrderRequestSummaryItem
             styles="font-semibold"
             title="total"
-            value="{round(serviceFees * pkg.price  + pkg.price, 2)}$"
+            value="{calcPriceWithServiceFees(pkg.price)}$"
     />
     <OrderRequestSummaryItem
             title="delivery time"

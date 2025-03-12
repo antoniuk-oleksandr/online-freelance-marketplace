@@ -7,7 +7,7 @@
 <FooterLayout>
     <div class={"flex gap-x-6 justify-center md:justify-start items-center w-full flex-col sm:flex-row gap-y-4"}>
         <AppLogo/>
-        <p>© 2024 Online Freelance Marketplace. All rights reserved.</p>
+        <p>© {(new Date()).getUTCFullYear()} Online Freelance Marketplace. All rights reserved.</p>
     </div>
     <div class={"text-xl flex gap-x-6"}>
         <FooterIcon iconName={"hugeicons:instagram"} link={"https://www.instagram.com/"}/>

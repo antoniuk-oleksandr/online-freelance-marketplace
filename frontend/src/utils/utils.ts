@@ -76,5 +76,15 @@ export const formatText = (text: string) => {
 
 export const round = (value: number, precision: number) => {
     const multiplier = Math.pow(10, precision || 0);
-    return Math.floor(value * multiplier + 0.0000001) / multiplier;
+    return Math.round((value + Number.EPSILON) * multiplier) / multiplier;
 };
+
+
+export const getServiceFees = () => {
+    return parseFloat(import.meta.env.VITE_SERVICE_FEES as string);
+}
+
+export const calcPriceWithServiceFees = (value: number) => {
+    const serviceFees = getServiceFees();
+    return round(value + value * serviceFees, 2);
+}

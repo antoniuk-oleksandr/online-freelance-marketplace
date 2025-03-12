@@ -31,7 +31,7 @@
         style="transition: all 0.2s ease-out !important;"
         disabled={loading}
         type={type ?? "button"}
-        class="{styles} {loading ? 'opacity-70' : selectedStyle.hoverColor + ' active:!scale-95'} {selectedStyle.buttonStyle} px-4 rounded-md !h-12 !grid !place-items-center font-semibold"
+        class="{styles} {loading ? 'opacity-70' : selectedStyle.hoverColor + ' active:!scale-95'} {selectedStyle.buttonStyle} px-4 rounded-md !h-12 !flex !items-center !justify-center font-semibold"
         onclick={clickAction}
 >
     {#if loading}
