@@ -3,7 +3,7 @@ package utils
 import (
 	"fmt"
 	"ofm_backend/cmd/ofm_backend/api/freelance/model"
-	"ofm_backend/internal/middleware"
+	"ofm_backend/cmd/ofm_backend/utils"
 	"os"
 	"testing"
 	"time"
@@ -39,7 +39,7 @@ func TestBuildReviewsCursor(t *testing.T) {
 	var lastID int64 = 5
 
 	cursor := fmt.Sprintf("reviewsCursor:%s;lastID:%d", timeStr, lastID)
-	expectedEncodedCursor := middleware.EncodeString(cursor)
+	expectedEncodedCursor := utils.EncodeString(cursor)
 
 	lastReview := model.Review{
 		ID:      lastID,
@@ -55,7 +55,7 @@ func TestGetDataFromReviewsCursor_Success(t *testing.T) {
 	expectedData := "2023-12-26 00:42:33.925400897"
 	var expectedLastID int64 = 5
 	cursor := fmt.Sprintf("reviewsCursor:%s;lastID:%d", expectedData, expectedLastID)
-	encodedCursor := middleware.EncodeString(cursor)
+	encodedCursor := utils.EncodeString(cursor)
 
 	actualData, actualLastID, err := GetDataFromReviewsCursor(encodedCursor)
 

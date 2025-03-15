@@ -5,7 +5,6 @@ import (
 	"ofm_backend/cmd/ofm_backend/api/user/dto"
 	"ofm_backend/cmd/ofm_backend/utils"
 	main_utils "ofm_backend/cmd/ofm_backend/utils"
-	"ofm_backend/internal/middleware"
 	"os"
 	"regexp"
 	"strconv"
@@ -48,12 +47,12 @@ func GetMaxServices() int {
 
 func BuildServicesCursor(reviewsCount, lastId int64) string {
 	cursor := fmt.Sprintf("reviewsCount:%d;lastId:%d", reviewsCount, lastId)
-	return middleware.EncodeString(cursor)
+	return utils.EncodeString(cursor)
 }
 
 func BuildReviewsCursor(endedAt string, lastId int64) string {
 	cursor := fmt.Sprintf("endedAt:%s;lastId:%d", endedAt, lastId)
-	return middleware.EncodeString(cursor)
+	return utils.EncodeString(cursor)
 }
 
 func ParseReviewsCursor(cursor string) (*string, int64, error) {
@@ -61,7 +60,7 @@ func ParseReviewsCursor(cursor string) (*string, int64, error) {
 		return nil, int64(-1), nil
 	}
 
-	decodedCursor, err := middleware.DecodeString(cursor)
+	decodedCursor, err := main_utils.DecodeString(cursor)
 	if err != nil {
 		return nil, int64(-1), utils.ErrInvalidCursor
 	}
@@ -86,7 +85,7 @@ func ParseServicesCursor(cursor string) (int64, int64, error) {
 		return int64(-1), int64(-1), nil
 	}
 
-	decodedCursor, err := middleware.DecodeString(cursor)
+	decodedCursor, err := main_utils.DecodeString(cursor)
 	if err != nil {
 		return int64(-1), int64(-1), err
 	}

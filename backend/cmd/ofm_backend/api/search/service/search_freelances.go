@@ -11,7 +11,6 @@ import (
 	"ofm_backend/cmd/ofm_backend/api/search/utils"
 	main_utils "ofm_backend/cmd/ofm_backend/utils"
 	"ofm_backend/internal/database"
-	"ofm_backend/internal/middleware"
 	"os"
 	"strconv"
 	"strings"
@@ -63,7 +62,7 @@ func buildCursor(
 	lastModel := freelanceModels[maxResults-1]
 	value := getCursorValue(searchBody.Sort, lastModel)
 	cursor := fmt.Sprintf("lastID:%d;value:%s", lastModel.ID, value)
-	encodedCursor := middleware.EncodeString(cursor)
+	encodedCursor := main_utils.EncodeString(cursor)
 
 	return &encodedCursor, true
 }
@@ -94,7 +93,7 @@ func getDataFromCursor(searchBody body.Search) (*[]string, error) {
 		return nil, nil
 	}
 
-	decodedCursor, err := middleware.DecodeString(*searchBody.Cursor)
+	decodedCursor, err := main_utils.DecodeString(*searchBody.Cursor)
 	if err != nil {
 		return nil, err
 	}

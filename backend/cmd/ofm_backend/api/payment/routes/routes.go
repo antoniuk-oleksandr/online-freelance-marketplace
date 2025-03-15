@@ -10,7 +10,7 @@ import (
 	"github.com/jmoiron/sqlx"
 )
 
-func RegisterPaymentRoutes(apiGroup fiber.Router, db *sqlx.DB) {
+func RegisterPaymentRoutes(apiGroup fiber.Router, db *sqlx.DB, middleware middleware.Middleware) {
 	paymentRepository := repository.NewPaymentRepository(db)
 	paymentService := service.NewPaymentService(paymentRepository)
 	paymentController := controller.NewPaymentController(paymentService)

@@ -1,7 +1,7 @@
 package model
 
 type FreelanceServiceFreelancer struct {
-	ID           int64   `json:"id" db:"user_id"`
+	ID           int64   `json:"user_id" db:"user_id"`
 	Username     string  `json:"username" db:"username"`
 	FirstName    string  `json:"first_name" db:"first_name"`
 	Surname      string  `json:"surname" db:"surname"`

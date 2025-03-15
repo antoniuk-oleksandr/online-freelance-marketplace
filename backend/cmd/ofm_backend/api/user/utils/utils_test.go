@@ -5,7 +5,6 @@ import (
 	"ofm_backend/cmd/ofm_backend/api/user/dto"
 	"ofm_backend/cmd/ofm_backend/utils"
 	main_utils "ofm_backend/cmd/ofm_backend/utils"
-	"ofm_backend/internal/middleware"
 	"os"
 	"strconv"
 	"testing"
@@ -114,7 +113,7 @@ func TestBuildServicesCursor(t *testing.T) {
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
 			actual := BuildServicesCursor(tc.reviewsCount, tc.lastId)
-			expected := middleware.EncodeString(tc.expectedPlain)
+			expected := main_utils.EncodeString(tc.expectedPlain)
 			
 			assert.Equal(t, expected, actual, "Cursor encoding mismatch")
 		})
@@ -157,7 +156,7 @@ func TestBuildReviewsCursor(t *testing.T) {
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
 			actual := BuildReviewsCursor(tc.endedAt, tc.lastId)
-			expected := middleware.EncodeString(tc.expectedPlain)
+			expected := main_utils.EncodeString(tc.expectedPlain)
 			assert.Equal(t, expected, actual, "Cursor encoding mismatch")
 		})
 	}
@@ -173,21 +172,21 @@ func TestParseReviewsCursor(t *testing.T) {
 	}{
 		{
 			name:          "Valid cursor",
-			cursor:        middleware.EncodeString("endedAt:2024-12-31T23:59:59.999+00:00;lastId:42"),
+			cursor:        main_utils.EncodeString("endedAt:2024-12-31T23:59:59.999+00:00;lastId:42"),
 			expectedEnded: ptr("2024-12-31T23:59:59.999+00:00"),
 			expectedLast:  42,
 			expectedError: nil,
 		},
 		{
 			name:          "Empty fields",
-			cursor:        middleware.EncodeString("endedAt:;lastId:0"),
+			cursor:        main_utils.EncodeString("endedAt:;lastId:0"),
 			expectedEnded: nil,
 			expectedLast:  -1,
 			expectedError: main_utils.ErrInvalidCursor,
 		},
 		{
 			name:          "Malformed cursor",
-			cursor:        middleware.EncodeString("invalidFormat"),
+			cursor:        main_utils.EncodeString("invalidFormat"),
 			expectedEnded: nil,
 			expectedLast:  -1,
 			expectedError: utils.ErrInvalidCursor,
@@ -222,21 +221,21 @@ func TestParseServicesCursor(t *testing.T) {
 	}{
 		{
 			name:            "Valid cursor",
-			cursor:          middleware.EncodeString("reviewsCount:10;lastId:42"),
+			cursor:          main_utils.EncodeString("reviewsCount:10;lastId:42"),
 			expectedReviews: 10,
 			expectedLastId:  42,
 			expectedError:   nil,
 		},
 		{
 			name:            "Zero values",
-			cursor:          middleware.EncodeString("reviewsCount:0;lastId:0"),
+			cursor:          main_utils.EncodeString("reviewsCount:0;lastId:0"),
 			expectedReviews: 0,
 			expectedLastId:  0,
 			expectedError:   nil,
 		},
 		{
 			name:            "Malformed cursor",
-			cursor:          middleware.EncodeString("invalidFormat"),
+			cursor:          main_utils.EncodeString("invalidFormat"),
 			expectedReviews: -1,
 			expectedLastId:  -1,
 			expectedError:   fmt.Errorf("input does not match format"),
@@ -316,7 +315,7 @@ func TestGetMoreServicesCursorData(t *testing.T) {
 			services:        mockServices(5),
 			maxServices:     3,
 			expectedHasMore: true,
-			expectedCursor:  ptr(middleware.EncodeString("reviewsCount:30;lastId:4")),
+			expectedCursor:  ptr(main_utils.EncodeString("reviewsCount:30;lastId:4")),
 			expectedLength:  4,
 		},
 	}
@@ -392,7 +391,7 @@ func TestGetMoreReviewsCursorData(t *testing.T) {
 			reviews:         mockReviews(5),
 			maxReviews:      3,
 			expectedHasMore: true,
-			expectedCursor:  ptr(middleware.EncodeString("endedAt:2023-11-30 00:00:00;lastId:4")),
+			expectedCursor:  ptr(main_utils.EncodeString("endedAt:2023-11-30 00:00:00;lastId:4")),
 			expectedLength:  4,
 		},
 	}

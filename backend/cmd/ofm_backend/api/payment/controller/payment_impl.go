@@ -1,12 +1,11 @@
 package controller
 
 import (
+	"github.com/gofiber/fiber/v2"
 	"ofm_backend/cmd/ofm_backend/api/payment/body"
 	"ofm_backend/cmd/ofm_backend/api/payment/service"
 	main_utils "ofm_backend/cmd/ofm_backend/utils"
-	"ofm_backend/internal/middleware"
-
-	"github.com/gofiber/fiber/v2"
+	"ofm_backend/cmd/ofm_backend/utils/rsa_encryption"
 )
 
 type paymentController struct {
@@ -40,7 +39,7 @@ func (p *paymentController) ProcessPayment(ctx *fiber.Ctx) error {
 }
 
 func (p *paymentController) GetPublicKey(ctx *fiber.Ctx) error {
-	publicKey, err := middleware.GetPublicKey()
+	publicKey, err := rsa_encryption.GetPublicKey()
 	if err != nil {
 		return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"error": err.Error(),

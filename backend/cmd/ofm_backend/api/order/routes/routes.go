@@ -11,7 +11,11 @@ import (
 	"github.com/jmoiron/sqlx"
 )
 
-func RegisterOrderRoutes(apiGroup fiber.Router, db *sqlx.DB, fileService file_service.FileService) {
+func RegisterOrderRoutes(
+	apiGroup fiber.Router,
+	db *sqlx.DB, fileService file_service.FileService,
+	middleware middleware.Middleware,
+) {
 	ordersGroup := apiGroup.Group("/orders")
 
 	orderRepository := order_repo.NewOrderRepository(db)

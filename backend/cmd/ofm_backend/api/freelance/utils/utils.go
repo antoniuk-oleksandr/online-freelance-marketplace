@@ -3,7 +3,6 @@ package utils
 import (
 	"fmt"
 	main_utils "ofm_backend/cmd/ofm_backend/utils"
-	"ofm_backend/internal/middleware"
 	"os"
 	"strconv"
 	"strings"
@@ -15,7 +14,7 @@ func GetDataFromReviewsCursor(reviewsCursor string) (string, int64, error) {
 		return "", -1, nil
 	}
 
-	decodedCursor, err := middleware.DecodeString(reviewsCursor)
+	decodedCursor, err := main_utils.DecodeString(reviewsCursor)
 	if err != nil {
 		return "", -1, err
 	}
@@ -37,7 +36,7 @@ func GetDataFromReviewsCursor(reviewsCursor string) (string, int64, error) {
 func BuildReviewsCursor(lastReviewEndedAt time.Time, lastID int64) *string {
 	lastReviewEndedAtStr := main_utils.ConvertTimeToSting(lastReviewEndedAt)
 	str := fmt.Sprintf("reviewsCursor:%s;lastID:%d", lastReviewEndedAtStr, lastID)
-	encodedStr := middleware.EncodeString(str)
+	encodedStr := main_utils.EncodeString(str)
 
 	return &encodedStr
 }

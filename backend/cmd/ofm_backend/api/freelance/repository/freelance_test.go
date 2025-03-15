@@ -61,7 +61,7 @@ func TestGetGetFreelanceServiceByIdReviews_WithCursor(t *testing.T) {
 	}
 
 	rows := sqlmock.
-		NewRows([]string{"id", "content", "rating", "created_at", "ended_at", "customer", "service"})
+		NewRows([]string{"review_id", "content", "rating", "created_at", "ended_at", "customer", "service"})
 	for _, review := range expectedData {
 		rows.AddRow(
 			review.ID,
@@ -69,7 +69,7 @@ func TestGetGetFreelanceServiceByIdReviews_WithCursor(t *testing.T) {
 			review.Rating,
 			review.CreatedAt,
 			review.EndedAt,
-			fmt.Sprintf(`{"id": %d, "username": "%s", "avatar": "%s"}`, review.Customer.ID, review.Customer.Username, review.Customer.Avatar),
+			fmt.Sprintf(`{"user_id": %d, "username": "%s", "avatar": "%s"}`, review.Customer.ID, review.Customer.Username, review.Customer.Avatar),
 			fmt.Sprintf(`{"price": %f}`, review.Freelance.Price),
 		)
 	}
@@ -110,8 +110,8 @@ func TestGetFreelanceServiceById_Success(t *testing.T) {
 	}
 
 	rows := sqlmock.
-		NewRows([]string{"id", "created_at", "description", "title", "reviews_count", "rating", "images", "category", "packages", "freelancer"}).
-		AddRow(freelanceID, createdAt, "Test description", "Test title", 1, 5.0, `["image1", "image2"]`, `{"category_id": 1, "name": "Test Category"}`, `[{"id": 1, "delivery_days": 1, "description": "Test description", "price": 1, "title": "Test title"}]`, `{"id": 1, "username": "Test", "first_name": "Test", "surname": "Test", "avatar": "avatar1", "rating": 5, "level": 1, "reviews_count": 1}`)
+		NewRows([]string{"service_id", "created_at", "description", "title", "reviews_count", "rating", "images", "category", "packages", "freelancer"}).
+		AddRow(int64(freelanceID), createdAt, "Test description", "Test title", 1, 5.0, `["image1", "image2"]`, `{"category_id": 1, "name": "Test Category"}`, `[{"package_id": 1, "delivery_days": 1, "description": "Test description", "price": 1, "title": "Test title"}]`, `{"user_id": 1, "username": "Test", "first_name": "Test", "surname": "Test", "avatar": "avatar1", "rating": 5, "level": 1, "reviews_count": 1}`)
 
 	mock.ExpectQuery(regexp.QuoteMeta(".")).WillReturnRows(rows)
 

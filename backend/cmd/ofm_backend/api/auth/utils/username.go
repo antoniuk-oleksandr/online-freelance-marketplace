@@ -1,29 +1,20 @@
 package utils
 
-import (
-	"ofm_backend/cmd/ofm_backend/api/auth/repository"
-	errorUtils "ofm_backend/cmd/ofm_backend/utils"
-	"strconv"
-	"strings"
+// func TryToFindAvailableUsername(email string, db *sqlx.DB) (string, error) {
+// 	emailParts := strings.Split(email, "@")
 
-	"github.com/jmoiron/sqlx"
-)
+// 	for i := 0; i < 10000; i++ {
+// 		username := emailParts[0] + strconv.Itoa(i) + emailParts[1]
 
-func TryToFindAvailableUsername(email string, db *sqlx.DB) (string, error) {
-	emailParts := strings.Split(email, "@")
+// 		available, err := repository.CheckIfUsernameIsAvailable(username, db)
+// 		if err != nil {
+// 			return "", err
+// 		}
 
-	for i := 0; i < 10000; i++ {
-		username := emailParts[0] + strconv.Itoa(i) + emailParts[1]
+// 		if available {
+// 			return username, nil
+// 		}
+// 	}
 
-		available, err := repository.CheckIfUsernameIsAvailable(username, db)
-		if err != nil {
-			return "", err
-		}
-
-		if available {
-			return username, nil
-		}
-	}
-
-	return "", errorUtils.ErrUsernameNotAvailable
-}
+// 	return "", errorUtils.ErrUsernameNotAvailable
+// }

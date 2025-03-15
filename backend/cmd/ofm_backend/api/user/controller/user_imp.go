@@ -35,7 +35,7 @@ func (us *userController) GetReviewsByUserId(ctx *fiber.Ctx) error {
 				"error": err.Error(),
 			})
 		}
-		
+
 		return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"error": utils.ErrUnexpectedError.Error(),
 		})
@@ -60,7 +60,7 @@ func (us *userController) GetServicesByUserId(ctx *fiber.Ctx) error {
 				"error": err.Error(),
 			})
 		}
-		
+
 		return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"error": utils.ErrUnexpectedError.Error(),
 		})

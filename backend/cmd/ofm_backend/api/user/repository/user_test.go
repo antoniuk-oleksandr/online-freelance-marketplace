@@ -31,9 +31,9 @@ func TestGetUserById(t *testing.T) {
 		db.Close()
 		sqlxDB.Close()
 	}()
-	
+
 	timeNow := time.Date(2024, 0, 0, 0, 0, 0, 0, time.UTC)
-	
+
 	userRepository := NewUserRepository(sqlxDB)
 
 	testCases := []struct {

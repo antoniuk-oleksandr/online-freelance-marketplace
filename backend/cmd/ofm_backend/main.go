@@ -12,37 +12,42 @@ import (
 	search_routes "ofm_backend/cmd/ofm_backend/api/search/routes"
 	user_routes "ofm_backend/cmd/ofm_backend/api/user/routes"
 	"ofm_backend/cmd/ofm_backend/utils"
+	"ofm_backend/cmd/ofm_backend/utils/rsa_encryption"
 	"ofm_backend/internal/config"
 	"ofm_backend/internal/database"
 	"ofm_backend/internal/middleware"
+	middleware_repo "ofm_backend/internal/middleware/repository"
 
 	"github.com/gofiber/fiber/v2"
 )
 
 func main() {
 	utils.LoadEnvValues()
-	middleware.TryToLoadRSAKeys()
 
-	db := database.ConnectToPostgresDB()
-	database.ConnectToRedisDB()
+	posgresqlDb := database.ConnectToPostgresDB()
+	redisDb := database.ConnectToRedisDB()
+
+	middlewareRepository := middleware_repo.NewMiddlewareRepository(posgresqlDb)
+	middleware := middleware.NewMiddleware(middlewareRepository)
+	rsa_encryption.TryToLoadRSAKeys()
 
 	app := fiber.New()
 
 	app.Use(config.ConfigCors())
 	app.Use(config.ConfigRateLimiter())
 
-	fileReposotory := file_repo.NewFileRepository(db)
+	fileReposotory := file_repo.NewFileRepository(posgresqlDb)
 	fileService := file_service.NewFileService(fileReposotory)
 
 	apiGroup := app.Group("/api/v1")
-	auth_routes.RegisterAuthRoutes(apiGroup)
-	freelance_routes.RegisterFreelanceRoutes(apiGroup, db)
-	user_routes.RegisterUserRoutes(apiGroup, db)
+	auth_routes.RegisterAuthRoutes(apiGroup, posgresqlDb, redisDb, middleware)
+	freelance_routes.RegisterFreelanceRoutes(apiGroup, posgresqlDb)
+	user_routes.RegisterUserRoutes(apiGroup, posgresqlDb)
 	filter_params_routes.RegisterFilterParamsRoutes(apiGroup)
 	search_routes.RegisterSearchRoutes(apiGroup)
-	home_data_routes.RegisterHomeDataRoutes(apiGroup, db)
-	payment_routes.RegisterPaymentRoutes(apiGroup, db)
-	order_routes.RegisterOrderRoutes(apiGroup, db, fileService)
+	home_data_routes.RegisterHomeDataRoutes(apiGroup, posgresqlDb)
+	payment_routes.RegisterPaymentRoutes(apiGroup, posgresqlDb, middleware)
+	order_routes.RegisterOrderRoutes(apiGroup, posgresqlDb, fileService, middleware)
 
 	app.Listen(":8080")
 }

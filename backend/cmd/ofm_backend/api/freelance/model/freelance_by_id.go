@@ -5,7 +5,7 @@ import (
 )
 
 type FreelanceByID struct {
-	ID           int64                       `json:"id" db:"service_id"`
+	ID           int64                       `json:"service_id" db:"service_id"`
 	CreatedAt    time.Time                   `json:"created_at" db:"created_at"`
 	Description  string                      `json:"description" db:"description"`
 	ReviewsCount int64                       `json:"reviews_count" db:"reviews_count"`

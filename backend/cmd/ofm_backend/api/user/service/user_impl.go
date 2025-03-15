@@ -27,7 +27,7 @@ func (us *userService) GetReviewsByUserId(id int, cursor string) (*dto.ReviewsRe
 	}
 
 	userByIdReviewsModels, err := us.userRepository.GetReviewsByUserId(id, endedAt, lastId, maxReviews+1)
-	
+
 	if err != nil {
 		return nil, err
 	}
@@ -61,7 +61,7 @@ func (us *userService) GetServicesByUserId(id int, cursor string) (*dto.Services
 	if err != nil {
 		return nil, main_utils.ErrUserNotFound
 	}
-	
+
 	serviceDTOs := mapper.MapUserByIdServiceModelsToDTO(serviceModels)
 
 	hasMoreServices, servicesCursor := utils.GetMoreServicesCursorData(serviceDTOs, maxServices)
@@ -87,7 +87,7 @@ func (us *userService) GetUserById(id int) (*dto.UserByIDResponse, error) {
 		emptyArr := make([]model.UserByIdReview, 0)
 		userByIdReviewsModels = &emptyArr
 	}
-	
+
 	reviewsUsers := mapper.MapUserByIdReviewModelsToReviewUserDTOs(userByIdReviewsModels)
 	reviewsServices := mapper.MapUserByIdReviewModelToReviewServiceDTOs(userByIdReviewsModels)
 	reviews := mapper.MapReviewUsersServicesToUserByIdReviewDTOs(
@@ -101,19 +101,18 @@ func (us *userService) GetUserById(id int) (*dto.UserByIDResponse, error) {
 		emptyArr := make([]model.UserByIdFreelanceService, 0)
 		serviceModels = &emptyArr
 	}
-	
+
 	serviceDTOs := mapper.MapUserByIdServiceModelsToDTO(serviceModels)
-	
-	
+
 	hasMoreReviews, reviewsCursor := utils.GetMoreReviewsCursorData(reviews, maxReviews)
 	hasMoreServices, servicesCursor := utils.GetMoreServicesCursorData(serviceDTOs, maxServices)
-	
+
 	userDto := mapper.MapUserByIdModelToDTO(
 		userModel,
 		reviews,
 		serviceDTOs,
 	)
-	
+
 	return &dto.UserByIDResponse{
 		User:            main_utils.AddServerURLToFiles(userDto),
 		HasMoreReviews:  hasMoreReviews,

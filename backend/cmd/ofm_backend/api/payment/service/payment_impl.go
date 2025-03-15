@@ -7,9 +7,9 @@ import (
 	"ofm_backend/cmd/ofm_backend/api/payment/repository"
 	"ofm_backend/cmd/ofm_backend/enum"
 	"ofm_backend/cmd/ofm_backend/utils"
+	"ofm_backend/cmd/ofm_backend/utils/aes_encryption"
 	filereader "ofm_backend/internal/file_reader"
 	"ofm_backend/internal/mailer"
-	"ofm_backend/internal/middleware"
 	"os"
 )
 
@@ -103,7 +103,7 @@ func (pServ *paymentService) CreateOrder(
 func (pServ *paymentService) CreatePayment(
 	decryptedData *body.DecryptedPaymentData,
 ) error {
-	encryptedCardNum, err := middleware.Encrypt((*decryptedData).CardCredentials.CardNumber)
+	encryptedCardNum, err := aes_encryption.Encrypt((*decryptedData).CardCredentials.CardNumber)
 	(*decryptedData).CardCredentials.CardNumber = encryptedCardNum
 
 	paymendId, err := pServ.pRepo.AddPayment(*decryptedData)

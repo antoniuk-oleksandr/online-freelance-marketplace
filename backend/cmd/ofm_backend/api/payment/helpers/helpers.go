@@ -5,7 +5,7 @@ import (
 	"ofm_backend/cmd/ofm_backend/api/payment/body"
 	"ofm_backend/cmd/ofm_backend/api/payment/model"
 	"ofm_backend/cmd/ofm_backend/utils"
-	"ofm_backend/internal/middleware"
+	"ofm_backend/cmd/ofm_backend/utils/rsa_encryption"
 	"regexp"
 	"strings"
 	"time"
@@ -47,7 +47,7 @@ func DecryptPaymentData(
 	paymentRequestBody body.EncryptedPaymentData,
 	username string,
 ) (*body.DecryptedPaymentData, error) {
-	decryptedData, err := middleware.DecryptRSAData[body.DecryptedPaymentData](paymentRequestBody.Data)
+	decryptedData, err := rsa_encryption.DecryptRSAData[body.DecryptedPaymentData](paymentRequestBody.Data)
 	if err != nil {
 		return nil, utils.ErrDecryptionFailed
 	}
