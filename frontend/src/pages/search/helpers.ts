@@ -1,21 +1,19 @@
-import {SearchPageParams} from "@/types/SearchPageParams.ts";
-import {SortType} from "@/types/SortType.ts";
-import {OrderType} from "@/types/OrderType.ts";
-import {onDestroy} from "svelte";
-import type {DropdownItem} from "@/types/DropdownItem.ts";
-import {navigate} from "svelte-routing";
-import {searchStore} from "@/pages/search/stores/search-store.ts";
-import type {SearchFilterArrayStore} from "@/types/SearchFilterArrayStore.ts";
-import {SearchFilterArrayAttribute} from "@/types/SearchFilterArrayAttribute.ts";
-import type {SearchFilterArrayInputDataStore} from "@/types/SearchFilterArrayInputDataStore.ts";
-import {GetFilterParamsRequestResponse} from "@/types/GetFilterParamsRequestResponse.ts";
-import {searchFilterDrawerStore} from "@/pages/search/stores/search-filter-drawer-store.ts";
-import {request} from "@/api/request.ts";
-import type {SearchRequestResponse} from "@/types/SearchRequestResponse.ts";
-import {errorStore} from "@/common-stores/error-store.ts";
-import {Skill} from "@/types/Skill.ts";
-import {Category} from "@/types/Category.ts";
-import {Language} from "@/types/Language.ts";
+import { request } from "@/api/request";
+import { errorStore } from "@/common-stores/error-store";
+import { searchFilterDrawerStore } from "@/pages/search/stores/search-filter-drawer-store";
+import { searchStore } from "@/pages/search/stores/search-store";
+import { Category } from "@/types/Category";
+import { Language } from "@/types/Language";
+import { OrderType } from "@/types/OrderType";
+import type { SearchFilterArrayInputDataStore } from "@/types/SearchFilterArrayInputDataStore";
+import type { SearchFilterArrayStore } from "@/types/SearchFilterArrayStore";
+import { SearchPageParams } from "@/types/SearchPageParams";
+import type { SearchRequestResponse } from "@/types/SearchRequestResponse";
+import type { SelectItem } from "@/types/SelectItem";
+import { Skill } from "@/types/Skill";
+import { SortType } from "@/types/SortType";
+import { onDestroy } from "svelte";
+import { navigate } from "svelte-routing";
 
 export const getSearchPageParams = (): SearchPageParams => {
     const params = new URLSearchParams(window.location.search);
@@ -51,26 +49,26 @@ export const useIsClosedAfterAnimation = (
     onDestroy(() => window.removeEventListener("resize", handleChange));
 }
 
-export const makeSearchDropdownTitle = (item: number, isOrder?: boolean) => {
+export const makeSearchSelectTitle = (item: number, isOrder?: boolean) => {
     return "By " + Object.values(isOrder ? OrderType : SortType)[item].toLowerCase();
 }
 
-export const makeASearchDropdownItemList = (
+export const makeASearchSelectItemList = (
     searchPageParams: SearchPageParams | undefined,
     isOrder?: boolean
-): DropdownItem[] => {
+): SelectItem[] => {
     if (!searchPageParams) return [];
 
     return Array
-        .from({length: Object.keys(isOrder ? OrderType : SortType).length / 2})
+        .from({ length: Object.keys(isOrder ? OrderType : SortType).length / 2 })
         .map((_, index) => ({
-            title: makeSearchDropdownTitle(index, isOrder),
+            title: makeSearchSelectTitle(index, isOrder),
             clickAction: () =>
-                setDropDownClickAction(searchPageParams, index, isOrder)
+                setSelectClickAction(searchPageParams, index, isOrder)
         }));
 }
 
-export const setDropDownClickAction = (
+export const setSelectClickAction = (
     searchPageParams: SearchPageParams,
     index: number,
     isOrder?: boolean,
@@ -157,7 +155,7 @@ export const getFormToInputAttribute = (
     return `${item}${type}` as keyof SearchPageParams;
 }
 
-export const getSelectedSearchDropdownItem = (
+export const getSelectedSearchSelectItem = (
     searchPageParams: SearchPageParams | undefined,
     isOrder?: boolean,
 ) => {
@@ -177,7 +175,7 @@ export const resetSearchArrayParam = (
     searchStore.update((prev) => {
         if (!prev) return prev;
 
-        let copy = {...prev};
+        let copy = { ...prev };
         copy[storeData.attribute] = [];
 
         return copy;
@@ -204,7 +202,7 @@ export const makeSearchRequest = (
     const link = generateSearchLink(searchPAgeParams);
     request<SearchRequestResponse>(link, "GET").then((response) => {
         if (response.status !== 200) {
-            errorStore.set({shown: true, error: response.data.error});
+            errorStore.set({ shown: true, error: response.data.error });
         }
 
         setSearchRequestResponse(response);

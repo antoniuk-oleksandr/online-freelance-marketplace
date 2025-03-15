@@ -4,6 +4,6 @@
     const {children} : LayoutProps = $props();
 </script>
 
-<div class="flex justify-between">
+<div class="flex flex-row items-center lg:flex-col xl:flex-row justify-between">
     {@render children()}
 </div>

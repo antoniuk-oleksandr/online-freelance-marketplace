@@ -1,39 +1,31 @@
 <script lang="ts">
-    import DropdownMenu from "@/common-components/Dropdown/components/DropdownMenu/DropdownMenu.svelte";
-    import type {DropdownProps} from "@/types/DropdownProps.ts";
-    import {resolveDropdownAnimation} from "@/common-components/Dropdown/helper.ts";
-    import DropdownLayout from "@/common-components/Dropdown/DropdownLayout.svelte";
-    import DropdownTrigger from "@/common-components/Dropdown/components/DropdownTrigger/DropdownTrigger.svelte";
+  import type { DropdownItem } from '@/types/DropdownItem'
+  import type { LayoutProps } from '@/types/LayoutProps'
+  import DropdownMenu from './components/DropdownMenu/DropdownMenu.svelte'
+  import DropdownTrigger from './components/DropdownTrigger/DropdownTrigger.svelte'
+  import DropdownLayout from './DropdownLayout.svelte'
 
-    const props: DropdownProps = $props();
+  type DropdownProps = LayoutProps & {
+    items: DropdownItem[]
+    modalHeaderTitle: string
+    menuWidth?: string
+    positionX?: 'left' | 'right'
+    positionY?: 'top' | 'bottom'
+  }
 
-    let isOpen: boolean = $state(false);
-    const setIsOpen = (value: boolean) => isOpen = value;
+  let shown = $state(false)
+  const setShown = (value: boolean) => (shown = value)
 
-    let showExitAnimation: boolean = $state(false);
-    const setShowExitAnimation = (value: boolean) => showExitAnimation = value;
+  let triggerRef = $state<HTMLDivElement | undefined>()
 
-    let timeout: number | undefined;
-    const setTimeoutValue = (value: number | undefined) => timeout = value;
-
-    $effect(() => resolveDropdownAnimation(
-        timeout, setTimeoutValue,
-        isOpen, setShowExitAnimation
-    ));
+  const { children, ...rest }: DropdownProps = $props()
 </script>
 
 <DropdownLayout>
-    <DropdownTrigger
-            dropdownMenuProps={props}
-            title={props.title}
-            isOpen={isOpen} setIsOpen={setIsOpen}
-    >
-        {@render props.children()}
-    </DropdownTrigger>
-    <DropdownMenu
-            showExitAnimation={showExitAnimation}
-            isOpen={isOpen}
-            setIsOpen={setIsOpen}
-            {...props}
-    />
+  <DropdownTrigger bind:triggerRef bind:shown>
+    {@render children()}
+  </DropdownTrigger>
+  {#if shown}
+    <DropdownMenu {setShown} {triggerRef} {...rest} />
+  {/if}
 </DropdownLayout>

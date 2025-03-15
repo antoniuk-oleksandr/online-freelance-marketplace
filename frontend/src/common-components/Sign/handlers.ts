@@ -1,28 +1,17 @@
-import {ResponseErrorEnum} from "@/types/ResponseErrorEnum.ts";
-import {ResponseMessageEnum} from "@/types/ResponseMessageEnum.ts";
-import Cookies from "js-cookie";
-import {navigate} from "svelte-routing";
-import {toastElementStore} from "@/common-components/ToastElement/store/toast-element-store.ts";
-import {postAuthRequest} from "@/api/post-auth-request.ts";
+import { ResponseErrorEnum } from "@/types/ResponseErrorEnum";
+import { ResponseMessageEnum } from "@/types/ResponseMessageEnum";
+import { navigate } from "svelte-routing";
+import { toastElementStore } from "@/common-components/ToastElement/store/toast-element-store";
+import { postAuthRequest } from "@/api/post-auth-request";
+import { jwtDecode } from "jwt-decode";
+import { setTokenCookies } from "./helpers";
 
 const showToast = (message: string, type: "success" | "error") => {
     toastElementStore.set({
         show: true,
         message,
         type,
-        exitAnimation: false,
     });
-};
-
-const setCookies = (data: any, keepSignedIn: boolean, values: any) => {
-    let options: ({ expires: number } | undefined)[] = [undefined, undefined];
-    if (keepSignedIn) {
-        options[0] = {expires: 15 / (24 * 60)}; // 15 minutes
-        options[1] = {expires: 30}; // 30 days
-    }
-
-    Cookies.set("accessToken", data.accessToken, options[0]);
-    Cookies.set("refreshToken", data.refreshToken, options[1]);
 };
 
 
@@ -54,18 +43,22 @@ const handleSignErrors = (data: any, setErrors: any, setFields: any) => {
 };
 
 
-const handleSuccessSign = (data: any, values: any, setShowEmailSentMessage: any) => {
-    if (data.message === ResponseMessageEnum.EmailSentSuccessfully) {
+const handleSuccessSign = (
+    backendResponse: any,
+    formData: any,
+    setShowEmailSentMessage: any,
+) => {
+    if (backendResponse.message === ResponseMessageEnum.EmailSentSuccessfully) {
         setShowEmailSentMessage && setShowEmailSentMessage(true);
-    } else if (data.accessToken && data.refreshToken) {
-        setCookies(data, values.keepSignedIn, values);
+    } else if (backendResponse.accessToken && backendResponse.refreshToken) {
+        setTokenCookies(backendResponse, formData.keepSignedIn);
         navigate("/");
         showToast("You have successfully signed in.", "success");
     }
 };
 
 export const handleSignSubmit = async (
-    values: any,
+    formData: any,
     submitAction: (values: any) => Promise<any>,
     setErrors: (fieldName: string, error: string) => void,
     setFields: (fieldName: string, error: string) => void,
@@ -75,29 +68,30 @@ export const handleSignSubmit = async (
     if (!setLoading) return;
     setLoading(true);
 
-    const {data, status} = await submitAction(values);
+    const { data: responseBackend, status } = await submitAction(formData);
 
     if (status === 200) {
-        handleSuccessSign(data, values, setShowEmailSentMessage);
+        handleSuccessSign(responseBackend, formData, setShowEmailSentMessage);
     } else {
-        handleSignErrors(data, setErrors, setFields);
+        handleSignErrors(responseBackend, setErrors, setFields);
     }
 
     setLoading(false);
 };
 
 
-export const handleGoogleAuth = async (code: string) => {
-    const {status, data} = await postAuthRequest("google", undefined, {code});
+export const handleGoogleAuth = async (code: string, keepSignedIn?: boolean) => {
+    const { status, data: backendResponse } = await postAuthRequest("google", undefined, { code });
 
     if (status === 200) {
-        handleSuccessSign(data, {keepSignedIn: false}, false);
+        handleSuccessSign(backendResponse, { keepSignedIn }, false);
     }
 }
 
 export const handleGoogleButtonClick = async (
     setLoading: (loading: boolean) => void,
     clientId: string,
+    keepSignedIn?: boolean
 ) => {
     setLoading(true);
     google.accounts.oauth2.initCodeClient({
@@ -105,7 +99,7 @@ export const handleGoogleButtonClick = async (
         scope: "email profile",
         ux_mode: "popup",
         callback: async (googleResponse) => {
-            await handleGoogleAuth(googleResponse.code);
+            await handleGoogleAuth(googleResponse.code, keepSignedIn);
             setLoading(false);
         },
         error_callback: () => setLoading(false)

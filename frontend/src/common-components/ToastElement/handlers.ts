@@ -1,6 +1,5 @@
-import {showCloseToastAnimation} from "@/common-components/ToastElement/helpers.ts";
+import { toastElementStore } from "./store/toast-element-store"
 
 export const handleToastCloseButtonClick = () => {
-    const timeout = showCloseToastAnimation();
-    return () => clearTimeout(timeout);
+    toastElementStore.update((prev) => ({ ...prev, show: false }))
 }

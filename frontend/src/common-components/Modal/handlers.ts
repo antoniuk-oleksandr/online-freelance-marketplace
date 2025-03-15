@@ -1,5 +1,5 @@
-import {modalStore} from "@/common-stores/modal-store.ts";
-import type {ModalStore} from "@/types/ModalStore.ts";
+import { modalStore } from "@/common-stores/modal-store";
+import type { ModalStore } from "@/types/ModalStore.ts";
 
 export const handleModalCloseButtonClick = () => {
     modalStore.update((prev) => ({

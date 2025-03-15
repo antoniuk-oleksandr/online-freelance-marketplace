@@ -1,20 +1,16 @@
 <script lang="ts">
-    import type {LayoutProps} from "@/types/LayoutProps.ts";
-    import {handleDropdownTriggerClick} from "@/common-components/Dropdown/handlers.ts";
-    import type {DropdownProps} from "@/types/DropdownProps.ts";
+  import type { LayoutProps } from '@/types/LayoutProps'
 
-    type DropdownTriggerProps = LayoutProps & {
-        isOpen: boolean,
-        title: string,
-        dropdownMenuProps: DropdownProps,
-        setIsOpen?: (value: boolean) => void,
-    }
+  type DropdownTriggerProps = LayoutProps & {
+    shown: boolean
+    triggerRef: HTMLDivElement | undefined
+  }
 
-    const {isOpen, setIsOpen, children, title, dropdownMenuProps}: DropdownTriggerProps = $props();
+  let { shown = $bindable(), triggerRef = $bindable(), children }: DropdownTriggerProps = $props()
 </script>
 
-<button
-        onclick={() => handleDropdownTriggerClick(isOpen, title, dropdownMenuProps, setIsOpen)}
-        class="dropdown-trigger rounded-lg border bg-light-palette-background-block dark:bg-dark-palette-background-block border-light-palette-divider dark:border-dark-palette-divider">
-    {@render children()}
-</button>
+<!-- svelte-ignore a11y_no_static_element_interactions -->
+<!-- svelte-ignore a11y_click_events_have_key_events -->
+<div bind:this={triggerRef} class="cursor-pointer" onclick={() => (shown = !shown)}>
+  {@render children()}
+</div>

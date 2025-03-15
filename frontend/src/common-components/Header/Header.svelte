@@ -1,10 +1,10 @@
 <script>
-    import HeaderLayout from "@/common-components/Header/HeaderLayout.svelte";
-    import AppLogo from "@/common-components/AppLogo/AppLogo.svelte";
-    import ThemeSwitch from "@/common-components/ThemeSwitch/ThemeSwitch.svelte";
+  import HeaderLayout from '@/common-components/Header/HeaderLayout.svelte'
+  import AppLogo from '@/common-components/AppLogo/AppLogo.svelte'
+  import HeaderProfileBlock from './components/HeaderProfileBlock/HeaderProfileBlock.svelte'
 </script>
 
 <HeaderLayout>
-    <AppLogo/>
-    <ThemeSwitch/>
+  <AppLogo />
+  <HeaderProfileBlock />
 </HeaderLayout>

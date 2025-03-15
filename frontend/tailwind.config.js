@@ -8,6 +8,7 @@ const config = {
         "bg-red-500",
         "bg-green-500",
         "bg-orange-500",
+        "lg:min-w-header-dropdown-menu",
     ],
     theme: {
         extend: {
@@ -19,20 +20,20 @@ const config = {
             },
             keyframes: {
                 "fade-in": {
-                    "0%": {opacity: "0"},
-                    "100%": {opacity: "1"}
+                    "0%": { opacity: "0" },
+                    "100%": { opacity: "1" }
                 },
                 "fade-out": {
-                    "0%": {opacity: "1"},
-                    "100%": {opacity: "0"},
+                    "0%": { opacity: "1" },
+                    "100%": { opacity: "0" },
                 },
                 "drop-down": {
-                    "0%": {opacity: "0", transform: "translateY(5%)"},
-                    "100%": {opacity: "1", transform: "translateY(0%)"},
+                    "0%": { opacity: "0", transform: "translateY(5%)" },
+                    "100%": { opacity: "1", transform: "translateY(0%)" },
                 },
                 "drop-up": {
-                    "0%": {opacity: "1", transform: "translateY(0%)"},
-                    "100%": {opacity: "0", transform: "translateY(5%)"},
+                    "0%": { opacity: "1", transform: "translateY(0%)" },
+                    "100%": { opacity: "0", transform: "translateY(5%)" },
                 },
                 "toast": {
                     "0%": {
@@ -112,6 +113,9 @@ const config = {
                 112: "28rem",
                 "search-sidebar": "23rem",
                 48: "12rem",
+            },
+            minWidth: {
+                "header-dropdown-menu": "15rem",
             },
             height: {
                 form: "56rem",

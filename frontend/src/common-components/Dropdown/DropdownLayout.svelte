@@ -1,9 +1,9 @@
 <script lang="ts">
-    import type {LayoutProps} from "@/types/LayoutProps.ts";
+  import type { LayoutProps } from '@/types/LayoutProps'
 
-    const {children} : LayoutProps = $props();
+  const { children }: LayoutProps = $props()
 </script>
 
-<div class="relative z-20">
-    {@render children()}
+<div class="relative flex flex-col">
+  {@render children()}
 </div>

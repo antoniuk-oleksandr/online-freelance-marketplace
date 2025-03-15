@@ -1,14 +1,46 @@
 <script lang="ts">
-    import DropdownMenuLayout from "@/common-components/Dropdown/components/DropdownMenu/DropdownMenuLayout.svelte";
-    import type {DropdownMenuProps} from "@/types/DropdownMenuProps.ts";
-    import DropdownMenuContent
-        from "@/common-components/Dropdown/components/DropdownMenuContent/DropdownMenuContent.svelte";
+  import type { DropdownItem } from '@/types/DropdownItem'
+  import DropdownMenuLayout from './DropdownMenuLayout.svelte'
+  import DropdownMenuItemElementList from '../DropdownMenuItemElementList/DropdownMenuItemElementList.svelte'
+  import { onMount } from 'svelte'
+  import DropdownModal from '../DropdownModal/DropdownModal.svelte'
+  import DropdownModalBackdrop from '../DropdownModalBackdrop/DropdownModalBackdrop.svelte'
+  import DropdownModalHeader from '../DropdownModal/components/DropdownModalHeader/DropdownModalHeader.svelte'
 
-    const props: DropdownMenuProps = $props();
+  type DropdownMenuProps = {
+    items: DropdownItem[]
+    setShown: (value: boolean) => void
+    triggerRef: HTMLDivElement | undefined
+    modalHeaderTitle: string
+    menuWidth?: string
+    positionX?: 'left' | 'right'
+    positionY?: 'top' | 'bottom'
+  }
+
+  let menuRef = $state<HTMLDivElement | undefined>()
+  let { setShown, triggerRef, ...rest }: DropdownMenuProps = $props()
+
+  const handleClick = (e: Event) => {
+    const containsTrigger = triggerRef && triggerRef.contains(e.target as Node)
+    const containsMenu = menuRef && menuRef.contains(e.target as Node)
+    if (containsMenu || containsTrigger) return
+
+    setShown(false)
+  }
+
+  onMount(() => {
+    if (window.innerWidth < 1024) document.body.style.overflow = 'hidden'
+    document.addEventListener('click', handleClick)
+
+    return () => {
+      document.removeEventListener('click', handleClick)
+      document.body.style.overflow = 'auto'
+    }
+  })
 </script>
 
-{#if props.showExitAnimation}
-    <DropdownMenuLayout {...props}>
-        <DropdownMenuContent {...props}/>
-    </DropdownMenuLayout>
-{/if}
+<DropdownMenuLayout bind:menuRef {...rest}>
+  <DropdownModalHeader {...rest} {setShown} />
+  <DropdownMenuItemElementList {setShown} {...rest} />
+</DropdownMenuLayout>
+<DropdownModalBackdrop />

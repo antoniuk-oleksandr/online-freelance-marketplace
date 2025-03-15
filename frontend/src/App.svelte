@@ -1,61 +1,65 @@
 <script>
-    import {Router, Route} from "svelte-routing";
-    import UserPage from "./pages/users/UserPage.svelte";
-    import Home from "./pages/home/HomePage.svelte";
-    import ServicePage from "@/pages/services/ServicePage.svelte";
-    import AppLayout from "@/AppLayout.svelte";
-    import SignInPage from "@/pages/sign-in/SignInPage.svelte";
-    import NotFound from "@/common-components/NotFound/NotFound.svelte";
-    import SignUpPage from "@/pages/sign-up/SignUpPage.svelte";
-    import ConfirmEmailPage from "@/pages/confirm-email/ConfirmEmailPage.svelte";
-    import ForgotPasswordPage from "@/pages/forgot-password/ForgotPasswordPage.svelte";
-    import ResetPasswordPage from "@/pages/reset-password/ResetPasswordPage.svelte";
-    import OrderRequestPage from "@/pages/order-request/OrderRequestPage.svelte";
-    import SearchPage from "@/pages/search/SearchPage.svelte";
-    import OrderConfirmPayPage from "@/pages/order-confirm-pay/OrderConfirmPayPage.svelte";
-    import OrderSubmitRequirementsPage from "@/pages/order-submit-requirements/OrderSubmitRequirementsPage.svelte";
+  import { Router, Route } from 'svelte-routing'
+  import UserPage from './pages/users/UserPage.svelte'
+  import Home from './pages/home/HomePage.svelte'
+  import ServicePage from '@/pages/services/ServicePage.svelte'
+  import AppLayout from '@/AppLayout.svelte'
+  import SignInPage from '@/pages/sign-in/SignInPage.svelte'
+  import NotFound from '@/common-components/NotFound/NotFound.svelte'
+  import SignUpPage from '@/pages/sign-up/SignUpPage.svelte'
+  import ConfirmEmailPage from '@/pages/confirm-email/ConfirmEmailPage.svelte'
+  import ForgotPasswordPage from '@/pages/forgot-password/ForgotPasswordPage.svelte'
+  import ResetPasswordPage from '@/pages/reset-password/ResetPasswordPage.svelte'
+  import OrderRequestPage from '@/pages/order-request/OrderRequestPage.svelte'
+  import SearchPage from '@/pages/search/SearchPage.svelte'
+  import OrderConfirmPayPage from '@/pages/order-confirm-pay/OrderConfirmPayPage.svelte'
+  import OrderSubmitRequirementsPage from '@/pages/order-submit-requirements/OrderSubmitRequirementsPage.svelte'
+    import MyProfilePage from './pages/my-profile/MyProfilePage.svelte'
 </script>
 
 <Router>
-    <AppLayout>
-        <Route path="/">
-            <Home/>
-        </Route>
-        <Route path="/services/:id" let:params>
-            <ServicePage id={params.id}/>
-        </Route>
-        <Route path="/orders/request">
-            <OrderRequestPage/>
-        </Route>
-        <Route path="/orders/confirm-pay">
-            <OrderConfirmPayPage/>
-        </Route>
-        <Route path="/orders/:orderId/submit-requirements" let:params>
-            <OrderSubmitRequirementsPage orderId={params.orderId}/>
-        </Route>
-        <Route path="/users/:id" let:params>
-            <UserPage id={params.id}/>
-        </Route>
-        <Route path="/search">
-            <SearchPage/>
-        </Route>
-        <Route path="/sign-in">
-            <SignInPage/>
-        </Route>
-        <Route path="/sign-up">
-            <SignUpPage/>
-        </Route>
-        <Route path="/confirm-email">
-            <ConfirmEmailPage/>
-        </Route>
-        <Route path="/forgot-password">
-            <ForgotPasswordPage/>
-        </Route>
-        <Route path="/reset-password">
-            <ResetPasswordPage/>
-        </Route>
-        <Route path="/*">
-            <NotFound/>
-        </Route>
-    </AppLayout>
+  <AppLayout>
+    <Route path="/">
+      <Home />
+    </Route>
+    <Route path="/services/:id" let:params>
+      <ServicePage id={params.id} />
+    </Route>
+    <Route path="/orders/request">
+      <OrderRequestPage />
+    </Route>
+    <Route path="/orders/confirm-pay">
+      <OrderConfirmPayPage />
+    </Route>
+    <Route path="/orders/:orderId/submit-requirements" let:params>
+      <OrderSubmitRequirementsPage orderId={params.orderId} />
+    </Route>
+    <Route path="/users/:id" let:params>
+      <UserPage id={params.id} />
+    </Route>
+    <Route path="/search">
+      <SearchPage />
+    </Route>
+    <Route path="/sign-in">
+      <SignInPage />
+    </Route>
+    <Route path="/sign-up">
+      <SignUpPage />
+    </Route>
+    <Route path="/confirm-email">
+      <ConfirmEmailPage />
+    </Route>
+    <Route path="/forgot-password">
+      <ForgotPasswordPage />
+    </Route>
+    <Route path="/reset-password">
+      <ResetPasswordPage />
+    </Route>
+    <Route path="/my-profile">
+      <MyProfilePage />
+    </Route>
+    <Route path="/*">
+      <NotFound />
+    </Route>
+  </AppLayout>
 </Router>

@@ -1,4 +1,4 @@
-import {ResponseErrorEnum} from "@/types/ResponseErrorEnum.ts";
+import { ResponseErrorEnum } from "@/types/ResponseErrorEnum";
 
 export type GetPublicKeyRequestResponse = {
     data: string

@@ -88,3 +88,13 @@ export const calcPriceWithServiceFees = (value: number) => {
     const serviceFees = getServiceFees();
     return round(value + value * serviceFees, 2);
 }
+
+export const flyFade = (node: Element, { x = 0, y = 0, duration = 300 }) => {
+    return {
+        duration,
+        css: (t: number) => `
+        opacity: ${t};
+        transform: translate(${(1 - t) * x}px, ${(1 - t) * y}px);
+      `,
+    }
+}
