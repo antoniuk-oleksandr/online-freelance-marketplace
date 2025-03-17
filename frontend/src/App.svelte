@@ -14,7 +14,7 @@
   import SearchPage from '@/pages/search/SearchPage.svelte'
   import OrderConfirmPayPage from '@/pages/order-confirm-pay/OrderConfirmPayPage.svelte'
   import OrderSubmitRequirementsPage from '@/pages/order-submit-requirements/OrderSubmitRequirementsPage.svelte'
-    import MyProfilePage from './pages/my-profile/MyProfilePage.svelte'
+  import MyProfileOrdersPage from './pages/my-profile/orders/MyProfileOrdersPage.svelte'
 </script>
 
 <Router>
@@ -55,8 +55,8 @@
     <Route path="/reset-password">
       <ResetPasswordPage />
     </Route>
-    <Route path="/my-profile">
-      <MyProfilePage />
+    <Route path="/my-profile/orders">
+      <MyProfileOrdersPage />
     </Route>
     <Route path="/*">
       <NotFound />

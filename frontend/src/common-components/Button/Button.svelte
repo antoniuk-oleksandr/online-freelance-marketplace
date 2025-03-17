@@ -51,7 +51,7 @@
 {/snippet}
 
 {#if link}
-  <Link to={link}>
+  <Link class="w-full" to={link}>
     {@render button()}
   </Link>
 {:else}

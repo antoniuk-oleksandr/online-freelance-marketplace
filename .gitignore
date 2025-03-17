@@ -1,6 +1,7 @@
 /database
 /file-server/uploads/*
 /backend/.env
+/backend/keys/*
 /frontend/.env
 /old_backend
 /old_frontend

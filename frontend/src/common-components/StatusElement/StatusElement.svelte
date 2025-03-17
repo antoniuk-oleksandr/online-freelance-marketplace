@@ -1,6 +1,6 @@
 <script lang="ts">
   import { StatusEnum } from '@/types/StatusEnum'
-  import { getStatusBgColor } from '@/pages/order-submit-requirements/helpers'
+  import { getStatusBgColor as getStatusAdditioanlStyles } from '@/pages/order-submit-requirements/helpers'
   import { formatStatus } from './helpers'
 
   type StatusElementProps = {
@@ -9,6 +9,6 @@
   const { status }: StatusElementProps = $props()
 </script>
 
-<span class="rounded-sm px-1 uppercase {getStatusBgColor(status)} text-white font-semibold"
-  >{formatStatus(status)}</span
->
+<span class="px-3 py-1 text-sm font-semibold rounded-md border {getStatusAdditioanlStyles(status)}">
+  {formatStatus(status)}
+</span>

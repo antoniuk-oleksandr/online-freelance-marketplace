@@ -1,39 +1,43 @@
 <script lang="ts">
   import Icon from '@iconify/svelte'
   import AvatarLayout from './AvatarLayout.svelte'
+  import { calcAvatarSize } from './helpers'
 
   type AvatarProps = {
     src: string | null
     alt: string
     size?: 'extra small' | 'small' | 'large' | '24' | string
+    borderRadius?: 'full' | 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '3xl' | 'none'
+    mobileSize?: 'extra small' | 'small' | 'large' | '24' | string
+    noSrcIcon?: string
   }
 
-  const { src, alt, size = 'small' }: AvatarProps = $props()
+  let {
+    src,
+    alt,
+    size = 'small',
+    borderRadius = 'full',
+    mobileSize = size,
+    noSrcIcon = 'hugeicons:user-circle-02',
+  }: AvatarProps = $props()
 
-  let sizeClass = $state('')
-  switch (size) {
-    case 'extra small':
-      sizeClass = 'size-12'
-      break
-    case 'small':
-      sizeClass = 'size-16'
-      break
-    case 'large':
-      sizeClass = 'size-32'
-      break
-    case '24':
-      sizeClass = 'size-24'
-      break
-    default:
-      sizeClass = `size-${size}`
-      break
-  }
+  const borderRadiusStyle = `rounded-${borderRadius}`
+
+  const sizeClass = calcAvatarSize(size, 'lg:')
+  const mobileSizeClass = calcAvatarSize(mobileSize, '')
 </script>
 
 <AvatarLayout>
   {#if src}
-    <img class={`rounded-full object-center object-cover ${sizeClass}`} {src} {alt} />
+    <img
+      class="{borderRadiusStyle} object-center object-cover {sizeClass} {mobileSizeClass}  "
+      {src}
+      {alt}
+    />
   {:else}
-    <Icon class={`rounded-full text-cyan-500 ${sizeClass}`} icon="hugeicons:user-circle-02" />
+    <Icon
+      class="{borderRadiusStyle} text-cyan-500 size-14{sizeClass} {mobileSizeClass} "
+      icon={noSrcIcon}
+    />
   {/if}
 </AvatarLayout>

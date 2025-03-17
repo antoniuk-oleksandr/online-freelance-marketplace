@@ -56,17 +56,18 @@ const getMonthAbbreviation = (monthIndex: number) => {
 };
 
 export const getStatusBgColor = (num: StatusEnum) => {
-    const statusBgColorArr: Record<StatusEnum, string> = {
-        [StatusEnum.Incomplete]: "bg-orange-500",
-        [StatusEnum.AwaitingAcceptance]: "bg-orange-500",
-        [StatusEnum.InProgress]: "bg-orange-500",
-        [StatusEnum.Completed]: "bg-green-500",
-        [StatusEnum.Cancelled]: "bg-red-500",
-        [StatusEnum.Pending]: "bg-orange-500",
-        [StatusEnum.Failed]: "bg-red-500",
+    const statusClasses = {
+        [StatusEnum.Incomplete]: "bg-gray-200 text-gray-700 border-gray-300",
+        [StatusEnum.InProgress]: "bg-yellow-100 text-yellow-700 border-yellow-300",
+        [StatusEnum.Completed]: "bg-green-100 text-green-700 border-green-300",
+        [StatusEnum.Cancelled]: "bg-red-200 text-red-800 border-red-400",
+        [StatusEnum.Pending]: "bg-orange-100 text-orange-700 border-orange-300",
+        [StatusEnum.Failed]: "bg-red-100 text-red-700 border-red-300",
+        [StatusEnum.AwaitingAcceptance]: "bg-blue-100 text-blue-700 border-blue-300"
     };
 
-    return statusBgColorArr[num] || "text-gray-500 bg-gray-100";
+    return statusClasses[num] || "text-gray-500 bg-gray-100";
+
 }
 
 export const orderSubmitRequirementsFormSchema = z.object({

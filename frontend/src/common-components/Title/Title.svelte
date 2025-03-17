@@ -1,10 +1,10 @@
 <script lang="ts">
-    type TitleProps = {
-        text: string,
-        capitalize?: boolean,
-    };
+  type TitleProps = {
+    text: string
+    capitalize?: boolean
+  }
 
-    const {text, capitalize}: TitleProps = $props();
+  const { text, capitalize = true }: TitleProps = $props()
 </script>
 
 <h2 class="text-xl {capitalize === false ? '' : 'capitalize'} font-semibold">{text}</h2>

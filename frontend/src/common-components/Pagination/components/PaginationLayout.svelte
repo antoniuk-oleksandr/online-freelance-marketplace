@@ -4,6 +4,6 @@
   const { children }: LayoutProps = $props()
 </script>
 
-<div class="bg-light-palette-background-block size-fit dark:bg-dark-palette-background-block rounded-full">
+<div class="flex items-center justify-center gap-3 text-base">
   {@render children()}
 </div>

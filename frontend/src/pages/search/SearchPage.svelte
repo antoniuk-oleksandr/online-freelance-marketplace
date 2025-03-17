@@ -1,44 +1,47 @@
 <script lang="ts">
-    import SearchPageLayout from "@/pages/search/SearchPageLayout.svelte";
-    import SearchLeftSide from "@/pages/search/components/SearchLeftSide/SearchLeftSide.svelte";
-    import SearchRightSide from "@/pages/search/components/SearchRightSide/SearchRightSide.svelte";
-    import {useRouter} from "svelte-routing";
-    import type {GetFilterParamsRequestResponse} from "@/types/GetFilterParamsRequestResponse.ts";
-    import {searchFilterDrawerStore} from "@/pages/search/stores/search-filter-drawer-store.ts";
-    import {searchCursorStore} from "@/pages/search/stores/search-cursor-store.ts";
-    import type {SearchCursorStore} from "@/types/SearchCursorStore.ts";
-    import {handleSearchRefresh} from "@/pages/search/handlers.ts";
-    import {request} from "@/api/request.ts";
-    import {errorStore} from "@/common-stores/error-store.ts";
+  import SearchPageLayout from '@/pages/search/SearchPageLayout.svelte'
+  import SearchLeftSide from '@/pages/search/components/SearchLeftSide/SearchLeftSide.svelte'
+  import SearchRightSide from '@/pages/search/components/SearchRightSide/SearchRightSide.svelte'
+  import { useRouter } from 'svelte-routing'
+  import type { GetFilterParamsRequestResponse } from '@/types/GetFilterParamsRequestResponse.ts'
+  import { searchFilterDrawerStore } from '@/pages/search/stores/search-filter-drawer-store'
+  import { searchCursorStore } from '@/pages/search/stores/search-cursor-store'
+  import type { SearchCursorStore } from '@/types/SearchCursorStore.ts'
+  import { handleSearchRefresh } from '@/pages/search/handlers'
+  import { request } from '@/api/request'
+  import { errorStore } from '@/common-stores/error-store'
+  import { onDestroy } from 'svelte'
 
-    let searchCursorData = $state<SearchCursorStore | undefined>();
-    searchCursorStore.subscribe((value) => searchCursorData = value);
+  let searchCursorData = $state<SearchCursorStore | undefined>()
+  searchCursorStore.subscribe((value) => (searchCursorData = value))
 
-    useRouter().routerBase.subscribe(() => {
-        if (!searchCursorData) return;
-        handleSearchRefresh();
-    });
+  const unsubscribe = useRouter().routerBase.subscribe((value) => {
+    if (value.uri !== '/search' || !searchCursorData) return
+    handleSearchRefresh()
+  })
 
-    let defaultFilterParamsRequestResponse = $state<GetFilterParamsRequestResponse | undefined>();
+  onDestroy(() => unsubscribe())
 
-    request<GetFilterParamsRequestResponse>("/filter-params/all", "GET").then((response) => {
-        if (response.status !== 200) {
-            errorStore.set({shown: true, error: response.error});
-        }
+  let defaultFilterParamsRequestResponse = $state<GetFilterParamsRequestResponse | undefined>()
 
-        defaultFilterParamsRequestResponse = response;
-    });
+  request<GetFilterParamsRequestResponse>('/filter-params/all', 'GET').then((response) => {
+    if (response.status !== 200) {
+      errorStore.set({ shown: true, error: response.error })
+    }
 
-    let isFiltersModalOpen = $state(false);
-    searchFilterDrawerStore.subscribe((value) => isFiltersModalOpen = value);
+    defaultFilterParamsRequestResponse = response
+  })
+
+  let isFiltersModalOpen = $state(false)
+  searchFilterDrawerStore.subscribe((value) => (isFiltersModalOpen = value))
 </script>
 
 {#if defaultFilterParamsRequestResponse && defaultFilterParamsRequestResponse.status === 200}
-    <SearchPageLayout>
-        <SearchLeftSide/>
-        <SearchRightSide
-                defaultFilterParams={defaultFilterParamsRequestResponse.data}
-                isFiltersModalOpen={isFiltersModalOpen}
-        />
-    </SearchPageLayout>
+  <SearchPageLayout>
+    <SearchLeftSide />
+    <SearchRightSide
+      defaultFilterParams={defaultFilterParamsRequestResponse.data}
+      {isFiltersModalOpen}
+    />
+  </SearchPageLayout>
 {/if}

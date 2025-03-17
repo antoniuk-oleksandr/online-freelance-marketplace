@@ -1,18 +1,18 @@
-import {searchStore} from "@/pages/search/stores/search-store.ts";
-import {SearchPageParams} from "@/types/SearchPageParams.ts";
-import {SearchFilterArrayAttribute} from "@/types/SearchFilterArrayAttribute.ts";
-import {searchFilterArrayStore} from "@/pages/search/stores/search-filter-array-store.ts";
-import {Language} from "@/types/Language.ts";
-import {Skill} from "@/types/Skill.ts";
-import {Category} from "@/types/Category.ts";
-import {generateSearchLink, getSearchPageParams, makeSearchRequest, submitSearchPage} from "@/pages/search/helpers.ts";
-import {searchFilterDrawerStore} from "@/pages/search/stores/search-filter-drawer-store.ts";
-import {searchFilterArrayInputDataStore} from "@/pages/search/stores/search-filter-array-input-data-store.ts";
-import type {SearchRequestResponse} from "@/types/SearchRequestResponse.ts";
-import {request} from "@/api/request.ts";
-import {errorStore} from "@/common-stores/error-store.ts";
-import {searchCursorStore} from "@/pages/search/stores/search-cursor-store.ts";
-import {SearchCursorStore} from "@/types/SearchCursorStore.ts";
+import { searchStore } from "@/pages/search/stores/search-store";
+import { SearchPageParams } from "@/types/SearchPageParams";
+import { SearchFilterArrayAttribute } from "@/types/SearchFilterArrayAttribute";
+import { searchFilterArrayStore } from "@/pages/search/stores/search-filter-array-store";
+import { Language } from "@/types/Language";
+import { Skill } from "@/types/Skill";
+import { Category } from "@/types/Category";
+import { generateSearchLink, getSearchPageParams, makeSearchRequest, submitSearchPage } from "@/pages/search/helpers";
+import { searchFilterDrawerStore } from "@/pages/search/stores/search-filter-drawer-store";
+import { searchFilterArrayInputDataStore } from "@/pages/search/stores/search-filter-array-input-data-store";
+import type { SearchRequestResponse } from "@/types/SearchRequestResponse";
+import { request } from "@/api/request";
+import { errorStore } from "@/common-stores/error-store";
+import { searchCursorStore } from "@/pages/search/stores/search-cursor-store";
+import { SearchCursorStore } from "@/types/SearchCursorStore";
 
 export const handleSearchFromToBlockInputSpinnersClick = (
     value: number,
@@ -115,13 +115,13 @@ export const createLastServiceObserver = (
     const observer = new IntersectionObserver((entries) => {
         const last = entries[0];
         if (!last.isIntersecting || !searchCursorData.originalSearchPageParams || !searchCursorData.searchRequestResponse) return;
-        let {searchRequestResponse, originalSearchPageParams} = searchCursorData;
+        let { searchRequestResponse, originalSearchPageParams } = searchCursorData;
 
         if (searchRequestResponse.status === 200 && searchRequestResponse.data.hasMore) {
             const link = generateSearchLink(originalSearchPageParams, searchRequestResponse.data.cursor);
             request<SearchRequestResponse>(link, "GET").then((response) => {
                 if (response.status !== 200) {
-                    errorStore.set({shown: true, error: response.data.error});
+                    errorStore.set({ shown: true, error: response.data.error });
                 }
 
                 if (response.status !== 200 || !searchRequestResponse.data.services || !response.data.services) return;
@@ -172,7 +172,7 @@ const processRequest = (link: string) => {
                 }
             })
         } else {
-            errorStore.set({shown: true, error: response.data.error});
+            errorStore.set({ shown: true, error: response.data.error });
         }
     });
 }
