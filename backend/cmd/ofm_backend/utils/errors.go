@@ -10,6 +10,7 @@ var (
 	ErrUnexpectedError    = errors.New("An unexpected error occurred")
 	ErrTooManyRequests    = errors.New("Too many requests")
 	ErrParsingError       = errors.New("Parsing error")
+	ErrInvalidPathParam   = errors.New("Invalid path parameter")
 
 	// Auth
 	ErrTempTokenExpired     = errors.New("Temporary token has expired")

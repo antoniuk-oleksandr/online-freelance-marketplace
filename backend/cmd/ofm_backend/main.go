@@ -7,6 +7,7 @@ import (
 	filter_params_routes "ofm_backend/cmd/ofm_backend/api/filter_params/routes"
 	freelance_routes "ofm_backend/cmd/ofm_backend/api/freelance/routes"
 	home_data_routes "ofm_backend/cmd/ofm_backend/api/home_data/routes"
+	my_profile_routes "ofm_backend/cmd/ofm_backend/api/my_profile/routes"
 	order_routes "ofm_backend/cmd/ofm_backend/api/order/routes"
 	payment_routes "ofm_backend/cmd/ofm_backend/api/payment/routes"
 	search_routes "ofm_backend/cmd/ofm_backend/api/search/routes"
@@ -48,6 +49,7 @@ func main() {
 	home_data_routes.RegisterHomeDataRoutes(apiGroup, posgresqlDb)
 	payment_routes.RegisterPaymentRoutes(apiGroup, posgresqlDb, middleware)
 	order_routes.RegisterOrderRoutes(apiGroup, posgresqlDb, fileService, middleware)
+	my_profile_routes.RegisterMyProfileRoutes(apiGroup, posgresqlDb)
 
 	app.Listen(":8080")
 }

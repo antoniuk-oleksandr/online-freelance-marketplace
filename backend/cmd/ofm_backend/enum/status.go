@@ -2,7 +2,7 @@ package enum
 
 type Status int
 
-const  (
+const (
 	Incomplete = iota + 1
 	InProgress
 	Completed

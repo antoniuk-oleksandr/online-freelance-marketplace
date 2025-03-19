@@ -203,7 +203,7 @@ func (as *authService) RefreshToken(tokenString string) (string, error) {
 		return "", fiber.ErrUnauthorized
 	}
 
-	if claims["type"] != "refresh" {
+	if int(claims["type"].(float64)) != utils.Refresh {
 		return "", fiber.ErrUnauthorized
 	}
 

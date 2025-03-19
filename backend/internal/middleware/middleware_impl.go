@@ -177,7 +177,10 @@ func (middleware *middleware) ProcessRegularJWT() fiber.Handler {
 			return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "Invalid token"})
 		}
 
-		c.Locals("username", claims["username"])
+
+		c.Locals("username", claims["username"].(string))
+		c.Locals("avatar", claims["avatar"].(string))
+		c.Locals("userId", claims["userId"].(float64))
 
 		return c.Next()
 	}
@@ -218,7 +221,7 @@ func (middleware *middleware) GenerateSignInAccessToken(username string) (string
 		"type":     enums.Access,
 		"exp":      expiration,
 		"avatar":   *utils.AddServerURLToFiles[*string](&userSignInData.Avatar),
-		"userId":       userSignInData.Id,
+		"userId":   userSignInData.Id,
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
