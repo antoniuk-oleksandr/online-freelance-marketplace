@@ -124,7 +124,8 @@ const config = {
                 "sign-form": "36rem 1fr",
                 "search-page": "1fr 23rem",
                 "search-top-bar": "1fr auto",
-                "orders-table": "5rem 6rem 1fr 13rem 10rem 10rem",
+                "orders-table": "5rem 6rem 1fr 13rem 6rem 8rem",
+                "services-table": "5rem 7rem 1fr 13rem 4.5rem 8rem 6rem 8rem",
                 "orders-table-mobile": "6rem 1fr"
 
             },

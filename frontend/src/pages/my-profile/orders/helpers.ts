@@ -2,13 +2,6 @@ import { request } from "@/api/request"
 import { errorStore } from "@/common-stores/error-store"
 import type { MyProfileOrdersData } from "@/types/MyProfileOrdersData"
 import type { MyProfileOrdersRequestResponse } from "@/types/MyProfileOrdersRequestResponse"
-import { SvelteURLSearchParams } from "svelte/reactivity"
-
-
-export const getMyProfileOrdersCurrentPage = () => {
-  const params = new SvelteURLSearchParams(window.location.search);
-  return parseInt(params.get('page') || '1');
-}
 
 export const fetchMyOrdersData = async (
   currentPage: number,

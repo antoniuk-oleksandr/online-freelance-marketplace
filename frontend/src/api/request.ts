@@ -20,8 +20,6 @@ export const request = async <T>(
         if (response.status === 200) accessToken = response.data.accessToken;
         else return response;
     }
-
-    console.log("Requesting", method, url, body);
     
     const methodFunc = defineRequestMethod(method);
     const headers = defineRequestHeaders(accessToken, body);

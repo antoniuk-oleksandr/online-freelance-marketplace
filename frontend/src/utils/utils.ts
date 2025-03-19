@@ -1,3 +1,5 @@
+import { SvelteURLSearchParams } from "svelte/reactivity";
+
 export const getHost = () => {
     return 'http://localhost:8080';
 }
@@ -97,4 +99,9 @@ export const flyFade = (node: Element, { x = 0, y = 0, duration = 300 }) => {
         transform: translate(${(1 - t) * x}px, ${(1 - t) * y}px);
       `,
     }
+}
+
+export const getPageParam = () => {
+    const params = new SvelteURLSearchParams(window.location.search);
+    return parseInt(params.get('page') || '1');
 }
