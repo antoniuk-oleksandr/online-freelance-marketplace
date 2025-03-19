@@ -119,7 +119,7 @@ export const createLastServiceObserver = (
 
         if (searchRequestResponse.status === 200 && searchRequestResponse.data.hasMore) {
             const link = generateSearchLink(originalSearchPageParams, searchRequestResponse.data.cursor);
-            request<SearchRequestResponse>(link, "GET").then((response) => {
+            request<SearchRequestResponse>('GET', link).then((response) => {
                 if (response.status !== 200) {
                     errorStore.set({ shown: true, error: response.data.error });
                 }
@@ -160,7 +160,7 @@ export const handleSearchRefresh = () => {
 }
 
 const processRequest = (link: string) => {
-    request<SearchRequestResponse>(link, "GET").then((response) => {
+    request<SearchRequestResponse>("GET", link).then((response) => {
         if (response.status === 200) {
             searchCursorStore.update((prev) => {
                 if (!prev.originalSearchPageParams) return prev;

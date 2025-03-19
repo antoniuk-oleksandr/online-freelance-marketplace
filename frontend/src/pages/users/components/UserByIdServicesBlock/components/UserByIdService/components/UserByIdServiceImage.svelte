@@ -6,7 +6,7 @@
     let imageSrc = $state<string | undefined>();
 
     $effect(() => {
-        imageSrc = image ? image : '/images/no-image.jpg';
+        imageSrc = image ? image : '/images/no-image.png';
     })
 </script>
 

@@ -13,7 +13,7 @@
 
 <CarouselSlideListLayout currentIndex={currentIndex}>
     {#if !slides || slides.length === 0}
-        <CarouselSlide slide="/images/no-image.jpg"/>
+        <CarouselSlide slide="/images/no-image.png"/>
     {:else}
         {#each slides as slide}
             <CarouselSlide slide={slide}/>

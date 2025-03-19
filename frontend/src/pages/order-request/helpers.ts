@@ -26,7 +26,7 @@ export const fetchServiceDetailsAndPackage = (
     setServiceData: (data: RestrictedService) => void,
     setSelectedPackage: (newPackage: Package) => void
 ) => {
-    request<GetRestrictedServiceByIdResponse>(`/freelances/${serviceId}/restricted/`, "GET").then((response) => {
+    request<GetRestrictedServiceByIdResponse>("GET", `/freelances/${serviceId}/restricted/`).then((response) => {
         if (response.status === 200) {
             const data = response.data;
             setServiceData(data);

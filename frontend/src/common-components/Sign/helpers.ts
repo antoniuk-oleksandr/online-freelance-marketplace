@@ -4,6 +4,7 @@ import { jwtDecode } from "jwt-decode";
 
 const decodeAccessToken = (token: string) => {
   const decoded = jwtDecode<AccessToken>(token);
+  
   localStorage.setItem("accessTokenAvatar", decoded.avatar);
   localStorage.setItem("accessTokenUsername", decoded.username);
   localStorage.setItem("accessTokenUserId", decoded.userId);
@@ -19,6 +20,7 @@ export const setTokenCookies = (data: { accessToken: string; refreshToken: strin
   decodeAccessToken(data.accessToken);
 
   let options: ({ expires: Date } | undefined)[] = [undefined, undefined];
+
 
   if (keepSignedIn) {
     const accessTokenExpiration = getTokenExpiration(data.accessToken);

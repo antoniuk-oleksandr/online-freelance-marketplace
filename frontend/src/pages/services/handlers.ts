@@ -15,7 +15,7 @@ export const handleShowMoreFreelancesButtonClick = async (
         const {reviewsCursor} = prev.data;
 
         const link = `/freelances/${id}/reviews?reviewsCursor=${reviewsCursor}`;
-        const response = await request<GetReviewsByServiceIdResponse>(link, "GET");
+        const response = await request<GetReviewsByServiceIdResponse>("GET", link);
 
         if (response.status !== 200) {
             errorStore.set({shown: true, error: response.error});

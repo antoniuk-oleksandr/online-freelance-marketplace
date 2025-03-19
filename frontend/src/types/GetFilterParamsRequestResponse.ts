@@ -1,7 +1,7 @@
-import {Skill} from "@/types/Skill.ts";
-import {Category} from "@/types/Category.ts";
-import {Language} from "@/types/Language.ts";
-import {ResponseErrorEnum} from "@/types/ResponseErrorEnum.ts";
+import { Skill } from "@/types/Skill";
+import { Category } from "@/types/Category";
+import { Language } from "@/types/Language";
+import { ResponseErrorEnum } from "@/types/ResponseErrorEnum";
 
 export type GetFilterParamsRequestResponse = {
     data: {

@@ -3,7 +3,6 @@ import { ResponseMessageEnum } from "@/types/ResponseMessageEnum";
 import { navigate } from "svelte-routing";
 import { toastElementStore } from "@/common-components/ToastElement/store/toast-element-store";
 import { postAuthRequest } from "@/api/post-auth-request";
-import { jwtDecode } from "jwt-decode";
 import { setTokenCookies } from "./helpers";
 
 const showToast = (message: string, type: "success" | "error") => {

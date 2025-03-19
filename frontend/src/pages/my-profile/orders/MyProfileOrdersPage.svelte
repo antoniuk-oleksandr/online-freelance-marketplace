@@ -6,14 +6,9 @@
   import { onDestroy } from 'svelte'
   import { navigate, useRouter } from 'svelte-routing'
   import Loader from '@/common-components/Loader/Loader.svelte'
-  import {
-    buildMyProfileOrdersURL,
-    fetchMyOrdersData,
-    getMyProfileOrdersCurrentPage,
-    makeMyProfileOrdersRequest,
-  } from './helpers'
-  import { errorStore } from '@/common-stores/error-store'
+  import { fetchMyOrdersData, getMyProfileOrdersCurrentPage } from './helpers'
   import type { MyProfileOrdersData } from '@/types/MyProfileOrdersData'
+  import NoContentMessage from '@/common-components/NoContentMessage/NoContentMessage.svelte'
 
   let currentPage = $state<undefined | number>()
   let ordersData = $state<undefined | MyProfileOrdersData>()
@@ -33,11 +28,15 @@
 >
   {#if currentPage && ordersData}
     <Title text="My orders" />
-    <OrdersTable orders={ordersData.orders} />
+    {#if ordersData.orders.length === 0}
+      <NoContentMessage text="You have no orders yet" />
+    {:else}
+      <OrdersTable orders={ordersData.orders} />
+    {/if}
 
     {#if ordersData.totalPages > 1}
       <Pagination
-        setPage={(value) => navigate(buildMyProfileOrdersURL(value, ordersData?.cursor))}
+        setPage={(value) => navigate(`/my-profile/orders?page=${value}`)}
         {currentPage}
         totalPages={ordersData.totalPages}
       />

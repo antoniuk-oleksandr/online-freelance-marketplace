@@ -30,9 +30,7 @@ export const makeOrderServiceQuestionsRequest = (
     orderId: string,
     setOrderData: (value: OrderSubmitRequirementsData) => void
 ) => {
-    const token = Cookies.get("accessToken");
-
-    request<GetPublicKeyRequestResponse>(`/orders/${orderId}/freelance-questions`, "GET", token)
+    request<GetPublicKeyRequestResponse>("GET", `/orders/${orderId}/freelance-questions`, undefined, true)
         .then((response) => {
             if (response.status !== 200) {
                 errorStore.set({ shown: true, error: response.data.error })

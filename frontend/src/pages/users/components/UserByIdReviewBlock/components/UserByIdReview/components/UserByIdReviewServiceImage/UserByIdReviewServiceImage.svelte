@@ -7,7 +7,7 @@
     }
 
     let {src}: UserByIdReviewServiceImageProps = $props();
-    if(!src) src = "/images/no-image.jpg";
+    if(!src) src = "/images/no-image.ong";
 </script>
 
 <UserByIdReviewServiceImageLayout>

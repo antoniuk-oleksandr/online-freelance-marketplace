@@ -200,7 +200,7 @@ export const makeSearchRequest = (
     setSearchRequestResponse: (value: SearchRequestResponse) => void,
 ) => {
     const link = generateSearchLink(searchPAgeParams);
-    request<SearchRequestResponse>(link, "GET").then((response) => {
+    request<SearchRequestResponse>("GET", link).then((response) => {
         if (response.status !== 200) {
             errorStore.set({ shown: true, error: response.data.error });
         }

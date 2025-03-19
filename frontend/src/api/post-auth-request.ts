@@ -1,6 +1,6 @@
-import {getHost} from "@/utils/utils.ts";
+import { getHost } from "@/utils/utils";
 import axios from "axios";
-import {PostAuthRequestResponse} from "@/types/PostAuthRequestResponse.ts";
+import { PostAuthRequestResponse } from "@/types/PostAuthRequestResponse";
 
 export const postAuthRequest = async (
     endpoint: string,

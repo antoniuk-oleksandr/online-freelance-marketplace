@@ -14,9 +14,7 @@
 
   let isLargeScreen = $state<boolean>(false)
   onMount(() => {
-    const updateScreenSize = () => {
-      isLargeScreen = window.innerWidth >= 1024
-    }
+    const updateScreenSize = () => (isLargeScreen = window.innerWidth >= 1024)
 
     updateScreenSize()
     window.addEventListener('resize', updateScreenSize)
@@ -30,12 +28,12 @@
 {#each orders as order}
   <TableRow
     gridTemplateColumns="grid-cols-1 gap-3 lg:gap-0 lg:grid-cols-orders-table"
-    link={isLargeScreen ? '/my-profile/orders/{order.id}' : undefined}
+    link={isLargeScreen ? `/my-profile/orders/${order.id}` : undefined}
     styles="odd:lg:bg-gray-100 dark:odd:lg:bg-neutral-800 border-light-palette-divider pb-6 mb-6 lg:mb-0 lg:pb-0 dark:border-dark-palette-divider last:pb-0 last:mb-0 last:!border-none border-b"
   >
     <TableCell styles="justify-center">
       <Avatar
-        noSrcIcon="hugeicons:image-01"
+        noSrcImage="/images/no-image.png"
         borderRadius="md"
         src={order.image}
         mobileSize="64"
@@ -56,7 +54,7 @@
       <span class="font-semibold">{order.price}$</span>
     </TableCell>
     <TableCell styles="justify-between" label="Date">
-      <span>{formatOrderDate(new Date(order.date * 1000).toString())}</span>
+      <span>{formatOrderDate(new Date(order.date).toString())}</span>
     </TableCell>
     <TableCell styles="lg:hidden">
       <Button link="/my-profile/orders/{order.id}" styles="w-full">View Order</Button>

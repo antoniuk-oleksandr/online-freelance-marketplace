@@ -152,7 +152,7 @@ const processPaymentData = (
 }
 
 const getPublicKey = async (): Promise<string> => {
-    const resp = await request<GetPublicKeyRequestResponse>("/payment/public-key", "GET");
+    const resp = await request<GetPublicKeyRequestResponse>("GET", "/payment/public-key");
     if (resp.status !== 200) {
         errorStore.set(
             { shown: true, error: ResponseErrorEnum.ErrEncryption }
@@ -165,13 +165,8 @@ const getPublicKey = async (): Promise<string> => {
 const processPayment = async (
     encryptedData: string
 ): Promise<PostPaymentRequestResponse> => {
-    const accessToken = Cookies.get("accessToken");
-    if (!accessToken || accessToken === "") errorStore.set(
-        { shown: true, error: ResponseErrorEnum.ErrInvalidAccessTokens }
-    );
-
     return await request<PostPaymentRequestResponse>(
-        "/payment/process-payment", "POST", accessToken, { data: encryptedData }
+        "POST", "/payment/process-payment", { data: encryptedData }, true
     );
 }
 

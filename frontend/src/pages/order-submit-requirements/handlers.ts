@@ -13,7 +13,6 @@ export const handleOrderSubmitRequirementsFormSubmit = async (
     formData.append("files", file);
   })
 
-  const token = Cookies.get("accessToken");
-  const response = await request(`/orders/${data.orderId}/requirements`, "POST", token, formData)
+  const response = await request("POST", `/orders/${data.orderId}/requirements`, formData, true)
   console.log(response);
 }

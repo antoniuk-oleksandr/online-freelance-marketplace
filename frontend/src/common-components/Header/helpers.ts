@@ -63,7 +63,7 @@ export const getUserSession = (): SignHeaderData => {
   const userId = localStorage.getItem('accessTokenUserId')
 
   let signedIn = true
-  if (!refreshToken || !avatar || !userId) {
+  if (!refreshToken || avatar === undefined || userId === undefined) {
     Cookies.remove('refreshToken')
     Cookies.remove('accessToken')
     localStorage.removeItem('accessTokenAvatar')
@@ -77,7 +77,7 @@ export const getUserSession = (): SignHeaderData => {
 
 const logoutClickAction = async (signData: SignHeaderData) => {
   const logoutBody = { accessToken: signData.accessToken, refreshToken: signData.refreshToken }
-  const { data, status } = await request<PostSignOutRequestResponse>("/auth/sign-out", "POST", undefined, logoutBody)
+  const { data, status } = await request<PostSignOutRequestResponse>("POST", "/auth/sign-out", logoutBody)
 
   if (status !== 200) {
     errorStore.set({ shown: true, error: data.error })
