@@ -1,8 +1,8 @@
 package dto
 
-type OrdersPaginationParams struct {
-	Page           int
-	OrdersPerPage  int
-	Offset         int
-	UserId         int
+type MyProfileParams struct {
+	Page   int
+	Limit  int
+	Offset int
+	UserId int
 }

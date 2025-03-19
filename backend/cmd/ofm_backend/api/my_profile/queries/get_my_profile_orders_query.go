@@ -2,20 +2,29 @@ package queries
 
 const GetMyProfileOrdersQuery = `
 WITH orders_data AS (
-    SELECT O.order_id, S.title, O.status_id as status, P.price,
-    TO_CHAR(O.created_at AT TIME ZONE 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS.US"Z"') AS date,
-        (
-            SELECT F.name
-            FROM files F
-            LEFT JOIN services_files SF ON SF.file_id = F.file_id AND SF.service_id = S.service_id
-            ORDER BY F.file_id
-            LIMIT 1
-        ) as image
+    SELECT
+        O.order_id,
+        S.title,
+        O.status_id AS status,
+        P.price,
+        TO_CHAR(O.created_at AT TIME ZONE 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS.US"Z"') AS date,
+        F.name AS image
     FROM orders O
-    LEFT JOIN services S ON s.service_id = O.service_id
-    LEFT JOIN packages P ON p.package_id = O.service_package_id
+    LEFT JOIN services S ON S.service_id = O.service_id
+    LEFT JOIN services_files SF ON SF.service_id = S.service_id
+    LEFT JOIN files F ON F.file_id = SF.file_id
+    LEFT JOIN packages P ON P.package_id = O.service_package_id
     WHERE O.customer_id = $1
-    ORDER BY O.created_at DESC , O.order_id
+    AND (
+	    F.file_id = (
+	        SELECT MIN(F2.file_id)
+	        FROM services_files SF2
+	        JOIN files F2 ON F2.file_id = SF2.file_id
+	        WHERE SF2.service_id = S.service_id
+	    ) OR F.file_id IS NULL
+    )
+    GROUP BY O.order_id, S.title, O.status_id, P.price, O.created_at, F.name
+    ORDER BY O.created_at DESC, O.order_id
     OFFSET $2
     LIMIT $3
 ),

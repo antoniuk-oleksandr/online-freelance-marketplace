@@ -1,39 +1,45 @@
 package helpers
 
 import (
+	"encoding/json"
 	"ofm_backend/cmd/ofm_backend/api/my_profile/dto"
 	"ofm_backend/cmd/ofm_backend/utils"
 	"os"
 	"strconv"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/jmoiron/sqlx"
 )
 
-func CalcMyProfileOrdersOffset(
-	ordersPaginationParams *dto.OrdersPaginationParams,
+func CalcMyProfileLimit(
+	myProfileParams *dto.MyProfileParams,
 ) int {
-	return (ordersPaginationParams.Page - 1) * ordersPaginationParams.OrdersPerPage
+	return (myProfileParams.Page - 1) * myProfileParams.Limit
 }
 
 func GetOrdersPerPage() (int, error) {
 	return strconv.Atoi(os.Getenv("MAX_MY_PROFILE_ORDER_RESULTS"))
 }
 
-func ParseMyProfileOrdersParams(ctx *fiber.Ctx) (*dto.OrdersPaginationParams, error) {
-	var ordersPaginationParams dto.OrdersPaginationParams
+func GetServicesPerPage() (int, error) {
+	return strconv.Atoi(os.Getenv("MAX_MY_PROFILE_SERVICE_RESULTS"))
+}
+
+func ParseMyProfileParams(ctx *fiber.Ctx) (*dto.MyProfileParams, error) {
+	var myProfileParams dto.MyProfileParams
 
 	var err error
-	ordersPaginationParams.Page, err = parseMyProfileOrdersParam("page", ctx)
+	myProfileParams.Page, err = parseMyProfileOrdersParam("page", ctx)
 	if err != nil && err != utils.ErrInvalidPathParam {
 		return nil, err
 	}
-	ordersPaginationParams.UserId = int(ctx.Locals("userId").(float64))
+	myProfileParams.UserId = int(ctx.Locals("userId").(float64))
 
-	if ordersPaginationParams.UserId <= 0 {
+	if myProfileParams.UserId <= 0 {
 		return nil, utils.ErrInvalidPathParam
 	}
 
-	return &ordersPaginationParams, nil
+	return &myProfileParams, nil
 }
 
 func parseMyProfileOrdersParam(paramName string, ctx *fiber.Ctx) (int, error) {
@@ -48,4 +54,23 @@ func parseMyProfileOrdersParam(paramName string, ctx *fiber.Ctx) (int, error) {
 	}
 
 	return value, err
+}
+
+func ParseMyProfileDataFromRows[T any](rows *sqlx.Rows) (*[]T, int, error) {
+	var dataJSON []byte
+	var totalPages int
+	var orderTableData []T
+
+	if rows.Next() {
+		err := rows.Scan(&dataJSON, &totalPages)
+		if err != nil {
+			return nil, 0, err
+		}
+	}
+
+	if err := json.Unmarshal(dataJSON, &orderTableData); err != nil {
+		return nil, 0, err
+	}
+
+	return &orderTableData, totalPages, nil
 }

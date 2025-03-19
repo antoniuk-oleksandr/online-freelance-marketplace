@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"log"
 	"ofm_backend/cmd/ofm_backend/api/my_profile/helpers"
 	"ofm_backend/cmd/ofm_backend/api/my_profile/service"
 	"ofm_backend/cmd/ofm_backend/utils"
@@ -18,15 +19,34 @@ func NewMyProfileController(myProfileService service.MyProfileService) MyProfile
 	}
 }
 
-func (mpc *myProfileController) GetMyProfileOrders(ctx *fiber.Ctx) error {
-	ordersPaginationParams, err := helpers.ParseMyProfileOrdersParams(ctx)
+func (mpc *myProfileController) GetMyProfileServices(ctx *fiber.Ctx) error {
+	paginationParams, err := helpers.ParseMyProfileParams(ctx)
 	if err != nil {
 		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"error": err.Error(),
 		})
 	}
 
-	ordersResponse, err := mpc.myProfileService.GetMyProfileOrders(ordersPaginationParams)
+	servicesResponse, err := mpc.myProfileService.GetMyProfileServices(paginationParams)
+	if err != nil {
+		log.Println("err:",err)
+		return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error": utils.ErrUnexpectedError.Error(),
+		})
+	}
+
+	return ctx.Status(fiber.StatusOK).JSON(servicesResponse)
+}
+
+func (mpc *myProfileController) GetMyProfileOrders(ctx *fiber.Ctx) error {
+	paginationParams, err := helpers.ParseMyProfileParams(ctx)
+	if err != nil {
+		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error": err.Error(),
+		})
+	}
+
+	ordersResponse, err := mpc.myProfileService.GetMyProfileOrders(paginationParams)
 	if err != nil {
 		return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"error": utils.ErrUnexpectedError.Error(),

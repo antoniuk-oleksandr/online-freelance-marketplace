@@ -22,4 +22,5 @@ func RegisterMyProfileRoutes(apiGroup fiber.Router, db *sqlx.DB) {
 	middleware := middleware.NewMiddleware(middlewareRepository)
 
 	myProfileGroup.Get("/orders", middleware.ProcessRegularJWT(), myProfileController.GetMyProfileOrders)
+	myProfileGroup.Get("/services", middleware.ProcessRegularJWT(), myProfileController.GetMyProfileServices)
 }

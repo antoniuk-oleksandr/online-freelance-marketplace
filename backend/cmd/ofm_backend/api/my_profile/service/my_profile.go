@@ -5,5 +5,6 @@ import (
 )
 
 type MyProfileService interface {
-	GetMyProfileOrders(params *dto.OrdersPaginationParams) (*dto.OrdersResponse, error)
+	GetMyProfileOrders(params *dto.MyProfileParams) (*dto.OrdersResponse, error)
+	GetMyProfileServices(params *dto.MyProfileParams) (*dto.ServicesResponse, error)
 }
