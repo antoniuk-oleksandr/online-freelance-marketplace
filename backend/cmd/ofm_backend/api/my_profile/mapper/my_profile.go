@@ -24,6 +24,15 @@ func MapServicesDataModelToServicesResponseDto(servicesDataModel *model.Services
 	}
 }
 
+func MapRequestsDataModelToRequestsResponseDto(requestsDataModel *model.RequestsData) *dto.RequestsResponse {
+	requestsTableDataDtos := mapRequestTableDataModelsToDtos(requestsDataModel.RequestTableData)
+
+	return &dto.RequestsResponse{
+		Requests:   requestsTableDataDtos,
+		TotalPages: requestsDataModel.TotalPages,
+	}
+}
+
 func mapServiceTableDataModelsToDtos(serviceTableDataModels []model.ServiceTableData) []dto.ServiceTableData {
 	var serviceTableDataDtos []dto.ServiceTableData = make([]dto.ServiceTableData, 0)
 
@@ -41,6 +50,25 @@ func mapServiceTableDataModelsToDtos(serviceTableDataModels []model.ServiceTable
 	}
 
 	return serviceTableDataDtos
+}
+
+func mapRequestTableDataModelsToDtos(requestTableDataModels []model.RequestTableData) []dto.RequestTableData {
+	var requestTableDataDtos []dto.RequestTableData = make([]dto.RequestTableData, 0)
+
+	for _, requestTableDataModel := range requestTableDataModels {
+		requestTableDataDtos = append(requestTableDataDtos, dto.RequestTableData{
+			Id:                requestTableDataModel.Id,
+			Title:             requestTableDataModel.Title,
+			Status:            requestTableDataModel.Status,
+			Price:             requestTableDataModel.Price,
+			CustomerFirstName: requestTableDataModel.CustomerFirstName,
+			CustomerSurname:   requestTableDataModel.CustomerSurname,
+			CustomerAvatar:    *utils.AddServerURLToFiles[*string](&requestTableDataModel.CustomerAvatar),
+			Date:              requestTableDataModel.Date,
+		})
+	}
+
+	return requestTableDataDtos
 }
 
 func mapOrderTableDataModelsToDtos(orderTableDataModels []model.OrderTableData) []dto.OrderTableData {

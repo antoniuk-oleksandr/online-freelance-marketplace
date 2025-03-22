@@ -25,6 +25,10 @@ func GetServicesPerPage() (int, error) {
 	return strconv.Atoi(os.Getenv("MAX_MY_PROFILE_SERVICE_RESULTS"))
 }
 
+func GetRequestsPerPage() (int, error) {
+	return strconv.Atoi(os.Getenv("MAX_MY_PROFILE_REQUEST_RESULTS"))
+}
+
 func ParseMyProfileParams(ctx *fiber.Ctx) (*dto.MyProfileParams, error) {
 	var myProfileParams dto.MyProfileParams
 
@@ -73,4 +77,27 @@ func ParseMyProfileDataFromRows[T any](rows *sqlx.Rows) (*[]T, int, error) {
 	}
 
 	return &orderTableData, totalPages, nil
+}
+
+func ParseMyProfileRequestsParams(ctx *fiber.Ctx) (*dto.MyProfileParams, error) {
+	var myProfileParams dto.MyProfileParams
+
+	var err error
+	myProfileParams.Page, err = parseMyProfileOrdersParam("page", ctx)
+	if err != nil && err != utils.ErrInvalidPathParam {
+		return nil, err
+	}
+	
+	myProfileParams.Status, err = parseMyProfileOrdersParam("status", ctx)
+	if err != nil && err != utils.ErrInvalidPathParam {
+		return nil, err
+	}
+	
+	myProfileParams.UserId = int(ctx.Locals("userId").(float64))
+
+	if myProfileParams.UserId <= 0 {
+		return nil, utils.ErrInvalidPathParam
+	}
+
+	return &myProfileParams, nil
 }

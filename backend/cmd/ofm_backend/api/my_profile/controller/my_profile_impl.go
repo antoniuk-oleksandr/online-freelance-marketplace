@@ -29,7 +29,7 @@ func (mpc *myProfileController) GetMyProfileServices(ctx *fiber.Ctx) error {
 
 	servicesResponse, err := mpc.myProfileService.GetMyProfileServices(paginationParams)
 	if err != nil {
-		log.Println("err:",err)
+		log.Println("err:", err)
 		return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"error": utils.ErrUnexpectedError.Error(),
 		})
@@ -54,4 +54,23 @@ func (mpc *myProfileController) GetMyProfileOrders(ctx *fiber.Ctx) error {
 	}
 
 	return ctx.Status(fiber.StatusOK).JSON(ordersResponse)
+}
+
+func (mpc *myProfileController) GetMyProfileRequests(ctx *fiber.Ctx) error {
+	params, err := helpers.ParseMyProfileRequestsParams(ctx)
+	if err != nil {
+		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error": err.Error(),
+		})
+	}
+
+	requestsResponse, err := mpc.myProfileService.GetMyProfileRequests(params)
+	if err != nil {
+		log.Println("err", err)
+		return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error": utils.ErrUnexpectedError.Error(),
+		})
+	}
+
+	return ctx.Status(fiber.StatusOK).JSON(requestsResponse)
 }

@@ -7,4 +7,5 @@ import (
 type MyProfileService interface {
 	GetMyProfileOrders(params *dto.MyProfileParams) (*dto.OrdersResponse, error)
 	GetMyProfileServices(params *dto.MyProfileParams) (*dto.ServicesResponse, error)
+	GetMyProfileRequests(params *dto.MyProfileParams) (*dto.RequestsResponse, error)
 }

@@ -8,4 +8,5 @@ import (
 type MyProfileRepository interface {
 	GetMyProfileOrders(params *dto.MyProfileParams) (*model.OrdersData, error)
 	GetMyProfileServices(params *dto.MyProfileParams) (*model.ServicesData, error)
+	GetMyProfileRequests(params *dto.MyProfileParams) (*model.RequestsData, error)
 }

@@ -5,4 +5,5 @@ type MyProfileParams struct {
 	Limit  int
 	Offset int
 	UserId int
+	Status int
 }

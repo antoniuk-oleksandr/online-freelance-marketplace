@@ -58,3 +58,22 @@ func (mps *myProfileService) GetMyProfileServices(
 
 	return ordersReponse, nil
 }
+
+func (mps *myProfileService) GetMyProfileRequests(params *dto.MyProfileParams) (*dto.RequestsResponse, error) {
+	var err error
+	params.Limit, err = helpers.GetRequestsPerPage()
+	if err != nil {
+		return nil, err
+	}
+
+	params.Offset = helpers.CalcMyProfileLimit(params)
+
+	requestsDataModel, err := mps.myProfileRepository.GetMyProfileRequests(params)
+	if err != nil {
+		return nil, err
+	}
+
+	ordersReponse := mapper.MapRequestsDataModelToRequestsResponseDto(requestsDataModel)
+
+	return ordersReponse, nil
+}

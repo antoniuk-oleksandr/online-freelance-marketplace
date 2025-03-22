@@ -58,3 +58,24 @@ func (mpr *myProfileRepository) GetMyProfileServices(
 		TotalPages:       totalPages,
 	}, nil
 }
+
+func (mpr *myProfileRepository) GetMyProfileRequests(
+	params *dto.MyProfileParams,
+) (*model.RequestsData, error) {
+	rows, err := mpr.db.Queryx(
+		queries.GetMyProfileRequestsQuery, params.UserId, params.Status, params.Offset, params.Limit,
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	data, totalPages, err := helpers.ParseMyProfileDataFromRows[model.RequestTableData](rows)
+	if err != nil {
+		return nil, err
+	}
+
+	return &model.RequestsData{
+		RequestTableData: *data,
+		TotalPages:       totalPages,
+	}, nil
+}

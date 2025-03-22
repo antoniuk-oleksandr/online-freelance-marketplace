@@ -27,6 +27,10 @@ func main() {
 
 	posgresqlDb := database.ConnectToPostgresDB()
 	redisDb := database.ConnectToRedisDB()
+	defer func(){
+		posgresqlDb.Close()
+		redisDb.Close()
+	}()
 
 	middlewareRepository := middleware_repo.NewMiddlewareRepository(posgresqlDb)
 	middleware := middleware.NewMiddleware(middlewareRepository)

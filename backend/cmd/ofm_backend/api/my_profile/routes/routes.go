@@ -23,4 +23,5 @@ func RegisterMyProfileRoutes(apiGroup fiber.Router, db *sqlx.DB) {
 
 	myProfileGroup.Get("/orders", middleware.ProcessRegularJWT(), myProfileController.GetMyProfileOrders)
 	myProfileGroup.Get("/services", middleware.ProcessRegularJWT(), myProfileController.GetMyProfileServices)
+	myProfileGroup.Get("/requests", middleware.ProcessRegularJWT(), myProfileController.GetMyProfileRequests)
 }
