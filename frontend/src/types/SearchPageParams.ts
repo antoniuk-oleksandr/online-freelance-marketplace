@@ -1,5 +1,5 @@
-import {SortType} from "@/types/SortType.ts";
-import {OrderType} from "@/types/OrderType.ts";
+import { SortType } from "@/types/SortType";
+import { OrderType } from "@/types/OrderType";
 
 export type SearchPageParams = {
     query: string | null,

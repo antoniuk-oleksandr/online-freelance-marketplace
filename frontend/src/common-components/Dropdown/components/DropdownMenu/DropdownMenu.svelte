@@ -3,7 +3,6 @@
   import DropdownMenuLayout from './DropdownMenuLayout.svelte'
   import DropdownMenuItemElementList from '../DropdownMenuItemElementList/DropdownMenuItemElementList.svelte'
   import { onMount } from 'svelte'
-  import DropdownModal from '../DropdownModal/DropdownModal.svelte'
   import DropdownModalBackdrop from '../DropdownModalBackdrop/DropdownModalBackdrop.svelte'
   import DropdownModalHeader from '../DropdownModal/components/DropdownModalHeader/DropdownModalHeader.svelte'
 

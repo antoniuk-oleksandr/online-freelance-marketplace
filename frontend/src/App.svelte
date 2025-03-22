@@ -16,6 +16,7 @@
   import OrderSubmitRequirementsPage from '@/pages/order-submit-requirements/OrderSubmitRequirementsPage.svelte'
   import MyProfileOrdersPage from './pages/my-profile/orders/MyProfileOrdersPage.svelte'
   import MyProfileServicesPage from './pages/my-profile/services/MyProfileServicesPage.svelte'
+  import MyProfileRequestsPage from './pages/my-profile/requests/MyProfileRequestsPage.svelte'
 </script>
 
 <Router>
@@ -61,6 +62,9 @@
     </Route>
     <Route path="/my-profile/services">
       <MyProfileServicesPage />
+    </Route>
+    <Route path="/my-profile/requests">
+      <MyProfileRequestsPage />
     </Route>
     <Route path="/*">
       <NotFound />

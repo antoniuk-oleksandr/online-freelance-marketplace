@@ -1,26 +1,27 @@
 <script lang="ts">
-  import Select from '@/common-components/Select/Select.svelte'
-  import { getSelectedSearchSelectItem, makeASearchSelectItemList } from '@/pages/search/helpers'
-  import SearchSelectTrigger from '@/pages/search/components/SearchSelectTrigger/SearchSelectTrigger.svelte'
   import type { SearchPageParams } from '@/types/SearchPageParams'
   import { searchStore } from '@/pages/search/stores/search-store'
+  import { onDestroy } from 'svelte'
+  import NewSelect from '@/common-components/NewSelect/NewSelect.svelte'
+  import {
+    makeSearchSelectTriggerIcon,
+    makeInitialSearchSelectIndexes,
+    getSearchSelectItems,
+    handleSearchSelectChange,
+  } from './helpers'
 
   let searchPageParams = $state<SearchPageParams | undefined>()
-  searchStore.subscribe((value) => (searchPageParams = value))
+  const unsubscribe = searchStore.subscribe((value) => (searchPageParams = value))
 
-  const items = $derived(makeASearchSelectItemList(searchPageParams))
-  const additionalItems = $derived(makeASearchSelectItemList(searchPageParams, true))
+  onDestroy(() => unsubscribe())
 </script>
 
-<Select
-  title="Sorting"
-  selectedItem={getSelectedSearchSelectItem(searchPageParams)}
-  {items}
-  {additionalItems}
-  selectedAdditionalItem={getSelectedSearchSelectItem(searchPageParams, true)}
->
-  <SearchSelectTrigger
-    selectedItem={getSelectedSearchSelectItem(searchPageParams)}
-    selectedAdditionalItem={getSelectedSearchSelectItem(searchPageParams, true)}
-  />
-</Select>
+<NewSelect
+  triggerIcon={makeSearchSelectTriggerIcon(searchPageParams)}
+  triggerStyles="!justify-center flex-row-reverse h-10.5"
+  selectWidth="min-w-48"
+  multipleInitialSelectIndexes={makeInitialSearchSelectIndexes(searchPageParams)}
+  modalHeaderTitle="Sort"
+  initialSelectValues={getSearchSelectItems()}
+  onSelectChange={(value) => handleSearchSelectChange(value, searchPageParams)}
+/>

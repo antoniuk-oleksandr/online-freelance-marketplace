@@ -1,5 +1,5 @@
 <script lang="ts">
-    import {searchFilterDrawerStore} from "@/pages/search/stores/search-filter-drawer-store.ts";
+    import {searchFilterDrawerStore} from "@/pages/search/stores/search-filter-drawer-store";
 </script>
 
 <button

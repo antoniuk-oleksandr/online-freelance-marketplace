@@ -1,7 +1,7 @@
 import { Skill } from "@/types/Skill";
 import { Category } from "@/types/Category";
 import { Language } from "@/types/Language";
-import { ResponseErrorEnum } from "@/types/ResponseErrorEnum";
+import { type ResponseError } from "@/types/ResponseErrorEnum";
 
 export type GetFilterParamsRequestResponse = {
     data: {
@@ -11,6 +11,7 @@ export type GetFilterParamsRequestResponse = {
     },
     status: 200,
 } | {
-    error: ResponseErrorEnum,
-    status: 404 | 500,
+    data: ResponseError,
+    status: 404 | 500 | 401,
 }
+

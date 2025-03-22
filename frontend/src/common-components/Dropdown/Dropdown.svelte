@@ -8,6 +8,8 @@
   type DropdownProps = LayoutProps & {
     items: DropdownItem[]
     modalHeaderTitle: string
+    shownValue?: boolean
+    layoutStyles?: string
     menuWidth?: string
     positionX?: 'left' | 'right'
     positionY?: 'top' | 'bottom'
@@ -18,10 +20,14 @@
 
   let triggerRef = $state<HTMLDivElement | undefined>()
 
-  const { children, ...rest }: DropdownProps = $props()
+  let { children, shownValue = $bindable(), ...rest }: DropdownProps = $props()
+
+  $effect(() => {
+    if (shownValue !== undefined && shownValue !== shown) shownValue = shown
+  })
 </script>
 
-<DropdownLayout>
+<DropdownLayout {...rest}>
   <DropdownTrigger bind:triggerRef bind:shown>
     {@render children()}
   </DropdownTrigger>

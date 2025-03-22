@@ -1,9 +1,13 @@
 <script lang="ts">
   import type { LayoutProps } from '@/types/LayoutProps'
 
-  const { children }: LayoutProps = $props()
+  type DropdownLayoutProps = LayoutProps & {
+    layoutStyles?: string
+  }
+
+  const { children, layoutStyles }: DropdownLayoutProps = $props()
 </script>
 
-<div class="relative flex flex-col">
+<div class="{layoutStyles} relative flex flex-col">
   {@render children()}
 </div>

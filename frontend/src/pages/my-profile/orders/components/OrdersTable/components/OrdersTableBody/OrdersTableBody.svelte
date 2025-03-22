@@ -45,7 +45,7 @@
       <span>#{order.id}</span>
     </TableCell>
     <TableCell styles="justify-between gap-3 items-center " label="Title">
-      <span class="line-clamp-1">{order.title}</span>
+      <span class="truncate">{order.title}</span>
     </TableCell>
     <TableCell styles="justify-between" label="Status">
       <StatusElement status={order.status} />

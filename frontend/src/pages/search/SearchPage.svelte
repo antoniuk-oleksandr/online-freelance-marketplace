@@ -26,9 +26,9 @@
 
   request<GetFilterParamsRequestResponse>('GET', '/filter-params/all').then((response) => {
     if (response.status !== 200) {
-      errorStore.set({ shown: true, error: response.error })
+      errorStore.set({ shown: true, error: response.data.error })
     }
-
+    
     defaultFilterParamsRequestResponse = response
   })
 

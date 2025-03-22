@@ -1,5 +1,5 @@
-import {ResponseErrorEnum} from "@/types/ResponseErrorEnum.ts";
-import {OrderSubmitRequirementsData} from "@/types/OrderSubmitRequirementsData.ts";
+import {ResponseErrorEnum} from "@/types/ResponseErrorEnum";
+import {OrderSubmitRequirementsData} from "@/types/OrderSubmitRequirementsData";
 
 export type GetPublicKeyRequestResponse = {
     data: OrderSubmitRequirementsData

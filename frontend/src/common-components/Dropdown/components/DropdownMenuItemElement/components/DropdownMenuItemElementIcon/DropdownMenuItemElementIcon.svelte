@@ -3,11 +3,12 @@
 
   type DropdownMenuItemElementIconProps = {
     icon?: string
+    iconColor?: string
   }
 
-  const { icon }: DropdownMenuItemElementIconProps = $props()
+  const { icon, iconColor }: DropdownMenuItemElementIconProps = $props()
 </script>
 
 {#if icon}
-  <Iconify {icon} />
+  <Iconify class={iconColor ? 'text-' + iconColor : ''} {icon} />
 {/if}
