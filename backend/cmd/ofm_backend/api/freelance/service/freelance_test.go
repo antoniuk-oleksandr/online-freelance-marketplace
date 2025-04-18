@@ -1,8 +1,8 @@
 package service
 
 import (
-	"ofm_backend/cmd/ofm_backend/api/freelance/dto"
 	filter_params_dto "ofm_backend/cmd/ofm_backend/api/filter_params/dto"
+	"ofm_backend/cmd/ofm_backend/api/freelance/dto"
 	"ofm_backend/cmd/ofm_backend/api/freelance/model"
 	"ofm_backend/cmd/ofm_backend/api/freelance/utils"
 	main_utils "ofm_backend/cmd/ofm_backend/utils"
@@ -45,13 +45,11 @@ func (m *MockRepository) GetFreelanceServiceByIdReviews(id int, cursorData strin
 
 func TestGetFreelanceById_Success(t *testing.T) {
 	maxReviews := 2
-	os.Setenv("FILE_SERVER_HOST", "localost")
-	os.Setenv("FILE_SERVER_PORT", "8083")
+	os.Setenv("FILE_SERVER_HOST", "http://localost:8083")
 	os.Setenv("MAX_FREELANCE_BY_ID_REVIEWS", strconv.Itoa(maxReviews))
 
 	defer func() {
 		os.Unsetenv("FILE_SERVER_HOST")
-		os.Unsetenv("FILE_SERVER_PORT")
 		os.Unsetenv("MAX_FREELANCE_BY_ID_REVIEWS")
 	}()
 
@@ -83,7 +81,7 @@ func TestGetFreelanceById_Success(t *testing.T) {
 			ReviewsCount: 1,
 			Rating:       5,
 			Title:        "test",
-			Images:       &[]string{"http://localost:8083/files/test1.jpg", "http://localost:8083/files/test2.jpg"},
+			Images:       &[]string{"http://localost:8083/test1.jpg", "http://localost:8083/test2.jpg"},
 			Category:     &filter_params_dto.FilterItem{ID: 1, Name: "test"},
 			Packages:     &[]dto.Package{{ID: 1, DeliveryDays: 1, Description: "test", Price: 1, Title: "test"}},
 			Freelancer:   &dto.FreelanceServiceFreelancer{ID: 1, Username: "test", FirstName: "test", Surname: "test", Avatar: "test", Rating: 5, Level: 1, ReviewsCount: 1},
@@ -133,13 +131,11 @@ func TestGetReviewsByFreelanceID_WithCursor(t *testing.T) {
 	maxReviews := 2
 	timeNow := time.Now()
 
-	os.Setenv("FILE_SERVER_HOST", "localost")
-	os.Setenv("FILE_SERVER_PORT", "8083")
+	os.Setenv("FILE_SERVER_HOST", "http://localost:8030")
 	os.Setenv("MAX_FREELANCE_BY_ID_REVIEWS", strconv.Itoa(maxReviews))
 
 	defer func() {
 		os.Unsetenv("FILE_SERVER_HOST")
-		os.Unsetenv("FILE_SERVER_PORT")
 		os.Unsetenv("MAX_FREELANCE_BY_ID_REVIEWS")
 	}()
 
@@ -174,12 +170,10 @@ func TestGetReviewsByFreelanceID_WithCursor(t *testing.T) {
 }
 
 func TestGetResrictedFreelanceById(t *testing.T) {
-	os.Setenv("FILE_SERVER_HOST", "localost")
-	os.Setenv("FILE_SERVER_PORT", "8030")
+	os.Setenv("FILE_SERVER_HOST", "http://localost:8030")
 
 	defer func() {
 		os.Unsetenv("FILE_SERVER_HOST")
-		os.Unsetenv("FILE_SERVER_PORT")
 	}()
 
 	testcases := []struct {
@@ -227,7 +221,7 @@ func createResrictedFreelanceByIdDto(id int) dto.FreelanceByIdRestricted {
 		ReviewsCount: 0,
 		Rating:       0,
 		Title:        "test",
-		Image:        ptr("http://localost:8030/files/test.jpg"),
+		Image:        ptr("http://localost:8030/test.jpg"),
 		Packages:     &[]dto.Package{{ID: 1, DeliveryDays: 0, Description: "test", Price: 0, Title: "test"}},
 	}
 }

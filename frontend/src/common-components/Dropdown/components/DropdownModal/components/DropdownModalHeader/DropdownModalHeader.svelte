@@ -4,7 +4,7 @@
 
   type DropdownModalHeaderProps = {
     modalHeaderTitle: string
-    setShown: (value: boolean) => void
+    setShown?: (value: boolean) => void
   }
 
   const { modalHeaderTitle, ...rest }: DropdownModalHeaderProps = $props()

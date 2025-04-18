@@ -5,7 +5,7 @@
 
 <button onclick={handleModalCloseButtonClick} class="overflow-hidden">
   <Icon
-    class="rotate-45 hover:text-light-palette-action-hover hover:dark:text-dark-palette-action-hover duration-200 ease-out"
+    class="rotate-45 hover:text-light-palette-text-secondary hover:dark:text-dark-palette-text-secondary duration-200 ease-out"
     width={24}
     height={24}
     icon="hugeicons:add-01"

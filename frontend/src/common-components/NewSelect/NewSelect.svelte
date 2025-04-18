@@ -8,6 +8,8 @@
     modalHeaderTitle: string
     initialSelectValues: NewSelectItem[]
     onSelectChange: (value: string | string[]) => void
+    noneSelectedText?: string
+    error?: string | null
     triggerIcon?: string
     triggerStyles?: string
     initialSelectIndex?: number

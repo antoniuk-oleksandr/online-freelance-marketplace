@@ -8,6 +8,7 @@
     file: File
     index: number
     removeFile: (index: number) => void
+    isMobile: boolean,
   }
 
   const { file, ...rest }: OrderSubmitRequirementsFormAttachFileProps = $props()

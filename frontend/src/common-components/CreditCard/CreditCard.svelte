@@ -16,13 +16,13 @@
   const props: CreditCardProps = $props()
 
   const host = getFileServerHost()
-  const mastercardLogo = `${host}/files/credit-card-logo.png`
-  const chip = `${host}/files/credit-card-chip.png`
+  const mastercardLogo = `${host}/credit-card-logo.png`
+  const chip = `${host}/credit-card-chip.png`
 
   let cardBg = $state('')
 
   themeStore.subscribe((value) => {
-    cardBg = value ? `${host}/files/credit-card-bg.png` : `${host}/files/credit-card-light-bg.png`
+    cardBg = value ? `${host}/credit-card-bg.png` : `${host}/credit-card-light-bg.png`
   })
 </script>
 

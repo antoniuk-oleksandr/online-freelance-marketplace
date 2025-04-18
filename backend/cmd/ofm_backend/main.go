@@ -2,6 +2,7 @@ package main
 
 import (
 	auth_routes "ofm_backend/cmd/ofm_backend/api/auth/routes"
+	chat_routes "ofm_backend/cmd/ofm_backend/api/chat/routes"
 	file_repo "ofm_backend/cmd/ofm_backend/api/file/repository"
 	file_service "ofm_backend/cmd/ofm_backend/api/file/service"
 	filter_params_routes "ofm_backend/cmd/ofm_backend/api/filter_params/routes"
@@ -27,7 +28,7 @@ func main() {
 
 	posgresqlDb := database.ConnectToPostgresDB()
 	redisDb := database.ConnectToRedisDB()
-	defer func(){
+	defer func() {
 		posgresqlDb.Close()
 		redisDb.Close()
 	}()
@@ -54,6 +55,7 @@ func main() {
 	payment_routes.RegisterPaymentRoutes(apiGroup, posgresqlDb, middleware)
 	order_routes.RegisterOrderRoutes(apiGroup, posgresqlDb, fileService, middleware)
 	my_profile_routes.RegisterMyProfileRoutes(apiGroup, posgresqlDb)
+	chat_routes.RegisterChatRoutes(apiGroup, posgresqlDb, middleware)
 
 	app.Listen(":8080")
 }

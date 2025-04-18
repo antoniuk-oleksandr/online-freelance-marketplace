@@ -1,11 +1,17 @@
+import type { Category } from "@/types/Category";
 import { SvelteURLSearchParams } from "svelte/reactivity";
 
 export const getHost = () => {
     return 'http://localhost:8080';
 }
 
+export const getWSHost = () => {
+    return 'ws://localhost:8080';
+}
+
 export const getFileServerHost = () => {
-    return 'http://localhost:8030';
+    // return 'https://online-freelance-marketplace.s3.eu-north-1.amazonaws.com';
+    return 'http://localhost:8030/files';
 }
 
 export const getHoverClass = () => {
@@ -40,7 +46,7 @@ export const getTimeAgo = (date: number): string => {
     }
 };
 
-export const getPackageDuration = (before: number, after: number) => {
+export const getPackageDurationDifference = (before: number, after: number) => {
     const beforeData = new Date(before);
     const afterData = new Date(after);
     const diffInMs = afterData.getTime() - beforeData.getTime();
@@ -104,4 +110,47 @@ export const flyFade = (node: Element, { x = 0, y = 0, duration = 300 }) => {
 export const getPageParam = () => {
     const params = new SvelteURLSearchParams(window.location.search);
     return parseInt(params.get('page') || '1');
+}
+
+export const getUserId = (): number | null => {
+    const idStr = localStorage.getItem("accessTokenUserId");
+    return idStr !== null ? parseInt(idStr) : null
+}
+
+export const getServiceCategories = (): Category[] => [
+    { id: 1, name: 'Web Development' },
+    { id: 2, name: 'Graphic Design' },
+    { id: 3, name: 'Digital Marketing' },
+    { id: 4, name: 'SEO Services' },
+    { id: 5, name: 'Content Writing' },
+    { id: 6, name: 'Mobile App Development' },
+    { id: 7, name: 'Data Analysis' },
+    { id: 8, name: 'Cybersecurity' },
+    { id: 9, name: 'Cloud Computing' },
+    { id: 10, name: 'E-commerce Development' },
+    { id: 11, name: 'UI/UX Design' },
+    { id: 12, name: 'Video Production' },
+    { id: 13, name: 'Photography' },
+    { id: 14, name: 'Virtual Assistance' },
+    { id: 15, name: 'Software Development' },
+    { id: 16, name: 'Business Consulting' },
+    { id: 17, name: 'IT Support' },
+    { id: 18, name: 'Project Management' },
+    { id: 19, name: 'Copywriting' },
+    { id: 20, name: 'Social Media Management' }
+];
+
+export const getServiceCategoryIdByName = (name: string): number => {
+    const categories = getServiceCategories();
+    const category = categories.find((category) => category.name === name);
+    return category ? category.id : -1;
+}
+
+export const convertFileArrToFileList = (fileArr: File[]): FileList => {
+    const dataTransfer = new DataTransfer();
+    fileArr.forEach((file) => {
+        dataTransfer.items.add(file);
+    })
+
+    return dataTransfer.files;
 }

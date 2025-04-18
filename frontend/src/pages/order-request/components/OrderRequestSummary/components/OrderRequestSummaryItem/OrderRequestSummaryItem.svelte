@@ -1,14 +1,34 @@
 <script lang="ts">
-    type OrderRequestSummaryItemProps = {
-        title: string,
-        value: string | number,
-        styles?: string,
-    };
+  import { Link } from 'svelte-routing'
 
-    const {title, value, styles}: OrderRequestSummaryItemProps = $props();
+  type OrderRequestSummaryItemProps = {
+    title: string
+    value: string | number
+    styles?: string
+    valueStyles?: string
+    titleStyles?: string
+    valueLink?: string
+  }
+
+  const {
+    title,
+    value,
+    styles,
+    valueStyles,
+    titleStyles,
+    valueLink,
+  }: OrderRequestSummaryItemProps = $props()
 </script>
 
-<div class="{styles} flex capitalize items-center justify-between text-light-palette-text-secondary dark:text-dark-palette-text-secondary">
-    <span>{title}</span>
-    <span>{value}</span>
+<div
+  class="{styles} flex capitalize items-center justify-between text-light-palette-text-secondary dark:text-dark-palette-text-secondary"
+>
+  <span class={titleStyles}>{title}</span>
+  {#if valueLink}
+    <Link to={valueLink} class={valueStyles}>
+      <span class={valueStyles}>{value}</span>
+    </Link>
+  {:else}
+    <span class={valueStyles}>{value}</span>
+  {/if}
 </div>

@@ -1,19 +1,24 @@
 <script lang="ts">
-    import type {LayoutProps} from "@/types/LayoutProps.ts";
-    import {handleModalBackdropClick} from "@/common-components/Modal/handlers.ts";
-    import type {ModalStore} from "@/types/ModalStore.ts";
+  import type { LayoutProps } from '@/types/LayoutProps.ts'
+  import { handleModalBackdropClick } from '@/common-components/Modal/handlers'
+  import type { ModalStore } from '@/types/ModalStore.ts'
+  import { fade } from 'svelte/transition'
 
-    type ModalBackdropProps = LayoutProps & {
-        modalData: ModalStore;
-    }
+  type ModalBackdropProps = LayoutProps & {
+    modalData: ModalStore
+    modalContentRef: HTMLElement | undefined
+  }
 
-    const {children, modalData} : ModalBackdropProps = $props();
+  let modalBackdropRef = $state<HTMLElement | undefined>()
+  const { children, modalContentRef }: ModalBackdropProps = $props()
 </script>
 
 <div
-        id="modal-backdrop"
-        aria-hidden="true"
-        onclick={(e) => handleModalBackdropClick(e)}
-        class="bg-black {modalData.isOpened ? 'animate-[fade-in_300ms]' : 'animate-[fade-out_300ms]'} bg-opacity-50 z-50 fixed h-svh w-svw grid place-items-center p-6">
-    {@render children()}
+  transition:fade={{ duration: 300 }}
+  bind:this={modalBackdropRef}
+  aria-hidden="true"
+  onclick={(e) => handleModalBackdropClick(e, modalContentRef, modalBackdropRef)}
+  class="bg-black bg-opacity-50 z-50 fixed h-svh w-svw grid place-items-center p-6"
+>
+  {@render children()}
 </div>

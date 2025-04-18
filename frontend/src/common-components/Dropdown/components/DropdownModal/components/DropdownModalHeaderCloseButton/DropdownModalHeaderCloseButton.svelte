@@ -2,11 +2,11 @@
   import Icon from '@iconify/svelte'
 
   type DropdownModalHeaderCloseButtonProps = {
-    setShown: (value: boolean) => void
+    setShown?: (value: boolean) => void
   }
 
   const { setShown }: DropdownModalHeaderCloseButtonProps = $props()
-  const handleModalCloseButtonClick = () => setShown(false)
+  const handleModalCloseButtonClick = () => setShown && setShown(false)
 </script>
 
 <button onclick={handleModalCloseButtonClick} class="overflow-hidden">

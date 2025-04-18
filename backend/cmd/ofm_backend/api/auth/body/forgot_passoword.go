@@ -1,5 +1,5 @@
 package body
 
 type ForgotPassword struct {
-	UsernameOrEmail string `json:"usernameOrEmail"`	
+	Email string `json:"email"`	
 }

@@ -41,11 +41,13 @@ func (ar *authRepisotory) GetUserTempData(uuid string) (*body.SignUpBody, error)
 	}
 
 	return &body.SignUpBody{
-		Email:     data["email"],
-		FirstName: data["firstName"],
-		Password:  data["password"],
-		Surname:   data["surname"],
-		Username:  data["username"],
+		Email:      data["email"],
+		FirstName:  data["firstName"],
+		Password:   data["password"],
+		Surname:    data["surname"],
+		Username:   data["username"],
+		PrivateKey: data["privateKey"],
+		PublicKey:  data["publicKey"],
 	}, nil
 }
 
@@ -91,11 +93,13 @@ func (ar *authRepisotory) AddTempUserData(user *body.SignUpBody, userUUID string
 	pipe := ar.redisDb.Pipeline()
 
 	pipe.HSet(context.Background(), userUUID, map[string]interface{}{
-		"email":     user.Email,
-		"firstName": user.FirstName,
-		"password":  user.Password,
-		"surname":   user.Surname,
-		"username":  user.Username,
+		"email":      user.Email,
+		"firstName":  user.FirstName,
+		"password":   user.Password,
+		"surname":    user.Surname,
+		"username":   user.Username,
+		"privateKey": user.PrivateKey,
+		"publicKey":  user.PublicKey,
 	})
 
 	pipe.Expire(context.Background(), user.Username, 15*time.Minute)
@@ -120,8 +124,13 @@ func (ar *authRepisotory) GetUserPassword(usernameOrEmail string) (*model.Userna
 	return &usernamePassword, nil
 }
 
-func (ar *authRepisotory) ChangeUserPasswordByEmail(encodedPassword string, email string) error {
-	_, err := ar.posgresqlDb.Exec(queries.ChangeUserPasswordByEmailQuery, encodedPassword, email)
+func (ar *authRepisotory) ChangeUserPasswordPrivateKeyByEmail(
+	encryptedPassword string, encryptedPrivateKey string, email string,
+) error {
+	_, err := ar.posgresqlDb.Exec(
+		queries.ChangeUserPasswordPrivateKeyByEmailQuery, encryptedPassword, encryptedPrivateKey, email,
+	)
+	
 	return err
 }
 
@@ -158,4 +167,16 @@ func (ar *authRepisotory) AddJWTToBlacklist(token string) error {
 func (ar *authRepisotory) AddMultipleJWTToBlacklist(tokens []model.Token) error {
 	_, err := ar.posgresqlDb.NamedExec(queries.AddMultipleJWTToBlackListQuery, tokens)
 	return err
+}
+
+func (ar *authRepisotory) GetUserPasswordPrivateKeyByEmail(email string) (string, string, error) {
+	var password string
+	var privateKey string
+
+	row := ar.posgresqlDb.QueryRowx(queries.GetUserPasswordPrivateKeyByEmailQuery, email)
+	if err := row.Scan(&password, &privateKey); err != nil {
+		return "", "", err
+	}
+
+	return password, privateKey, nil
 }

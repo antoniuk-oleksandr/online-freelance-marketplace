@@ -4,7 +4,7 @@
   type TextareaContainer = {
     focus: boolean
     wasSubmitted: boolean
-    error: string | undefined
+    error?: string
     useCounter: boolean
     value?: string
   }

@@ -9,9 +9,14 @@ export const handleModalCloseButtonClick = () => {
 }
 
 export const handleModalBackdropClick = (
-    e: MouseEvent & { currentTarget: (EventTarget & HTMLDivElement) }
+    e: MouseEvent & { currentTarget: (EventTarget & HTMLDivElement) },
+    modalContentRef: HTMLElement | undefined,
+    modalBackdropRef: HTMLElement | undefined
 ) => {
-    if (e.currentTarget.id !== 'modal-backdrop') return;
+    if(!modalContentRef || !modalBackdropRef) return;
+
+    if(!(modalBackdropRef).contains(e.target as Node)) return;
+    if(modalContentRef.contains(e.target as Node)) return;
 
     modalStore.update((prev) => ({
         ...prev,

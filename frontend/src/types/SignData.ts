@@ -8,5 +8,7 @@ export type SignUpData = {
     surname: string,
     username: string,
     password: string,
-    email: string
+    email: string,
+    privateKey: string
+    publicKey: string
 }

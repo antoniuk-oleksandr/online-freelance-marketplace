@@ -21,13 +21,10 @@ type ComplexData struct {
 }
 
 func TestAddServerURLToFiles(t *testing.T) {
-	host := "localhost"
-	port := "8030"
+	host := "http://localhost:8030"
 	os.Setenv("FILE_SERVER_HOST", host)
-	os.Setenv("FILE_SERVER_PORT", port)
 
 	defer os.Unsetenv("FILE_SERVER_HOST")
-	defer os.Unsetenv("FILE_SERVER_PORT")
 
 	data := TestData{
 		Images: []string{"image1.jpg", "image2.jpg"},
@@ -35,8 +32,8 @@ func TestAddServerURLToFiles(t *testing.T) {
 
 	expectedData := TestData{
 		Images: []string{
-			fmt.Sprintf("http://%s:%s/files/%s", host, port, "image1.jpg"),
-			fmt.Sprintf("http://%s:%s/files/%s", host, port, "image2.jpg"),
+			fmt.Sprintf("%s/%s", host, "image1.jpg"),
+			fmt.Sprintf("%s/%s", host, "image2.jpg"),
 		},
 	}
 
@@ -46,13 +43,10 @@ func TestAddServerURLToFiles(t *testing.T) {
 }
 
 func TestAddServerURLToFilesNestedData(t *testing.T) {
-	host := "localhost"
-	port := "8030"
+	host := "http://localhost:8030"
 	os.Setenv("FILE_SERVER_HOST", host)
-	os.Setenv("FILE_SERVER_PORT", port)
 
 	defer os.Unsetenv("FILE_SERVER_HOST")
-	defer os.Unsetenv("FILE_SERVER_PORT")
 
 	data := NestedTestData{
 		Data: TestData{
@@ -63,8 +57,8 @@ func TestAddServerURLToFilesNestedData(t *testing.T) {
 	expectedData := NestedTestData{
 		Data: TestData{
 			Images: []string{
-				fmt.Sprintf("http://%s:%s/files/%s", host, port, "image1.jpg"),
-				fmt.Sprintf("http://%s:%s/files/%s", host, port, "image2.jpg"),
+				fmt.Sprintf("%s/%s", host, "image1.jpg"),
+				fmt.Sprintf("%s/%s", host, "image2.jpg"),
 			},
 		},
 	}
@@ -75,13 +69,10 @@ func TestAddServerURLToFilesNestedData(t *testing.T) {
 }
 
 func TestAddServerURLToFilesNonFileString(t *testing.T) {
-	host := "localhost"
-	port := "8030"
+	host := "http://localhost:8030"
 	os.Setenv("FILE_SERVER_HOST", host)
-	os.Setenv("FILE_SERVER_PORT", port)
 
 	defer os.Unsetenv("FILE_SERVER_HOST")
-	defer os.Unsetenv("FILE_SERVER_PORT")
 
 	data := TestData{
 		Images: []string{"not_a_file", "another_string"},
@@ -97,13 +88,10 @@ func TestAddServerURLToFilesNonFileString(t *testing.T) {
 }
 
 func TestAddServerURLToFilesEmptySlice(t *testing.T) {
-	host := "localhost"
-	port := "8030"
+	host := "http://localhost:8030"
 	os.Setenv("FILE_SERVER_HOST", host)
-	os.Setenv("FILE_SERVER_PORT", port)
 
 	defer os.Unsetenv("FILE_SERVER_HOST")
-	defer os.Unsetenv("FILE_SERVER_PORT")
 
 	data := TestData{
 		Images: []string{},
@@ -119,13 +107,10 @@ func TestAddServerURLToFilesEmptySlice(t *testing.T) {
 }
 
 func TestAddServerURLToFilesNestedSlices(t *testing.T) {
-	host := "localhost"
-	port := "8030"
+	host := "http://localhost:8030"
 	os.Setenv("FILE_SERVER_HOST", host)
-	os.Setenv("FILE_SERVER_PORT", port)
 
 	defer os.Unsetenv("FILE_SERVER_HOST")
-	defer os.Unsetenv("FILE_SERVER_PORT")
 
 	data := ComplexData{
 		NestedImages: [][]string{
@@ -137,11 +122,11 @@ func TestAddServerURLToFilesNestedSlices(t *testing.T) {
 	expectedData := ComplexData{
 		NestedImages: [][]string{
 			{
-				fmt.Sprintf("http://%s:%s/files/%s", host, port, "image1.jpg"),
-				fmt.Sprintf("http://%s:%s/files/%s", host, port, "image2.jpg"),
+				fmt.Sprintf("%s/%s", host, "image1.jpg"),
+				fmt.Sprintf("%s/%s", host, "image2.jpg"),
 			},
 			{
-				fmt.Sprintf("http://%s:%s/files/%s", host, port, "image3.jpg"),
+				fmt.Sprintf("%s/%s", host, "image3.jpg"),
 				"not_a_file",
 			},
 		},
@@ -154,7 +139,6 @@ func TestAddServerURLToFilesNestedSlices(t *testing.T) {
 
 func TestAddServerURLToFilesMissingEnvVars(t *testing.T) {
 	os.Unsetenv("FILE_SERVER_HOST")
-	os.Unsetenv("FILE_SERVER_PORT")
 
 	data := TestData{
 		Images: []string{"image1.jpg", "image2.jpg"},

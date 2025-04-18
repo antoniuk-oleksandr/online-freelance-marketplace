@@ -1,21 +1,32 @@
 <script lang="ts">
+  import { handleTextareaInput } from '../../handlers'
+
   type TextareaElementProps = {
     placeholder: string
     id: string
     name: string
-    error: string | undefined
+    error?: string
     setFocus: (value: boolean) => void
     styles?: string
     useCounter: boolean
     wasSubmitted: boolean
+    setValue?: (value: string) => void
   }
 
-  const { styles, wasSubmitted, error, setFocus, useCounter, ...rest }: TextareaElementProps =
-    $props()
+  let {
+    styles,
+    wasSubmitted,
+    error,
+    setFocus,
+    useCounter,
+    setValue,
+    ...rest
+  }: TextareaElementProps = $props()
 </script>
 
 <!-- svelte-ignore element_invalid_self_closing_tag -->
 <textarea
+  oninput={(e) => handleTextareaInput(e, setValue)}
   onfocus={() => setFocus(true)}
   onblur={() => setFocus(false)}
   rows="4"

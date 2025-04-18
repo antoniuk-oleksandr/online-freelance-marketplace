@@ -74,10 +74,6 @@ func getFileServerURL() (string, error) {
 	if fileHost == "" {
 		return "", utils.ErrEnvVarNotSet
 	}
-	filePort := os.Getenv("FILE_SERVER_PORT")
-	if filePort == "" {
-		return "", utils.ErrEnvVarNotSet
-	}
 
-	return fmt.Sprintf("http://%s:%s/upload", fileHost, filePort), nil
+	return fmt.Sprintf("%s/upload", fileHost), nil
 }

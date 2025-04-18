@@ -7,7 +7,7 @@
     }
 
     let {title, image} :OrderSubmitRequirementsInfoImageProps = $props();
-    image = `${getFileServerHost()}/files/${image}`;
+    image = `${getFileServerHost()}/${image}`;
 </script>
 
 <img

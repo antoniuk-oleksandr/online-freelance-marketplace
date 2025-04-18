@@ -1,3 +1,6 @@
+import typography from '@tailwindcss/typography'
+
+
 /** @type {import('tailwindcss').Config} */
 const config = {
     content: [
@@ -8,7 +11,7 @@ const config = {
         "lg:min-w-header-dropdown-menu",
         "size-12", "size-64", "size-14", "size-24",
         "size-32", "lg:min-w-48", "lg:min-w-60",
-        "lg:size-12", "lg:size-64", "lg:size-14",
+        "lg:size-12", "lg:size-64", "lg:size-14", "size-16",
         "bg-gray-200", "text-gray-700", "border-gray-300",
         "bg-yellow-100", "text-yellow-700", "border-yellow-300",
         "bg-green-100", "text-green-700", "border-green-300",
@@ -105,6 +108,7 @@ const config = {
                 "drop-up": "drop-up 350ms ease-out",
             },
             gridTemplateColumns: {
+                "create-service-packages-table": "10rem 1fr 1fr 1fr",
                 service: "1fr 25rem",
                 "sign-form": "36rem 1fr",
                 "search-page": "1fr 23rem",
@@ -112,14 +116,17 @@ const config = {
                 "orders-table": "5rem 6rem calc(100% - 38rem) 13rem 6rem 8rem",
                 "services-table": "5rem 7rem calc(100% - 51.5rem) 13rem 4.5rem 8rem 6rem 8rem",
                 "requests-table": "10rem 10rem calc(100% - 47rem) 13rem 6rem 8rem",
-                "orders-table-mobile": "6rem 1fr"
-
+                "orders-table-mobile": "6rem 1fr",
+                "order-overview-receipt": "8rem 1fr 5.5rem",
+                "two-columns-with-divider": "1fr 1px 1fr",
             },
             spacing: {
                 4.5: "1.125rem",
                 packages: "calc(32px)",
                 22: "5.5rem",
                 10: "2.5rem",
+                19: "4.75rem",
+                15: "3.75rem",
             },
             width: {
                 100: "25rem",
@@ -143,20 +150,21 @@ const config = {
                 112: "28rem",
             },
             maxWidth: {
-                320: "80rem",
+                wrapper: "85rem",
                 256: "64rem",
                 168: "42rem",
             },
             minHeight: {
-                app: "calc(100vh - 4rem - 3rem - 4rem)",
+                app: "calc(100vh - 4rem - 3rem - 4rem - 1px)",
                 212: "53rem",
                 "search-left-side-mobile": "calc(100vh - 4rem - 3rem)",
             },
             maxHeight: {
                 "search-sidebar": "calc(100vh - 4rem - 3rem)",
-                app: "calc(100vh - 12.1625rem)",
+                app: "calc(100vh - 4rem - 3rem - 4rem - 1px)",
                 "search-array": "calc(100vh - 4rem  - 3rem - 4rem - 6rem  - 3rem)",
                 "search-array-mobile": "calc(100vh - 4rem - 6rem - 3rem)",
+                "chat-body": "calc(100vh - 4rem - 3rem - 4rem - 1px - 3.25rem - 1.5rem - 5.5rem - 1.5rem - 6rem)",
             },
             colors: {
                 dark: {

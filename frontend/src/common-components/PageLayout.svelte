@@ -5,7 +5,7 @@
 </script>
 
 <div
-        class={"mx-auto px-6 w-full md:max-w-256 xl:max-w-320 flex"}
+        class={"mx-auto px-6 w-full md:max-w-256 xl:max-w-wrapper flex"}
 >
     {@render children()}
 </div>

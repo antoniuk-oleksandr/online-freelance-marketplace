@@ -1,30 +1,26 @@
 <script lang="ts">
-    import Sign from "@/common-components/Sign/Sign.svelte";
-    import {initialSignUpData, signUpSchema} from "@/pages/sign-up/helpers.ts";
-    import SignUpInputs from "@/pages/sign-up/components/SignUpInputs/SignUpInputs.svelte";
-    import {postAuthRequest} from "@/api/post-auth-request.ts";
-    import type {SignUpData} from "@/types/SignData.ts";
+  import Sign from '@/common-components/Sign/Sign.svelte'
+  import { initialSignUpData, postSignUpRequest, signUpSchema } from '@/pages/sign-up/helpers'
+  import SignUpInputs from '@/pages/sign-up/components/SignUpInputs/SignUpInputs.svelte'
 
-    let showEmailSentMessage = $state(false);
-    const setShowEmailSentMessage = (value: boolean) => showEmailSentMessage = value;
-
-    const postSignUpRequest= (body: SignUpData) =>
-        postAuthRequest("sign-up", undefined, body)
+  let showEmailSentMessage = $state(false)
+  const setShowEmailSentMessage = (value: boolean) => (showEmailSentMessage = value)
 </script>
 
 <Sign
-        showEmailSentMessage={showEmailSentMessage}
-        setShowEmailSentMessage={setShowEmailSentMessage}
-        defaultValues={initialSignUpData}
-        googleButtonText={"Continue with Google"}
-        submitAction={postSignUpRequest}
-        signText={"Sign Up"}
-        subSignText={"Please sign Up to continue to your account."}
-        subFormText={"Already have an account?"}
-        signButtonText={"Sign Up"}
-        subFormLink={"/sign-in"}
-        signButtonLinkText={"Sign In"}
-        schema={signUpSchema}
+  {showEmailSentMessage}
+  {setShowEmailSentMessage}
+  defaultValues={initialSignUpData}
+  googleButtonText={'Continue with Google'}
+  submitAction={postSignUpRequest}
+  signText={'Sign Up'}
+  subSignText={'Please sign Up to continue to your account.'}
+  subFormText={'Already have an account?'}
+  signButtonText={'Sign Up'}
+  subFormLink={'/sign-in'}
+  signButtonLinkText={'Sign In'}
+  schema={signUpSchema}
+  keepSignedIn={false}
 >
-    <SignUpInputs/>
+  <SignUpInputs />
 </Sign>

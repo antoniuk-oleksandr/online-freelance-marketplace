@@ -6,13 +6,14 @@
     hovered: boolean
     index: number
     removeFile: (index: number) => void
+    isMobile: boolean
   }
 
-  const { hovered, ...rest }: OrderSubmitRequirementsFormAttachFileCloseButtonProps = $props()
+  const { hovered, isMobile, ...rest }: OrderSubmitRequirementsFormAttachFileCloseButtonProps = $props()
 </script>
 
-{#if hovered}
+{#if hovered || isMobile}
   <OrderSubmitRequirementsFormAttachFileCloseButtonLayout {...rest}>
-    <Iconify width={14} height={14} icon="ci:close-lg" />
+    <Iconify width={isMobile ? 24 : 14} height={isMobile ? 24 : 14} icon="ci:close-lg" />
   </OrderSubmitRequirementsFormAttachFileCloseButtonLayout>
 {/if}

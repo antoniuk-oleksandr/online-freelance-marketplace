@@ -89,8 +89,7 @@ func handleString[T any](elem reflect.Value, data T) T {
 	}
 
 	host := os.Getenv("FILE_SERVER_HOST")
-	port := os.Getenv("FILE_SERVER_PORT")
-	link := fmt.Sprintf("http://%s:%s/files/", host, port)
+	link := fmt.Sprintf("%s/", host)
 
 	elem.SetString(link + elem.String())
 

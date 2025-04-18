@@ -5,7 +5,6 @@ import type { OrderSubmitRequirementsData } from "@/types/OrderSubmitRequirement
 import type { OrderSubmitRequirementsFormErrors } from "@/types/OrderSubmitRequirementsFormErrors";
 import type { ServiceQuestion } from "@/types/ServiceQuestion";
 import { StatusEnum } from "@/types/StatusEnum";
-import Cookies from "js-cookie";
 import { z } from "zod";
 
 export const getSubmitRequirementsSteps = (
@@ -39,14 +38,30 @@ export const makeOrderServiceQuestionsRequest = (
         });
 }
 
-export const formatOrderDate = (dateStr: string): string => {
-    const date = new Date(dateStr);
+export const formatOrderDate = (date: string | number): string => {
+    const jsDate = new Date(date);
 
-    const month = getMonthAbbreviation(date.getUTCMonth())
-    const day = date.getDate();
-    const year = date.getUTCFullYear();
+    const month = getMonthAbbreviation(jsDate.getUTCMonth())
+    const day = jsDate.getDate();
+    const year = jsDate.getFullYear();
 
     return `${month} ${day},  ${year}`;
+}
+
+export const formatFullOrderDate = (date: string | number): string => {
+    const jsDate = new Date(date);
+
+    const month = getMonthAbbreviation(jsDate.getUTCMonth())
+    const day = jsDate.getDate();
+    const year = jsDate.getFullYear();
+    let hours = jsDate.getHours();
+    const minutes = jsDate.getMinutes().toString().padStart(2, "0");
+
+    const isPM = hours >= 12;
+    if (hours === 0) hours = 12;
+    else if (hours > 12) hours -= 12;
+
+    return `${month} ${day}, ${year} ${hours}:${minutes} ${isPM ? "PM" : "AM"}`;
 }
 
 const getMonthAbbreviation = (monthIndex: number) => {

@@ -14,9 +14,10 @@ type AuthRepository interface {
 	CheckIfEmailIsAvailable(email string) (bool, error)
 	AddTempUserData(user *body.SignUpBody, userUUID string) error
 	GetUserPassword(usernameOrEmail string) (*model.UsernamePassword, error)
-	ChangeUserPasswordByEmail(encodedPassword string, email string) error
+	ChangeUserPasswordPrivateKeyByEmail(encryptedPassword string, encryptedPrivateKey string, email string) error
 	GetUsernameByEmailIfExists(email string) (string, bool, error)
 	AddUserWithGoogleAuth(claims *body.GoogleJwtClaims, avatarID int) error
 	AddJWTToBlacklist(token string) error
 	AddMultipleJWTToBlacklist(tokens []model.Token) error
+	GetUserPasswordPrivateKeyByEmail(email string) (string, string, error)
 }

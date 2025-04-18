@@ -4,11 +4,12 @@
 
   type AttachFilesButtonProps = {
     addFiles: (files: FileList) => void
+    styles?: string
   }
 
-  const { addFiles }: AttachFilesButtonProps = $props()
+  const { addFiles, ...rest }: AttachFilesButtonProps = $props()
   let inputRef = $state<HTMLInputElement | undefined>()
 </script>
 
 <AttachFilesButtonInput bind:inputRef {addFiles} />
-<AttachFilesButtonElement {inputRef} />
+<AttachFilesButtonElement {...rest} {inputRef} />

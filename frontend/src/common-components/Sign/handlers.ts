@@ -1,8 +1,8 @@
+import { postAuthRequest } from "@/api/post-auth-request";
+import { toastElementStore } from "@/common-components/ToastElement/store/toast-element-store";
 import { ResponseErrorEnum } from "@/types/ResponseErrorEnum";
 import { ResponseMessageEnum } from "@/types/ResponseMessageEnum";
 import { navigate } from "svelte-routing";
-import { toastElementStore } from "@/common-components/ToastElement/store/toast-element-store";
-import { postAuthRequest } from "@/api/post-auth-request";
 import { setTokenCookies } from "./helpers";
 
 const showToast = (message: string, type: "success" | "error") => {

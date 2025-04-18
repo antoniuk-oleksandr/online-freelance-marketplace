@@ -5,3 +5,4 @@
 /frontend/.env
 /old_backend
 /old_frontend
+/file-server/storage/uploads/*

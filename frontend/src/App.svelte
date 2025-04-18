@@ -14,9 +14,23 @@
   import SearchPage from '@/pages/search/SearchPage.svelte'
   import OrderConfirmPayPage from '@/pages/order-confirm-pay/OrderConfirmPayPage.svelte'
   import OrderSubmitRequirementsPage from '@/pages/order-submit-requirements/OrderSubmitRequirementsPage.svelte'
-  import MyProfileOrdersPage from './pages/my-profile/orders/MyProfileOrdersPage.svelte'
-  import MyProfileServicesPage from './pages/my-profile/services/MyProfileServicesPage.svelte'
-  import MyProfileRequestsPage from './pages/my-profile/requests/MyProfileRequestsPage.svelte'
+  import { onDestroy } from 'svelte'
+  import { connectToWebsocket } from './api/websocket'
+  import { signDataStore } from './common-components/Header/components/HeaderProfileBlock/sign-data-store'
+  import MyProfileOrdersPage from './pages/my-profile/sub-pages/orders/MyProfileOrdersPage.svelte'
+  import MyProfileOrderByIdPage from './pages/my-profile/sub-pages/orders/sub-pages/order-by-id/MyProfileOrderByIdPage.svelte'
+  import MyProfileRequestsPage from './pages/my-profile/sub-pages/requests/MyProfileRequestsPage.svelte'
+  import MyProfileServicesPage from './pages/my-profile/sub-pages/services/MyProfileServicesPage.svelte'
+  import CreateServiceMediaPage from './pages/my-profile/sub-pages/services/sub-pages/create-service-media/CreateServiceMediaPage.svelte'
+  import CreateServicePackagesPage from './pages/my-profile/sub-pages/services/sub-pages/create-service-packages/CreateServicePackagesPage.svelte'
+  import CreateServiceBasicInfoPage from './pages/my-profile/sub-pages/services/sub-pages/create-service-basic-info/CreateServiceBasicInfoPage.svelte'
+  import CreateServiceRequirementsPage from './pages/my-profile/sub-pages/services/sub-pages/create-service-requirements/CreateServiceRequirementsPage.svelte'
+
+  const unsubscribe = signDataStore.subscribe((value) => {
+    if (value && value.signedIn) connectToWebsocket()
+  })
+
+  onDestroy(() => unsubscribe())
 </script>
 
 <Router>
@@ -65,6 +79,21 @@
     </Route>
     <Route path="/my-profile/requests">
       <MyProfileRequestsPage />
+    </Route>
+    <Route path="/my-profile/orders/:orderId" let:params>
+      <MyProfileOrderByIdPage orderId={params.orderId} />
+    </Route>
+    <Route path="/my-profile/services/create/basic-information">
+      <CreateServiceBasicInfoPage />
+    </Route>
+    <Route path="/my-profile/services/create/packages">
+      <CreateServicePackagesPage />
+    </Route>
+    <Route path="/my-profile/services/create/requirements">
+      <CreateServiceRequirementsPage />
+    </Route>
+    <Route path="/my-profile/services/create/media">
+      <CreateServiceMediaPage />
     </Route>
     <Route path="/*">
       <NotFound />

@@ -27,7 +27,7 @@
   }}
   class="{customColor
     ? customColor
-    : ''} justify-between cursor-pointer select-none text-start text-base flex items-center hover:bg-light-palette-action-hover dark:hover:bg-dark-palette-action-hover px-3 rounded-[4px] duration-200 ease-out py-1"
+    : ' text-light-palette-text-primary dark:text-dark-palette-text-primary'} justify-between cursor-pointer select-none text-start text-base flex items-center hover:bg-light-palette-action-hover dark:hover:bg-dark-palette-action-hover px-3 rounded-[4px] duration-200 ease-out py-1"
 >
   {@render children()}
 </div>

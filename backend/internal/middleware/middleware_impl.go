@@ -186,6 +186,43 @@ func (middleware *middleware) ProcessRegularJWT() fiber.Handler {
 	}
 }
 
+func (middleware *middleware) ProcessWebSocketJWT() fiber.Handler {
+	return func(ctx *fiber.Ctx) error {
+		tokenString := ctx.Query("token")
+		if tokenString == "" {
+			return ctx.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "Unauthorized"})
+		}
+
+		token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
+			return []byte(os.Getenv("JWT_SECRET")), nil
+		})
+
+		if err != nil || !token.Valid {
+			if strings.ToLower(err.Error()) == jwt.ErrTokenExpired.Error() {
+				return ctx.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": err.Error()})
+			} else {
+				return ctx.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "Invalid token"})
+			}
+		}
+
+		claims, ok := token.Claims.(jwt.MapClaims)
+		if !ok {
+			return ctx.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "Invalid token"})
+		}
+
+		if strconv.Itoa(int(claims["type"].(float64))) != strconv.Itoa(int(enums.Access)) {
+			return ctx.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "Invalid token"})
+		}
+
+
+		ctx.Locals("username", claims["username"].(string))
+		ctx.Locals("avatar", claims["avatar"].(string))
+		ctx.Locals("userId", claims["userId"].(float64))
+
+		return ctx.Next()
+	}
+}
+
 func (middleware *middleware) GenerateRefreshToken(username string) (string, error) {
 	refreshTime, err := strconv.Atoi(os.Getenv("REFRESH_TOKEN_EXPIRATION"))
 	if err != nil {

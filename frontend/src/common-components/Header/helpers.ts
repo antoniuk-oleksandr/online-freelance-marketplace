@@ -51,7 +51,7 @@ export const getMyProfileDropdownItems = (
       title: 'Log Out',
       clickAction: () => logoutClickAction(signData),
       icon: 'hugeicons:door-02',
-      customColor: 'text-red-500',
+      customColor: 'text-red-500 dark:text-red-500',
     },
   ]
 

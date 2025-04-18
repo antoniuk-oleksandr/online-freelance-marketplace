@@ -1,9 +1,9 @@
 import {z} from "zod";
 
 export const initialForgotPasswordData: any = {
-    usernameOrEmail: "",
+    email: "",
 }
 
 export const forgotPasswordSchema = z.object({
-    usernameOrEmail: z.string().min(1, {message: "Username or email is required."}),
+    email: z.string().min(1, {message: "Email address is required."}),
 })

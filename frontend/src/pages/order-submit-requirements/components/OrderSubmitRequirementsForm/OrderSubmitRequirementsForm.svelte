@@ -5,7 +5,6 @@
   import OrderSubmitRequirementsFormBody from './components/OrderSubmitRequirementsFormBody/OrderSubmitRequirementsFormBody.svelte'
   import type { OrderSubmitRequirementsFormErrors } from '@/types/OrderSubmitRequirementsFormErrors'
   import type { OrderSubmitRequirementsFormData } from '@/types/OrderSubmitRequirementsFormData'
-  import { writable } from 'svelte/store'
 
   type OrderSubmitRequirementsFormProps = {
     orderData: OrderSubmitRequirementsData

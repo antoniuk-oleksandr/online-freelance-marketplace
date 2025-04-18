@@ -1,6 +1,5 @@
 <script lang="ts">
   import CreditCard from '@/common-components/CreditCard/CreditCard.svelte'
-  import CardInputElement from '@/pages/order-confirm-pay/components/PaymentForm/components/CardInput/CardInput.svelte'
   import { getContext, onDestroy } from 'svelte'
   import {
     handleCardCvvInput,
@@ -10,6 +9,7 @@
   } from '@/pages/order-confirm-pay/handlers'
   import type { PaymentData } from '@/types/PaymentData.ts'
   import PaymentFormLayout from '@/pages/order-confirm-pay/components/PaymentForm/PaymentFormLayout.svelte'
+  import LabeledInput from '@/common-components/LabeledInput/LabeledInput.svelte'
 
   let flip = false
   let errorData: any = undefined
@@ -80,7 +80,7 @@
   />
   <div class="grid grid-cols-2 gap-6 w-full">
     {#each inputs as input}
-      <CardInputElement error={errorData[input.id] ? errorData[input.id][0] : ''} {...input} />
+      <LabeledInput error={errorData[input.id] ? errorData[input.id][0] : ''} {...input} />
     {/each}
   </div>
 </PaymentFormLayout>

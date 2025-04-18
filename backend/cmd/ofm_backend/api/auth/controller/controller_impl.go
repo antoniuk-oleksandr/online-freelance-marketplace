@@ -2,6 +2,7 @@ package controller
 
 import (
 	"errors"
+	"log"
 	"ofm_backend/cmd/ofm_backend/api/auth/body"
 	"ofm_backend/cmd/ofm_backend/api/auth/service"
 	"ofm_backend/cmd/ofm_backend/utils"
@@ -49,7 +50,7 @@ func (ac *authController) ForgotPassword(ctx *fiber.Ctx) error {
 		})
 	}
 
-	if err := ac.authService.ForgotPassword(forgotPasswordBody.UsernameOrEmail); err != nil {
+	if err := ac.authService.ForgotPassword(forgotPasswordBody.Email); err != nil {
 		if err == utils.ErrUsernameDoesNotExist {
 			return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 				"error": utils.ErrUsernameDoesNotExist.Error(),
@@ -197,6 +198,7 @@ func (ac *authController) ResetPassword(ctx *fiber.Ctx) error {
 
 	err := ac.authService.ResetPassword(resetPasswordBody, email, token)
 	if err != nil {
+		log.Println("err", err)
 		return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"error": utils.ErrUnexpectedError.Error(),
 		})

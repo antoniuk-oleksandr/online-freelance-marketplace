@@ -2,6 +2,113 @@
 @tailwind components;
 @tailwind utilities;
 
+/* List styles */
+.tiptap ul,
+.tiptap ol {
+  padding-left: 1rem;
+  padding-right: 1rem;
+  margin-top: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.tiptap ul {
+  list-style-type: disc;
+}
+
+.tiptap ol {
+  list-style-type: decimal;
+}
+
+.tiptap ul li p,
+.tiptap ol li p {
+  margin-top: 0.125rem;
+  margin-bottom: 0.125rem;
+}
+
+/* Heading styles */
+.tiptap h1,
+.tiptap h2,
+.tiptap h3,
+.tiptap h4,
+.tiptap h5,
+.tiptap h6 {
+  font-weight: 600;
+  line-height: 1.25;
+  margin-top: 1.5rem;
+  text-wrap: pretty;
+}
+
+.tiptap h1,
+.tiptap h2 {
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+}
+
+.tiptap h1 {
+  font-size: 1.25rem;
+  line-height: 1.75rem;
+}
+
+.tiptap h2 {
+  font-size: 1.25rem;
+  line-height: 1.75rem;
+}
+
+.tiptap h3 {
+  font-size: 1rem;
+  line-height: 1.5rem;
+}
+
+.tiptap h4,
+.tiptap h5,
+.tiptap h6 {
+  font-size: 1rem;
+  line-height: 1.5rem;
+}
+
+/* Code blocks */
+.tiptap pre {
+  background-color: #000;
+  color: #fff;
+  font-family: monospace;
+  border-radius: 0.75rem;
+  padding: 0.5rem 0.75rem;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+
+.tiptap pre code {
+  background-color: transparent;
+  color: inherit;
+  font-size: 0.875rem;
+  padding: 0;
+}
+
+/* Blockquotes */
+.tiptap blockquote {
+  border-left: 4px solid #d1d5db;
+  padding-left: 1rem;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+
+/* Horizontal rules */
+.tiptap hr {
+  border: 0;
+  border-top: 1px solid #9ca3af;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+
+
+.tiptap> :first-child {
+    margin-top: 0;
+}
+
+.tiptap {
+    outline: none;
+}
+
 /* Chrome, Safari, Edge, Opera */
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {

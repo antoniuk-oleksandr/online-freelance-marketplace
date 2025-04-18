@@ -5,10 +5,15 @@
 
   type StatusElementProps = {
     status: StatusEnum
+    styles?: string
   }
-  const { status }: StatusElementProps = $props()
+  const { status, styles }: StatusElementProps = $props()
 </script>
 
-<span class="px-3 py-1 text-sm font-semibold rounded-md border {getStatusAdditioanlStyles(status)}">
+<span
+  class="{styles} px-3 py-1 text-sm font-semibold rounded-md border {getStatusAdditioanlStyles(
+    status,
+  )}"
+>
   {formatStatus(status)}
 </span>

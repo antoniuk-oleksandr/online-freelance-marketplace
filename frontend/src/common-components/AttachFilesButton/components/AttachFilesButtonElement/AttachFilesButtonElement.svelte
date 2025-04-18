@@ -5,14 +5,15 @@
 
   type AttachFilesButtonElementProps = {
     inputRef: HTMLInputElement | undefined
+    styles?: string
   }
 
-  const { inputRef }: AttachFilesButtonElementProps = $props()
+  const { inputRef, styles }: AttachFilesButtonElementProps = $props()
 </script>
 
 <Button
   color="grey"
-  styles="!w-full md:!w-48 !gap-3"
+  styles="!w-full md:!w-48 !gap-3 {styles}"
   type="button"
   clickAction={() => handleAttachFilesButtonClick(inputRef)}
 >

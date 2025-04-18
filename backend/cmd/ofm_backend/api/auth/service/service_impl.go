@@ -8,6 +8,7 @@ import (
 	"ofm_backend/cmd/ofm_backend/api/auth/repository"
 	"ofm_backend/cmd/ofm_backend/utils"
 	"ofm_backend/cmd/ofm_backend/utils/aes_encryption"
+	"ofm_backend/cmd/ofm_backend/utils/bcrypt_encryption"
 	filereader "ofm_backend/internal/file_reader"
 	"ofm_backend/internal/mailer"
 	"ofm_backend/internal/middleware"
@@ -176,12 +177,27 @@ func (as *authService) ResetPassword(
 	email string,
 	token string,
 ) error {
-	encodedPassword, err := aes_encryption.Encrypt(resetPasswordBody.Password)
+	oldPassword, encryptedPrivateKey, err := as.authRepository.GetUserPasswordPrivateKeyByEmail(email)
 	if err != nil {
 		return err
 	}
 
-	err = as.authRepository.ChangeUserPasswordByEmail(encodedPassword, email)
+	decryptedPrivateKey, err := aes_encryption.DecryptWithKey(encryptedPrivateKey, oldPassword)
+	if err != nil {
+		return err
+	}
+
+	newEncryptedPassword, err := bcrypt_encryption.HashPassword(resetPasswordBody.Password)
+	if err != nil {
+		return err
+	}
+
+	newEncryptedPrivateKey, err := aes_encryption.EncryptWithKey(decryptedPrivateKey, newEncryptedPassword)
+	if err != nil {
+		return err
+	}
+
+	err = as.authRepository.ChangeUserPasswordPrivateKeyByEmail(newEncryptedPassword, newEncryptedPrivateKey, email)
 	if err != nil {
 		return err
 	}
@@ -211,26 +227,22 @@ func (as *authService) RefreshToken(tokenString string) (string, error) {
 }
 
 func (as *authService) SignIn(signInBody body.SignInBody) (string, string, error) {
-	usernamePassword, err := as.authRepository.GetUserPassword(signInBody.UsernameOrEmail)
+	hashPassword, err := as.authRepository.GetUserPassword(signInBody.UsernameOrEmail)
 	if err != nil {
 		return "", "", fiber.ErrUnauthorized
 	}
 
-	decryptedPassword, err := aes_encryption.Decrypt(usernamePassword.Password)
-	if err != nil {
-		return "", "", err
-	}
-
-	if decryptedPassword != signInBody.Password {
+	match := bcrypt_encryption.CheckPasswordHash(signInBody.Password, hashPassword.Password)
+	if !match {
 		return "", "", fiber.ErrUnauthorized
 	}
 
-	accessToken, err := as.middleware.GenerateSignInAccessToken(usernamePassword.Username)
+	accessToken, err := as.middleware.GenerateSignInAccessToken(hashPassword.Username)
 	if err != nil {
 		return "", "", err
 	}
 
-	refreshToken, err := as.middleware.GenerateRefreshToken(usernamePassword.Username)
+	refreshToken, err := as.middleware.GenerateRefreshToken(hashPassword.Username)
 	if err != nil {
 		return "", "", err
 	}
@@ -239,29 +251,27 @@ func (as *authService) SignIn(signInBody body.SignInBody) (string, string, error
 }
 
 func (as *authService) SignUp(user *body.SignUpBody) error {
-	encryptedPassword, err := aes_encryption.Encrypt(user.Password)
-	if err != nil {
-		return err
-	}
-	user.Password = encryptedPassword
-
 	isUsernameAvailable, err := as.authRepository.CheckIfUsernameIsAvailable(user.Username)
-	if err != nil {
-		return err
-	}
-
-	if !isUsernameAvailable {
+	if err != nil || !isUsernameAvailable {
 		return utils.ErrUsernameIsTaken
 	}
 
 	isEmailAvailable, err := as.authRepository.CheckIfEmailIsAvailable(user.Email)
-	if err != nil {
+	if err != nil || !isEmailAvailable {
 		return err
 	}
 
-	if !isEmailAvailable {
-		return utils.ErrEmailIsTaken
+	hashedPassword, err := bcrypt_encryption.HashPassword(user.Password)
+	if err != nil {
+		return err
 	}
+	user.Password = hashedPassword
+
+	encryptedPrivateKey, err := aes_encryption.EncryptWithKey(user.PrivateKey, user.Password)
+	if err != nil {
+		return err
+	}
+	user.PrivateKey = encryptedPrivateKey
 
 	userUUID := uuid.New().String()
 	err = as.authRepository.AddTempUserData(user, userUUID)
