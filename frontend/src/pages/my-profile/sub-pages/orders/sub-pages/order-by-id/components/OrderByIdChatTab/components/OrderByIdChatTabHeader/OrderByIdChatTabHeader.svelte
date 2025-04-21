@@ -7,7 +7,7 @@
 
   type OrderByIdChatTabHeaderProps = ChatPartner & {}
 
-  const { id, avatar, firstName, surname, lastOnline }: OrderByIdChatTabHeaderProps = $props()
+  const { id, avatar, username, lastOnline }: OrderByIdChatTabHeaderProps = $props()
 </script>
 
 <OrderByIdChatTabHeaderLayout>
@@ -17,8 +17,7 @@
       class="font-semibold hover:underline text-light-palette-text-primary dark:text-dark-palette-text-primary"
       to="/users/{id}"
     >
-      {firstName}
-      {surname}
+      {username}
     </Link>
     <span class="text-cyan-500">{makeLastOnlineText(lastOnline)}</span>
   </div>

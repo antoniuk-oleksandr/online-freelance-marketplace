@@ -18,6 +18,7 @@
     layoutStyles?: string
     positionX?: 'left' | 'right'
     positionY?: 'top' | 'bottom'
+    menuStyles?: string
   }
 
   let shownValue = $state(false)

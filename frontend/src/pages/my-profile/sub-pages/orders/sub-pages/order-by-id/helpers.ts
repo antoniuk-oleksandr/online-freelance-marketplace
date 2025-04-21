@@ -66,8 +66,8 @@ export const makeMyProfileOverviewRequest = async (id: string): Promise<MyProfil
   return {
     data: {
       id: 73,
-      deliveryDate: 1742680800 * 1000,
-      createdAt: 1742680800 * 1000,
+      deliveryDate: 1741118830000,
+      createdAt: 1740859630000,
       subtotal: 49.99,
       serviceFee: round(49.99 * 0.05, 2),
       totalPrice: round(49.99 + 49.99 * 0.05, 2),
@@ -85,11 +85,7 @@ export const makeMyProfileOverviewRequest = async (id: string): Promise<MyProfil
         username: 'name',
         id: 1,
         avatar: 'http://localhost:8030/files/avatar_2.jpg',
-      },
-      buyer: {
-        name: 'Jane Smith',
-        avatar: 'http://localhost:8030/files/avatar_2.jpg',
-      },
+      }
     },
     status: 200
   }

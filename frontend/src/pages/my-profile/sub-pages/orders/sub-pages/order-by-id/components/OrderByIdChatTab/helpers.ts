@@ -58,60 +58,6 @@ export const makeLastOnlineText = (lastOnline: number) => {
   }
 };
 
-// export const dividerTime = (timestamp: number): string => {
-//   const date = new Date(timestamp);
-//   const now = new Date();
-//   const todayStart = new Date(now);
-//   todayStart.setHours(0, 0, 0, 0);
-
-//   const yesterdayStart = new Date(todayStart);
-//   yesterdayStart.setDate(yesterdayStart.getDate() - 1);
-
-//   const timeString = date.toLocaleTimeString([], { 
-//     hour: '2-digit', 
-//     minute: '2-digit' 
-//   });
-
-//   // Within last 24 hours
-//   if (date >= todayStart) {
-//     return timeString;
-//   }
-
-//   // Yesterday
-//   if (date >= yesterdayStart) {
-//     return `Yesterday, ${timeString}`;
-//   }
-
-//   const diffInDays = Math.floor((now.getTime() - date.getTime()) / (1000 * 3600 * 24));
-//   const formatter = new Intl.RelativeTimeFormat('en', { numeric: 'auto' });
-
-//   // Last 7 days
-//   if (diffInDays <= 7) {
-//     return formatter.format(-diffInDays, 'day');
-//   }
-
-//   // Last 30 days
-//   if (diffInDays <= 30) {
-//     const weeks = Math.floor(diffInDays / 7);
-//     return formatter.format(-weeks, 'week');
-//   }
-
-//   // Within current year
-//   if (date.getFullYear() === now.getFullYear()) {
-//     return date.toLocaleDateString('en', { 
-//       month: 'short', 
-//       day: 'numeric' 
-//     });
-//   }
-
-//   // Older than current year
-//   return date.toLocaleDateString('en', { 
-//     month: 'short', 
-//     day: 'numeric', 
-//     year: 'numeric' 
-//   });
-// };
-
 export const formatChatMessageTime = (timestamp: number): string => {
   const date = new Date(timestamp);
 
@@ -194,53 +140,62 @@ export const makeMyProfileChatRequest = async (orderId: string): Promise<MyProfi
   const response = {
     data: {
       chatPartner: {
-        id: 2,
-        firstName: 'John',
-        surname: 'Doe',
+        id: 1,
+        username: 'name',
         avatar: 'http://localhost:8030/files/avatar_2.jpg',
-        lastOnline: 1133024292 * 1000,
+        lastOnline: 1811011158000,
       },
       messages: [
         {
           id: 1,
-          senderId: 66,
-          content: "Hey, how's it going?",
-          sentAt: 1134641958000,
+          senderId: 66, 
+          content: "Hi name, I’d like to order a logo design for my new business. Are you available?",
+          sentAt: new Date(Date.UTC(2025, 2, 1, 10, 0, 0)).getTime(), 
           files: [],
           type: ChatMessageType.Read,
         },
         {
           id: 2,
-          senderId: 2,
-          content: "I'm good, thanks! How about you? I'm good, thanks! How about you? I'm good, thanks! How about you? I'm good, thanks! How about you?",
-          sentAt: 1711011158000,
+          senderId: 1,
+          content: "Hi! Yes, I'm available. Could you please share more details about your business and the style you're looking for?",
+          sentAt: new Date(Date.UTC(2025, 2, 1, 10, 5, 0)).getTime(),
           files: [],
           type: ChatMessageType.Read,
         },
         {
           id: 3,
-          senderId: 2,
-          content: "GtG, see you later!",
-          sentAt: 1742740304000,
+          senderId: 66,
+          content: "Sure. The business is called 'GreenLeaf Wellness'. I’d like something clean and modern with a natural color palette.",
+          sentAt: new Date(Date.UTC(2025, 2, 1, 10, 10, 0)).getTime(),
           files: [],
           type: ChatMessageType.Read,
         },
         {
           id: 4,
+          senderId: 1,
+          content: "Great! I’ll get started on a few initial concepts. You’ll have the first draft by Friday. Let me know if you have any references or logos you like.",
+          sentAt: new Date(Date.UTC(2025, 2, 1, 10, 20, 0)).getTime(), 
+          files: [],
+          type: ChatMessageType.Read,
+        },
+        {
+          id: 5,
           senderId: 66,
-          content: "ok!",
-          sentAt: 1742826704000,
+          content: "Sounds good. I’ll send over a couple of samples I like. Looking forward to seeing your ideas!",
+          sentAt: new Date(Date.UTC(2025, 2, 1, 10, 30, 0)).getTime(), 
           files: [],
           type: ChatMessageType.Read,
         },
       ],
     },
     status: 200,
-  } as MyProfileChatRequestResponse
+  } as MyProfileChatRequestResponse;
 
   if (response.status !== 200) {
-    errorStore.set({ shown: true, error: response.data.error })
+    errorStore.set({ shown: true, error: response.data.error });
   }
 
   return response;
 }
+
+

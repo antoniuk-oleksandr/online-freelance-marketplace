@@ -14,6 +14,7 @@
     menuWidth?: string
     positionX?: 'left' | 'right'
     positionY?: 'top' | 'bottom'
+    menuStyles?: string
   }
 
   let menuRef = $state<HTMLDivElement | undefined>()

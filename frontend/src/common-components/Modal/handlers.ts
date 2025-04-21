@@ -13,10 +13,10 @@ export const handleModalBackdropClick = (
     modalContentRef: HTMLElement | undefined,
     modalBackdropRef: HTMLElement | undefined
 ) => {
-    if(!modalContentRef || !modalBackdropRef) return;
+    if (!modalContentRef || !modalBackdropRef) return;
 
-    if(!(modalBackdropRef).contains(e.target as Node)) return;
-    if(modalContentRef.contains(e.target as Node)) return;
+    if (!(modalBackdropRef).contains(e.target as Node)) return;
+    if (modalContentRef.contains(e.target as Node)) return;
 
     modalStore.update((prev) => ({
         ...prev,
@@ -28,6 +28,10 @@ export const handleModalOpen = (
     modalData: ModalStore | undefined
 ) => {
     if (modalData && modalData.isOpened) {
+        document.body.style.height = "100vh";
         document.body.style.overflow = "hidden";
-    } else document.body.style.overflow = "auto";
+    } else {
+        document.body.style.overflow = "auto";
+        document.body.style.height = "auto";
+    }
 }

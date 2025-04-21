@@ -9,10 +9,6 @@
   modalStore.subscribe((value) => (modalData = value))
 
   $effect(() => handleModalOpen(modalData))
-
-  const clickAction = () => {
-    console.log('Click action triggered')
-  }
 </script>
 
 {#if modalData && modalData.renderContent && modalData.isOpened}

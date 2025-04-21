@@ -6,9 +6,16 @@
   type AttachFilesButtonElementProps = {
     inputRef: HTMLInputElement | undefined
     styles?: string
+    text?: string
+    icon?: string
   }
 
-  const { inputRef, styles }: AttachFilesButtonElementProps = $props()
+  const {
+    inputRef,
+    styles,
+    text = 'Attach Files',
+    icon = 'hugeicons:attachment-02',
+  }: AttachFilesButtonElementProps = $props()
 </script>
 
 <Button
@@ -17,6 +24,6 @@
   type="button"
   clickAction={() => handleAttachFilesButtonClick(inputRef)}
 >
-  <Iconify width={24} height={24} icon="hugeicons:attachment-02" />
-  <span>Attach Files</span>
+  <Iconify width={24} height={24} {icon} />
+  <span>{text}</span>
 </Button>

@@ -7,33 +7,29 @@ export const makeMyProfileRequirementsRequest = (orderId: string): MyProfileRequ
     data: {
       questionsAnswers: [
         {
-          question: 'What is the deadline for this project?',
-          answer: 'The deadline for this project is 10 days from the date of order.',
+          question: 'What is the timeline for completing the project?',
+          answer: 'The project needs to be completed within 10 days from the date of order.',
         },
         {
-          question: 'What is the budget for this project?',
-          answer: 'The budget for this project is $100.',
+          question: 'Do you have any design preferences or style guidelines?',
+          answer: 'Yes, I’d like the design to be clean, modern, and use a natural color palette, similar to the brand’s aesthetic.',
         },
         {
-          question: 'What is the deadline for this project?',
-          answer: 'The deadline for this project is 10 days from the date of order.',
+          question: 'Are there any reference materials you can share?',
+          answer: 'I’ll send over a few logos and branding materials that reflect the style I’m aiming for.',
         },
         {
-          question: 'What is the budget for this project?',
-          answer: 'The budget for this project is $100.',
+          question: 'What is the target audience for the logo?',
+          answer: 'The target audience is health-conscious individuals aged 25-40, primarily interested in wellness and sustainable living.',
         },
         {
-          question: 'What is the deadline for this project?',
-          answer: 'The deadline for this project is 10 days from the date of order.',
+          question: 'Will you need multiple logo variations (e.g., color, black and white, etc.)?',
+          answer: 'Yes, I would like both color and monochrome versions of the logo to be delivered.',
         },
-        {
-          question: 'What is the budget for this project?',
-          answer: 'The budget for this project is $100.',
-        },
-      ] as ServiceQA[]
+      ] as ServiceQA[],
     },
     status: 200,
-  } as MyProfileRequirementsRequestResponse
+  } as MyProfileRequirementsRequestResponse;
 
   if (response.status !== 200) {
     errorStore.set({ shown: true, error: response.data.error });
@@ -41,3 +37,4 @@ export const makeMyProfileRequirementsRequest = (orderId: string): MyProfileRequ
 
   return response;
 }
+

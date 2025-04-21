@@ -3,11 +3,12 @@
 
   type NoContentMessageProps = {
     text: string
+    styles?: string
   }
 
-  const { text }: NoContentMessageProps = $props()
+  const { text, styles }: NoContentMessageProps = $props()
 </script>
 
-<NoContentMessageLayout>
-  {text}
+<NoContentMessageLayout {styles}>
+  <p>{text}</p>
 </NoContentMessageLayout>

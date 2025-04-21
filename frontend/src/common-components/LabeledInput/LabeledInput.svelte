@@ -8,6 +8,7 @@
     label: string
     id: string
     placeholder: string
+    type?: string
     error?: string | null
     styles?: string
     focusAction?: () => void

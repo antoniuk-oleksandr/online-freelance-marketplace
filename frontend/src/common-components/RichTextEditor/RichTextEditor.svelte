@@ -12,11 +12,11 @@
   type RichTextEditorProps = {
     limit: number
     onChange: (value: string) => void
+    content?: string
     error?: string | null
-    content: string
   }
 
-  const { limit, onChange, error, content }: RichTextEditorProps = $props()
+  const { limit, onChange, error, content = '' }: RichTextEditorProps = $props()
 
   let element = $state<undefined | HTMLDivElement>()
   let editor = $state<undefined | Editor>()

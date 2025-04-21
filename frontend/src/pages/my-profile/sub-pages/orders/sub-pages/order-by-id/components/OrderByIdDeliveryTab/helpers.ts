@@ -4,10 +4,10 @@ export const makeMyProfileDeliveryRequest = async (): Promise<MyProfileDeliveryR
   return {
     status: 200,
     data: {
-      deliveryDate: 1742680800 * 1000,
+      deliveryDate: 1741118830000,
       freelancer: {
         id: 1,
-        username: 'alex',
+        username: 'name',
       },
     }
   }

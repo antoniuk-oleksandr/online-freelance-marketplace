@@ -11,6 +11,7 @@ const config = {
         "lg:min-w-header-dropdown-menu",
         "size-12", "size-64", "size-14", "size-24",
         "size-32", "lg:min-w-48", "lg:min-w-60",
+        "size-48",
         "lg:size-12", "lg:size-64", "lg:size-14", "size-16",
         "bg-gray-200", "text-gray-700", "border-gray-300",
         "bg-yellow-100", "text-yellow-700", "border-yellow-300",
@@ -108,6 +109,7 @@ const config = {
                 "drop-up": "drop-up 350ms ease-out",
             },
             gridTemplateColumns: {
+                "edit-profile-form": "calc(100% / 3) 1fr",
                 "create-service-packages-table": "10rem 1fr 1fr 1fr",
                 service: "1fr 25rem",
                 "sign-form": "36rem 1fr",
@@ -143,7 +145,8 @@ const config = {
                 form: "56rem",
                 128: "32rem",
                 "order-overview": "23.3125rem",
-                10.5: "2.625rem"
+                10.5: "2.625rem",
+                13.5: "3.375rem",
             },
             translate: {
                 "search-sidebar": "23rem",
@@ -165,6 +168,7 @@ const config = {
                 "search-array": "calc(100vh - 4rem  - 3rem - 4rem - 6rem  - 3rem)",
                 "search-array-mobile": "calc(100vh - 4rem - 6rem - 3rem)",
                 "chat-body": "calc(100vh - 4rem - 3rem - 4rem - 1px - 3.25rem - 1.5rem - 5.5rem - 1.5rem - 6rem)",
+                81.5: "20.375rem",
             },
             colors: {
                 dark: {

@@ -28,7 +28,7 @@
 </script>
 
 <div class="flex flex-col">
-  <AttachFilesButton {addFiles} />
+  <AttachFilesButton accept="image" {addFiles} />
   <LabeledInputError styles="mt-1" error={$formErrorsStore.files && $formErrorsStore.files[0]} />
   <OrderSubmitRequirementsFormAttachFileList styles="mt-6" files={$formDataStore.files} {removeFile} />
 </div>

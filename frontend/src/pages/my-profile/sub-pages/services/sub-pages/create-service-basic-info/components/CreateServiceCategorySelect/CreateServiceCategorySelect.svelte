@@ -28,9 +28,9 @@
 <CreateServiceCategorySelectLayout>
   <Label text="Category" />
   <NewSelect
+    menuStyles="!w-full"
     noneSelectedText="Select category"
     {error}
-    selectWidth="w-full"
     initialSelectIndex={$formDataStore.categoryId}
     initialSelectValues={initalItems}
     modalHeaderTitle="Select category"

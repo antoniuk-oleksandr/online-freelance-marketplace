@@ -21,9 +21,5 @@ export type OrderByIdOverviewTabData = {
     username: string,
     id: number,
     avatar: string,
-  },
-  buyer: {
-    name: string,
-    avatar: string,
-  },
+  }
 }

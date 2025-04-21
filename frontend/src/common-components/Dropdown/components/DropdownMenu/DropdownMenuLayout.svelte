@@ -6,7 +6,8 @@
     menuRef: HTMLDivElement | undefined
     positionX?: 'left' | 'right'
     positionY?: 'top' | 'bottom'
-    menuWidth?: string
+    menuWidth?: string,
+    menuStyles?: string
   }
 
   let {
@@ -15,6 +16,7 @@
     menuRef = $bindable(),
     positionX = 'right',
     positionY = 'bottom',
+    menuStyles,
   }: DropdownMenuLayoutProps = $props()
 </script>
 
@@ -24,8 +26,8 @@
   <div
     bind:this={menuRef}
     transition:flyFade={{ y: 10, duration: 300 }}
-    class="flex max-h-96 overflow-auto flex-col shadow-xl gap-y-2 py-1 lg:p-1 lg:mt-2 rounded-lg lg:rounded-lg right-0 whitespace-nowrap bg-light-palette-background-block dark:bg-dark-palette-background-block lg:absolute h-fit w-full
-    lg:{menuWidth ? menuWidth : 'min-w-52'} lg:w-fit
+    class="{menuStyles} w-[90%] xl:w-full sm:w-[70%] lg:w-[40%] flex max-h-96 overflow-auto flex-col shadow-xl gap-y-2 py-1 lg:p-1 lg:mt-2 rounded-lg lg:rounded-lg right-0 whitespace-nowrap bg-light-palette-background-block dark:bg-dark-palette-background-block lg:absolute h-fit 
+    lg:{menuWidth ? menuWidth : 'min-w-52'} 
     {positionX === 'left' ? 'lg:left-0' : 'lg:right-0'}
     {positionY === 'bottom' ? 'lg:top-full' : 'lg:bottom-full'}"
   >

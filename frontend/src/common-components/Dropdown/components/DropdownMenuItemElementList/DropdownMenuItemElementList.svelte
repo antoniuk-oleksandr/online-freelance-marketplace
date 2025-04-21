@@ -10,6 +10,8 @@
   const { items, setShown }: DropdownMenuItemElementListProps = $props()
 </script>
 
-{#each items as item}
-  <DropdownMenuItemElement {setShown} {...item} />
-{/each}
+<div class="flex flex-col max-h-81.5  overflow-auto">
+  {#each items as item}
+    <DropdownMenuItemElement {setShown} {...item} />
+  {/each}
+</div>

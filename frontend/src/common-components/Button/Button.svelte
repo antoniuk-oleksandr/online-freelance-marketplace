@@ -43,7 +43,7 @@
     onclick={clickAction}
   >
     {#if loading}
-      <Spinner size="size-8" color="border-l-white" />
+      <Spinner useDelay={false} size="size-8" color="border-l-white" />
     {:else}
       {@render children()}
     {/if}

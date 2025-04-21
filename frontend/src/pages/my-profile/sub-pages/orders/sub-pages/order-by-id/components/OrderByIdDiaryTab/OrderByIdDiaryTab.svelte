@@ -1,6 +1,5 @@
 <script lang="ts" module>
   import PaperElement from '@/common-components/PaperElement/PaperElement.svelte'
-  import type { DiaryItem } from '@/types/DiaryItem'
   import OrderByIdDiaryTabTable from './components/OrderByIdDiaryTabTable/OrderByIdDiaryTabTable.svelte'
   import OrderByIdDiaryTabTopLine from './components/OrderByIdDiaryTabTopLine/OrderByIdDiaryTabTopLine.svelte'
   import type { MyProfileDiaryRequestResponse } from '@/types/MyProfileDiaryRequestResponse'

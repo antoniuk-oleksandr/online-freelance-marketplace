@@ -8,44 +8,38 @@ export const makeMyProfileDiaryRequest = async (orderId: string): Promise<MyProf
     data: {
       dates: [
         {
-          date: (new Date(Date.UTC(2025, 2, 30))).getTime(),
-          text: "x",
-          bgColor: "ceeec5",
+          date: (new Date(Date.UTC(2025, 2, 1))).getTime(),
+          text: "Initial consultation with client. Discussed business goals and logo preferences.",
+          bgColor: "ceeec5",  // light green for initial meeting
           textColor: "000000",
         },
         {
-          date: (new Date(Date.UTC(2025, 2, 31))).getTime(),
-          text: "x",
-          bgColor: "ceeec5",
+          date: (new Date(Date.UTC(2025, 2, 2))).getTime(),
+          text: "Client shared logo reference materials and style preferences.",
+          bgColor: "fff8c2",  
           textColor: "000000",
         },
         {
-          date: (new Date(Date.UTC(2025, 3, 1))).getTime(),
-          text: "x",
-          bgColor: "ceeec5",
+          date: (new Date(Date.UTC(2025, 2, 3))).getTime(),
+          text: "Created and shared first draft of the logo for feedback.",
+          bgColor: "cce5ff",  
           textColor: "000000",
         },
         {
-          date: (new Date(Date.UTC(2025, 3, 25))).getTime(),
-          text: "x",
-          bgColor: "ceeec5",
-          textColor: "000000",
-        },
-        {
-          date: (new Date(Date.UTC(2025, 3, 3))).getTime(),
-          text: "x",
-          bgColor: "ceeec5",
+          date: (new Date(Date.UTC(2025, 2, 4))).getTime(),
+          text: "Received feedback from client, revision requests made.",
+          bgColor: "ffcccb",  
           textColor: "000000",
         }
       ],
       firstDate: (new Date(Date.UTC(2025, 2, 30))).getTime(),
-      lastDate: (new Date(Date.UTC(2025, 3, 25))).getTime(),
+      lastDate: (new Date(Date.UTC(2025, 3, 4))).getTime(),
     },
     status: 200,
-  } as MyProfileDiaryRequestResponse
+  } as MyProfileDiaryRequestResponse;
 
   if (response.status === 200) {
-    response.data.dates = getDiaryMonth(4, 2025, response.data.dates);
+    response.data.dates = getDiaryMonth(3, 2025, response.data.dates);
   } else {
     errorStore.set({ shown: true, error: response.data.error });
   }

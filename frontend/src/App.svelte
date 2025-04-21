@@ -25,6 +25,7 @@
   import CreateServicePackagesPage from './pages/my-profile/sub-pages/services/sub-pages/create-service-packages/CreateServicePackagesPage.svelte'
   import CreateServiceBasicInfoPage from './pages/my-profile/sub-pages/services/sub-pages/create-service-basic-info/CreateServiceBasicInfoPage.svelte'
   import CreateServiceRequirementsPage from './pages/my-profile/sub-pages/services/sub-pages/create-service-requirements/CreateServiceRequirementsPage.svelte'
+  import MyProfileEditPage from './pages/my-profile/sub-pages/edit/MyProfileEditPage.svelte'
 
   const unsubscribe = signDataStore.subscribe((value) => {
     if (value && value.signedIn) connectToWebsocket()
@@ -94,6 +95,9 @@
     </Route>
     <Route path="/my-profile/services/create/media">
       <CreateServiceMediaPage />
+    </Route>
+    <Route path="/my-profile/edit">
+      <MyProfileEditPage />
     </Route>
     <Route path="/*">
       <NotFound />

@@ -1,17 +1,57 @@
 <!doctype html>
 <html lang="en" data-theme="light">
+
 <head>
-    <meta charset="UTF-8"/>
-    <link rel="icon" type="image/svg+xml" href="/icon.svg"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/icon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>OFM | Online Freelance Marketplace</title>
 
     <style>
-        html[data-theme="light"], body[data-theme="light"] {
+        html[data-theme="light"],
+        body[data-theme="light"] {
             background-color: #f9f9f9;
         }
-        html[data-theme="dark"], body[data-theme="dark"] {
+
+        html[data-theme="dark"],
+        body[data-theme="dark"] {
             background-color: #1a1a1a;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            overflow: hidden;
+        }
+
+        #initial-loader {
+            padding: 0;
+            margin: 0;
+            height: 100vh;
+            width: 100vw;
+            display: grid;
+            place-items: center;
+            overflow: hidden;
+        }
+
+        #initial-loader-element {
+            animation: spin 1s linear infinite;
+            border-width: 2px;
+            border-color: transparent;
+            border-left-color: oklch(71.5% 0.143 215.221);
+            border-radius: 9999px;
+            width: 3.5rem;
+            height: 3.5rem;
+            border-style: solid;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
         }
     </style>
 
@@ -20,15 +60,29 @@
         if (isDarkMode) {
             document.documentElement.setAttribute('data-theme', 'dark');
         }
+
+        window.addEventListener('load', () => {
+            document.getElementById('initial-loader').remove();
+            document.getElementsByTagName('html')[0].style.overflow = 'auto';
+        })
     </script>
     <script src="https://accounts.google.com/gsi/client" async defer></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap"
+        rel="stylesheet">
 </head>
-<body class="font-['Inter'] text-sm bg-light-palette-background-default dark:bg-dark-palette-background-default text-light-palette-text-primary dark:text-dark-palette-text-primary">
 
-<div id="app"></div>
-<script type="module" src="/src/main.ts"></script>
+<body
+    class="font-['Inter'] text-sm bg-light-palette-background-default dark:bg-dark-palette-background-default text-light-palette-text-primary dark:text-dark-palette-text-primary">
+
+    <div id="app">
+        <div id="initial-loader">
+            <div id="initial-loader-element" />
+        </div>
+    </div>
+    <script type="module" src="/src/main.ts"></script>
 </body>
+
 </html>
