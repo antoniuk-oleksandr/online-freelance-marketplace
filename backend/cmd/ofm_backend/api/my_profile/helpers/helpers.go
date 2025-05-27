@@ -3,6 +3,7 @@ package helpers
 import (
 	"encoding/json"
 	"ofm_backend/cmd/ofm_backend/api/my_profile/dto"
+	"ofm_backend/cmd/ofm_backend/api/my_profile/model"
 	"ofm_backend/cmd/ofm_backend/utils"
 	"os"
 	"strconv"
@@ -79,6 +80,35 @@ func ParseMyProfileDataFromRows[T any](rows *sqlx.Rows) (*[]T, int, error) {
 	return &orderTableData, totalPages, nil
 }
 
+func ParseMyProfileChatByOrderIdFromRows(rows *sqlx.Rows) (*model.OrderChat, error) {
+	var chatPartnherJSON []byte
+	var chatMessagesJSON []byte
+	var chatPartner model.ChatPartner
+	var chatMessages = make([]model.ChatMessage, 0)
+
+	if !rows.Next() {
+		return nil, utils.ErrNoDataFound
+	}
+
+	err := rows.Scan(&chatPartnherJSON, &chatMessagesJSON)
+	if err != nil {
+		return nil, err
+	}
+
+	if err := json.Unmarshal(chatPartnherJSON, &chatPartner); err != nil {
+		return nil, err
+	}
+
+	if err := json.Unmarshal(chatMessagesJSON, &chatMessages); err != nil {
+		return nil, err
+	}
+
+	return &model.OrderChat{
+		ChatPartner: chatPartner,
+		Messages:    chatMessages,
+	}, nil
+}
+
 func ParseMyProfileRequestsParams(ctx *fiber.Ctx) (*dto.MyProfileParams, error) {
 	var myProfileParams dto.MyProfileParams
 
@@ -87,12 +117,12 @@ func ParseMyProfileRequestsParams(ctx *fiber.Ctx) (*dto.MyProfileParams, error) 
 	if err != nil && err != utils.ErrInvalidPathParam {
 		return nil, err
 	}
-	
+
 	myProfileParams.Status, err = parseMyProfileOrdersParam("status", ctx)
 	if err != nil && err != utils.ErrInvalidPathParam {
 		return nil, err
 	}
-	
+
 	myProfileParams.UserId = int(ctx.Locals("userId").(float64))
 
 	if myProfileParams.UserId <= 0 {

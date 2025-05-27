@@ -36,29 +36,34 @@ func Encrypt(text string) (string, error) {
 	return base64.StdEncoding.EncodeToString(ciphertext), nil
 }
 
-func EncryptWithKey(plaintext, key string) (string, error) {
+func GenerateAESIV() ([]byte, error) {
+	nonce := make([]byte, 12)
+    if _, err := io.ReadFull(rand.Reader, nonce); err != nil {
+        return nonce, err
+    }
+    
+    return nonce, nil
+}
+
+func EncryptWithKey(plaintext, key string, initialVector []byte) (string, error) {
     keyBytes := sha256.Sum256([]byte(key))
     
     block, err := aes.NewCipher(keyBytes[:])
     if err != nil {
         return "", err
     }
-
-    nonce := make([]byte, 12)
-    if _, err := io.ReadFull(rand.Reader, nonce); err != nil {
-        return "", err
-    }
-
+    
     aesGCM, err := cipher.NewGCM(block)
     if err != nil {
         return "", err
     }
 
-    ciphertext := aesGCM.Seal(nil, nonce, []byte(plaintext), nil)
-    finalCiphertext := append(nonce, ciphertext...)
+    ciphertext := aesGCM.Seal(nil, initialVector, []byte(plaintext), nil)
+    finalCiphertext := append(initialVector, ciphertext...)
 
     return base64.StdEncoding.EncodeToString(finalCiphertext), nil
 }
+
 
 func DecryptWithKey(encryptedText, key string) (string, error) {
     data, err := base64.StdEncoding.DecodeString(encryptedText)
@@ -116,4 +121,14 @@ func Decrypt(encodedText string) (string, error) {
 	stream.XORKeyStream(ciphertext, ciphertext)
 
 	return string(ciphertext), nil
+}
+
+
+func GenerateMasterKey() ([]byte, error) {
+    masterKey := make([]byte, 32)
+    _, err := rand.Read(masterKey)
+    if err != nil {
+        return nil, err
+    }
+    return masterKey, nil
 }

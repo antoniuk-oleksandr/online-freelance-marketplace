@@ -4,6 +4,7 @@ import (
 	"errors"
 	"log"
 	"ofm_backend/cmd/ofm_backend/api/auth/body"
+	"ofm_backend/cmd/ofm_backend/api/auth/helpers"
 	"ofm_backend/cmd/ofm_backend/api/auth/service"
 	"ofm_backend/cmd/ofm_backend/utils"
 
@@ -109,11 +110,13 @@ func (ac *authController) SignUp(ctx *fiber.Ctx) error {
 func (ac *authController) SignIn(ctx *fiber.Ctx) error {
 	var signInBody body.SignInBody
 	if err := ctx.BodyParser(&signInBody); err != nil {
-		return err
+		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error": utils.ErrInvalidRequestBody.Error(),
+		})
 	}
-	accessToken, refreshToken, err := ac.authService.SignIn(signInBody)
-
+	signResponse, signInData, err := ac.authService.SignIn(signInBody)
 	if err != nil {
+		log.Println("err", err)
 		if err.Error() == fiber.ErrUnprocessableEntity.Error() {
 			return ctx.Status(fiber.StatusUnprocessableEntity).JSON(
 				fiber.Map{"error": "Invalid request body"},
@@ -131,58 +134,9 @@ func (ac *authController) SignIn(ctx *fiber.Ctx) error {
 		)
 	}
 
-	return ctx.JSON(fiber.Map{
-		"accessToken":  accessToken,
-		"refreshToken": refreshToken,
-	})
-}
+	helpers.CreateSignCookies(ctx, signResponse, signInBody.KeepSignedIn)
 
-func (ac *authController) GoogleAuth(ctx *fiber.Ctx) error {
-	var googleBody body.Google
-
-	if err := ctx.BodyParser(&googleBody); err != nil {
-		ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"error": utils.ErrInvalidRequestBody.Error(),
-		})
-	}
-
-	if googleBody.Code == "" {
-		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"error": utils.ErrInvalidRequestBody.Error(),
-		})
-	}
-
-	accessToken, refreshToken, err := ac.authService.GoogleAuth(googleBody.Code)
-	if err != nil {
-		return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-			"error": utils.ErrUnexpectedError.Error(),
-		})
-	}
-
-	return ctx.Status(fiber.StatusOK).JSON(fiber.Map{
-		"accessToken":  accessToken,
-		"refreshToken": refreshToken,
-	})
-}
-
-func (ac *authController) RefreshToken(c *fiber.Ctx) error {
-	tokenString := c.Get("Authorization")
-	if tokenString == "" {
-		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
-			"error": "Wrong token",
-		})
-	}
-
-	accessToken, err := ac.authService.RefreshToken(tokenString)
-	if err != nil {
-		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
-			"error": err.Error(),
-		})
-	}
-
-	return c.JSON(fiber.Map{
-		"accessToken": accessToken,
-	})
+	return ctx.Status(fiber.StatusOK).JSON(signInData)
 }
 
 func (ac *authController) ResetPassword(ctx *fiber.Ctx) error {
@@ -198,7 +152,6 @@ func (ac *authController) ResetPassword(ctx *fiber.Ctx) error {
 
 	err := ac.authService.ResetPassword(resetPasswordBody, email, token)
 	if err != nil {
-		log.Println("err", err)
 		return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"error": utils.ErrUnexpectedError.Error(),
 		})
@@ -209,22 +162,104 @@ func (ac *authController) ResetPassword(ctx *fiber.Ctx) error {
 	})
 }
 
-func (ar *authController) SignOut(ctx *fiber.Ctx) error {
-	var signOutBody body.SignOut
+func (ac *authController) SignOut(ctx *fiber.Ctx) error {
+	signOutBody := body.SignOut{
+		AccessToken:  ctx.Cookies("accessToken", ""),
+		RefreshToken: ctx.Cookies("refreshToken", ""),
+	}
 
-	if err := ctx.BodyParser(&signOutBody); err != nil {
-		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"error": utils.ErrInvalidRequestBody.Error(),
+	if err := ac.authService.SignOut(signOutBody); err != nil {
+		return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error": utils.ErrUnexpectedError.Error(),
 		})
 	}
 
-	if err := ar.authService.SignOut(signOutBody); err != nil {
+	helpers.ClearCookies(ctx)
+
+	return ctx.Status(fiber.StatusOK).JSON(fiber.Map{
+		"message": "Successfully logged out",
+	})
+}
+
+func (ac *authController) Session(ctx *fiber.Ctx) error {
+	userId := int64(ctx.Locals("userId").(float64))
+	if userId <= 0 {
+		return ctx.Status(fiber.StatusNotFound).JSON(fiber.Map{
+			"error": utils.ErrNoDataFound,
+		})
+	}
+
+	userSessionData, err := ac.authService.GetUserSessionData(userId)
+	if err != nil {
+		return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error": utils.ErrUnexpectedError.Error(),
+		})
+	}
+
+	return ctx.JSON(userSessionData)
+}
+
+func (ac *authController) CheckIfEmailIsAvailable(ctx *fiber.Ctx) error {
+	email := ctx.Query("email")
+	if email == "" {
+		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error": utils.ErrInvalidParameter.Error(),
+		})
+	}
+
+	available, err := ac.authService.CheckIfEmailIsAvailable(email)
+	if err != nil {
 		return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"error": utils.ErrUnexpectedError.Error(),
 		})
 	}
 
 	return ctx.Status(fiber.StatusOK).JSON(fiber.Map{
-		"message": "Successfully logged out",
+		"available": available,
 	})
+}
+
+func (ac *authController) SignInWithGoogle(ctx *fiber.Ctx) error {
+	var signInBody body.GoogleSignInBody
+
+	err := ctx.BodyParser(&signInBody)
+	if err != nil {
+		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error": utils.ErrInvalidRequestBody.Error(),
+		})
+	}
+
+	signResponse, signInData, err := ac.authService.SignInWithGoogle(&signInBody)
+	if err != nil {
+		return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error": utils.ErrUnexpectedError.Error(),
+		})
+	}
+	
+	helpers.CreateSignCookies(ctx, signResponse, signInBody.KeepSignedIn)
+
+	return ctx.Status(fiber.StatusOK).JSON(signInData)
+}
+
+func (ac *authController) SignUpWithGoogle(ctx *fiber.Ctx) error {
+	var signUpBody body.GoogleSignUpBody
+
+	err := ctx.BodyParser(&signUpBody)
+	if err != nil {
+		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error": utils.ErrInvalidRequestBody.Error(),
+		})
+	}
+
+	signResponse, signInData, err := ac.authService.SignUpWithGoogle(&signUpBody)
+	if err != nil {
+		log.Println("err", err)
+		return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error": utils.ErrUnexpectedError.Error(),
+		})
+	}
+	
+	helpers.CreateSignCookies(ctx, signResponse, signUpBody.KeepSignedIn)
+	
+	return ctx.Status(fiber.StatusOK).JSON(signInData)
 }

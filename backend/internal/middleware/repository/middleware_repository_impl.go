@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"log"
 	"ofm_backend/internal/middleware/model"
 	"ofm_backend/internal/middleware/queries"
 
@@ -33,6 +34,7 @@ func (mr *middlewareRepository) GetUserSignInDataByUsername(
 	var userSignInData model.UserSignInData
 	err := mr.db.Get(&userSignInData, queries.GetUserSignInDataByUsernameQuery, username)
 	if err != nil {
+		log.Println("err middleware", username, err)
 		return nil, err
 	}
 

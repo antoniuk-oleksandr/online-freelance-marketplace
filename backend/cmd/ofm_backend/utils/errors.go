@@ -11,6 +11,9 @@ var (
 	ErrTooManyRequests    = errors.New("Too many requests")
 	ErrParsingError       = errors.New("Parsing error")
 	ErrInvalidPathParam   = errors.New("Invalid path parameter")
+	ErrInvalidToken       = errors.New("Invalid token")
+	ErrExpiredToken       = errors.New("Token has expired")
+	ErrInvalidParameter   = errors.New("Invalid parameter")
 
 	// Auth
 	ErrTempTokenExpired     = errors.New("Temporary token has expired")
@@ -21,6 +24,7 @@ var (
 	ErrEmailDoesNotExist    = errors.New("Email does not exist")
 	ErrUsernameDoesNotExist = errors.New("Username does not exist")
 	ErrBlacklistedToken     = errors.New("Token is blacklisted")
+	ErrUnauthorized         = errors.New("Unauthorized")
 
 	// User
 	ErrUserNotFound = errors.New("User not found")
@@ -46,6 +50,9 @@ var (
 
 	// File Errors
 	ErrFailedFileUploadRequest = errors.New("Failed to upload file")
+
+	//My Profile Errors
+	ErrNoDataFound = errors.New("No data found")
 )
 
 type ErrorResponse struct {

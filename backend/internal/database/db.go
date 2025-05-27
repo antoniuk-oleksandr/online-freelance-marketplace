@@ -16,8 +16,9 @@ func ConnectToPostgresDB() *sqlx.DB {
 	dbPassword := os.Getenv("DB_PASSWORD")
 	dbPort := os.Getenv("DB_PORT")
 	dbHost := os.Getenv("DB_HOST")
+	dbSSLMode := os.Getenv("DB_SSL_MODE")
 
-	connectionString := fmt.Sprintf("postgres://%s:%s@%s:%s/%s?sslmode=disable", dbUser, dbPassword, dbHost, dbPort, dbName)
+	connectionString := fmt.Sprintf("postgres://%s:%s@%s:%s/%s?sslmode=%s", dbUser, dbPassword, dbHost, dbPort, dbName, dbSSLMode)
 
 	var err error
 	db, err = sqlx.Connect("postgres", connectionString)

@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"log"
 	"ofm_backend/cmd/ofm_backend/api/my_profile/dto"
 	"ofm_backend/cmd/ofm_backend/api/my_profile/helpers"
 	"ofm_backend/cmd/ofm_backend/api/my_profile/model"
@@ -78,4 +79,19 @@ func (mpr *myProfileRepository) GetMyProfileRequests(
 		RequestTableData: *data,
 		TotalPages:       totalPages,
 	}, nil
+}
+
+func (mpr *myProfileRepository) GetMyProfileChatByOrderId(orderId int) (*model.OrderChat, error) {
+	rows, err := mpr.db.Queryx(queries.GetMyProfileChatByOrderIdQuery, orderId)
+	if err != nil {
+		return nil, err
+	}
+	
+	orderChat, err := helpers.ParseMyProfileChatByOrderIdFromRows(rows)
+	if err != nil {
+		log.Println("errx", err)
+		return nil, err
+	}
+	
+	return orderChat, nil
 }

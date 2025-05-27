@@ -14,3 +14,7 @@ func DecodeString(encodedText string) (string, error) {
 	
 	return string(decodedBytes), nil
 }
+
+func ConvertToBase64(data []byte) string {
+	return b64.StdEncoding.EncodeToString(data)
+}

@@ -6,4 +6,5 @@ type MyProfileController interface {
 	GetMyProfileOrders(ctx *fiber.Ctx) error
 	GetMyProfileServices(ctx *fiber.Ctx) error
 	GetMyProfileRequests(ctx *fiber.Ctx) error
+	GetMyProfileOrderChat(ctx *fiber.Ctx) error
 }

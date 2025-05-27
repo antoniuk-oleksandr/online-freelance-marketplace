@@ -1,7 +1,6 @@
 package repository
 
 import (
-	"log"
 	"ofm_backend/cmd/ofm_backend/api/file/model"
 	"ofm_backend/cmd/ofm_backend/api/file/queries"
 
@@ -23,7 +22,6 @@ func (fileRepository *fileRepository) AddFiles(
 ) ([]int, error) {
 	rows, err := fileRepository.db.NamedQuery(queries.AddFilesQuery, fileData)
 	if err != nil {
-		log.Println("error in AddFiles", err)
 		return nil, err
 	}
 	defer rows.Close()

@@ -5,6 +5,7 @@ import (
 	"ofm_backend/cmd/ofm_backend/api/my_profile/helpers"
 	"ofm_backend/cmd/ofm_backend/api/my_profile/service"
 	"ofm_backend/cmd/ofm_backend/utils"
+	"strconv"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -73,4 +74,22 @@ func (mpc *myProfileController) GetMyProfileRequests(ctx *fiber.Ctx) error {
 	}
 
 	return ctx.Status(fiber.StatusOK).JSON(requestsResponse)
+}
+
+func (mpc *myProfileController) GetMyProfileOrderChat(ctx *fiber.Ctx) error {
+	id, err := strconv.Atoi(ctx.Params("orderId"))
+	if err != nil {
+		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error": utils.ErrInvalidPathParam.Error(),
+		})
+	}
+	
+	orderChat, err := mpc.myProfileService.GetMyProfileChatByOrderId(id)
+	if err != nil {
+		return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error": utils.ErrUnexpectedError.Error(),
+		})
+	}
+	
+	return ctx.Status(fiber.StatusOK).JSON(orderChat)
 }

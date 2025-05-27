@@ -7,8 +7,10 @@ type AuthController interface {
 	ForgotPassword(ctx *fiber.Ctx) error
 	SignUp(ctx *fiber.Ctx) error
 	SignIn(ctx *fiber.Ctx) error
-	GoogleAuth(ctx *fiber.Ctx) error
-	RefreshToken(c *fiber.Ctx) error
 	ResetPassword(ctx *fiber.Ctx) error
 	SignOut(ctx *fiber.Ctx) error
+	Session(ctx *fiber.Ctx) error
+	CheckIfEmailIsAvailable(ctx *fiber.Ctx) error
+	SignUpWithGoogle(ctx *fiber.Ctx) error
+	SignInWithGoogle(ctx *fiber.Ctx) error
 }

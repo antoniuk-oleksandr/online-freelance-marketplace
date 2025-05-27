@@ -38,8 +38,7 @@ func AddServerURLToFiles[T any](data T) T {
 func handleSlicePointer[T any](elem reflect.Value) T {
 	newSlice := reflect.MakeSlice(elem.Type(), elem.Len(), elem.Cap())
 
-	for i := 0; i < elem.Len(); i++ {
-
+	for i := range elem.Len() {
 		elemValue := elem.Index(i)
 
 		if !elemValue.CanAddr() {
@@ -64,7 +63,7 @@ func handleSlicePointer[T any](elem reflect.Value) T {
 func handleSlice[T any](val reflect.Value) T {
 	newSlice := reflect.MakeSlice(val.Type(), val.Len(), val.Cap())
 
-	for i := 0; i < val.Len(); i++ {
+	for i := range val.Len() {
 		elemValue := val.Index(i)
 
 		if !elemValue.CanAddr() {
@@ -111,7 +110,7 @@ func handleStruct[T any](elem reflect.Value, data T) T {
 		return data
 	}
 
-	for i := 0; i < elem.NumField(); i++ {
+	for i := range elem.NumField() {
 		field := elem.Field(i)
 
 		if field.CanSet() && field.CanAddr() {
@@ -125,7 +124,13 @@ func handleStruct[T any](elem reflect.Value, data T) T {
 func checkIfStringAFile(stringValue string) bool {
 	toExclude := []string{"react.js"}
 
-	if Contains(toExclude, strings.ToLower(stringValue)) {
+	lowered := strings.ToLower(stringValue)
+
+	if Contains(toExclude, lowered) {
+		return false
+	}
+
+	if strings.Contains(lowered, "@") && strings.Contains(lowered, ".") {
 		return false
 	}
 

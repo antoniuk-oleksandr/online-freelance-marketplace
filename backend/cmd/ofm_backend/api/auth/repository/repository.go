@@ -3,6 +3,8 @@ package repository
 import (
 	"ofm_backend/cmd/ofm_backend/api/auth/body"
 	"ofm_backend/cmd/ofm_backend/api/auth/model"
+
+	"github.com/jmoiron/sqlx"
 )
 
 type AuthRepository interface {
@@ -16,8 +18,13 @@ type AuthRepository interface {
 	GetUserPassword(usernameOrEmail string) (*model.UsernamePassword, error)
 	ChangeUserPasswordPrivateKeyByEmail(encryptedPassword string, encryptedPrivateKey string, email string) error
 	GetUsernameByEmailIfExists(email string) (string, bool, error)
-	AddUserWithGoogleAuth(claims *body.GoogleJwtClaims, avatarID int) error
+	AddUserWithGoogleAuth(googleUserInfo *model.GoogleUserInfo, avatarID int, signUpBody *body.GoogleSignUpBody) (int64, error)
 	AddJWTToBlacklist(token string) error
 	AddMultipleJWTToBlacklist(tokens []model.Token) error
 	GetUserPasswordPrivateKeyByEmail(email string) (string, string, error)
+	GetUserSignInData(usernameOrEmail string) (*model.SignInData, error)
+	GetUserSessionData(userId int64) (*model.UserSessionData, error)
+	CreateTransaction() (*sqlx.Tx, error)
+	CommitTransaction(tx *sqlx.Tx) error
+	RollbackTransaction(tx *sqlx.Tx) error
 }

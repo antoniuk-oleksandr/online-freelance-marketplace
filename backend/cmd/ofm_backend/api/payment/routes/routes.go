@@ -5,12 +5,17 @@ import (
 	"ofm_backend/cmd/ofm_backend/api/payment/repository"
 	"ofm_backend/cmd/ofm_backend/api/payment/service"
 	"ofm_backend/internal/middleware"
-
+	middleware_repo "ofm_backend/internal/middleware/repository"
+	
+	
 	"github.com/gofiber/fiber/v2"
 	"github.com/jmoiron/sqlx"
 )
 
-func RegisterPaymentRoutes(apiGroup fiber.Router, db *sqlx.DB, middleware middleware.Middleware) {
+func RegisterPaymentRoutes(apiGroup fiber.Router, db *sqlx.DB) {
+	middlewareRepository := middleware_repo.NewMiddlewareRepository(db)
+	middleware := middleware.NewMiddleware(middlewareRepository)
+	
 	paymentRepository := repository.NewPaymentRepository(db)
 	paymentService := service.NewPaymentService(paymentRepository)
 	paymentController := controller.NewPaymentController(paymentService)

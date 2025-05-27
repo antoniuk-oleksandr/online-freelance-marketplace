@@ -41,13 +41,15 @@ func (ar *authRepisotory) GetUserTempData(uuid string) (*body.SignUpBody, error)
 	}
 
 	return &body.SignUpBody{
-		Email:      data["email"],
-		FirstName:  data["firstName"],
-		Password:   data["password"],
-		Surname:    data["surname"],
-		Username:   data["username"],
-		PrivateKey: data["privateKey"],
-		PublicKey:  data["publicKey"],
+		Email:          data["email"],
+		FirstName:      data["firstName"],
+		Password:       data["password"],
+		Surname:        data["surname"],
+		Username:       data["username"],
+		PrivateKey:     []byte(data["privateKey"]),
+		PrivateKeyIV:   []byte(data["privateKeyIV"]),
+		PrivateKeySalt: []byte(data["privateKeySalt"]),
+		PublicKey:      []byte(data["publicKey"]),
 	}, nil
 }
 
@@ -92,14 +94,16 @@ func (ar *authRepisotory) CheckIfEmailIsAvailable(email string) (bool, error) {
 func (ar *authRepisotory) AddTempUserData(user *body.SignUpBody, userUUID string) error {
 	pipe := ar.redisDb.Pipeline()
 
-	pipe.HSet(context.Background(), userUUID, map[string]interface{}{
-		"email":      user.Email,
-		"firstName":  user.FirstName,
-		"password":   user.Password,
-		"surname":    user.Surname,
-		"username":   user.Username,
-		"privateKey": user.PrivateKey,
-		"publicKey":  user.PublicKey,
+	pipe.HSet(context.Background(), userUUID, map[string]any{
+		"email":          user.Email,
+		"firstName":      user.FirstName,
+		"password":       user.Password,
+		"surname":        user.Surname,
+		"username":       user.Username,
+		"privateKey":     user.PrivateKey,
+		"publicKey":      user.PublicKey,
+		"privateKeyIV":   user.PrivateKeyIV,
+		"privateKeySalt": user.PrivateKeySalt,
 	})
 
 	pipe.Expire(context.Background(), user.Username, 15*time.Minute)
@@ -130,7 +134,7 @@ func (ar *authRepisotory) ChangeUserPasswordPrivateKeyByEmail(
 	_, err := ar.posgresqlDb.Exec(
 		queries.ChangeUserPasswordPrivateKeyByEmailQuery, encryptedPassword, encryptedPrivateKey, email,
 	)
-	
+
 	return err
 }
 
@@ -147,16 +151,36 @@ func (ar *authRepisotory) GetUsernameByEmailIfExists(email string) (string, bool
 	return username, true, nil
 }
 
-func (ar *authRepisotory) AddUserWithGoogleAuth(claims *body.GoogleJwtClaims, avatarID int) error {
-	_, err := ar.posgresqlDb.Exec(
-		queries.AddUserWithGoogleAuthQuery, claims.Email, claims.Email, "",
-		claims.GivenName, claims.FamilyName, avatarID,
-	)
-	if err != nil {
-		return err
+func (ar *authRepisotory) AddUserWithGoogleAuth(
+	googleUserInfo *model.GoogleUserInfo, avatarID int, signUpBody *body.GoogleSignUpBody,
+) (int64, error) {
+	var userId int64
+	params := map[string]any{
+		"email":            googleUserInfo.Email,
+		"username":         googleUserInfo.Email,
+		"password":         "",
+		"first_name":       googleUserInfo.GivenName,
+		"surname":          googleUserInfo.FamilyName,
+		"avatar_id":        avatarID,
+		"private_key":      signUpBody.PrivateKey,
+		"public_key":       signUpBody.PublicKey,
+		"private_key_iv":   signUpBody.PrivateKeyIV,
+		"private_key_salt": signUpBody.PrivateKeySalt,
+		"master_key":       signUpBody.MasterKey,
 	}
 
-	return err
+	rows, err := ar.posgresqlDb.NamedQuery(queries.AddUserWithGoogleAuthQuery, params)
+	if err != nil {
+		return userId, err
+	}
+
+	if rows.Next() {
+		if err := rows.Scan(&userId); err != nil {
+			return userId, err
+		}
+	}
+
+	return userId, err
 }
 
 func (ar *authRepisotory) AddJWTToBlacklist(token string) error {
@@ -179,4 +203,38 @@ func (ar *authRepisotory) GetUserPasswordPrivateKeyByEmail(email string) (string
 	}
 
 	return password, privateKey, nil
+}
+
+func (ar *authRepisotory) GetUserSignInData(usernameOrEmail string) (*model.SignInData, error) {
+	var signInData model.SignInData
+
+	err := ar.posgresqlDb.Get(&signInData, queries.GetUserSignInDataQuery, usernameOrEmail)
+	if err != nil {
+		return nil, err
+	}
+
+	return &signInData, nil
+}
+
+func (ar *authRepisotory) GetUserSessionData(userId int64) (*model.UserSessionData, error) {
+	var userSessionData model.UserSessionData
+
+	err := ar.posgresqlDb.Get(&userSessionData, queries.GetUserSessionDataQuery, userId)
+	if err != nil {
+		return nil, err
+	}
+
+	return &userSessionData, nil
+}
+
+func (ar *authRepisotory) CreateTransaction() (*sqlx.Tx, error) {
+	return ar.posgresqlDb.Beginx()
+}
+
+func (ar *authRepisotory) CommitTransaction(tx *sqlx.Tx) error {
+	return tx.Commit()
+}
+
+func (ar *authRepisotory) RollbackTransaction(tx *sqlx.Tx) error {
+	return tx.Rollback()
 }
