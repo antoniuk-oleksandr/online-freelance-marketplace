@@ -7,7 +7,7 @@
 
   let keepSignedIn = $state(false)
 
-  const postSignInRequest = async (body: SignInData) => postAuthRequest('sign-in', undefined, body)
+  const postSignInRequest = async (body: SignInData) => postAuthRequest('sign-in', true, body)
 </script>
 
 <Sign

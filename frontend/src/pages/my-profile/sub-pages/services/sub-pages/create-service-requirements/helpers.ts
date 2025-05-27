@@ -35,6 +35,7 @@ export const renderAddQuestionModal = (
 ) => {
   modalStore.set({
     isOpened: true,
+    //@ts-ignore
     renderContent: CreateServiceQuestionModal,
     props: {
       submitAction: (value: string) => addQuestionSubmitAction(value, formDataStore),

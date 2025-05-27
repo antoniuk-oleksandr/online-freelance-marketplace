@@ -1,13 +1,18 @@
 import { request } from "@/api/request"
 import { errorStore } from "@/common-stores/error-store"
+import { setPrivateKey } from "@/common-stores/private-key-store"
 import { themeStore } from "@/common-stores/theme-storage"
 import type { DropdownItem } from "@/types/DropdownItem"
+import type { GetUserSessionRequestResponse } from "@/types/GetUserSessionRequestResponse"
 import type { PostSignOutRequestResponse } from "@/types/PostSignOutRequestResponse"
 import type { SignHeaderData } from "@/types/SignHeaderData"
-import Cookies from "js-cookie"
+import type { UserSessionData } from "@/types/UserSessionData"
+import { decryptWithKey } from "@/utils/aes-utils"
+import { convertBase64ToUint8Array } from "@/utils/base64-utils"
+import { clearIndexedDbItem, getIndexedDbItem } from "@/utils/indexed-db-utils"
 import { navigate } from "svelte-routing"
-import { signDataStore } from "./components/HeaderProfileBlock/sign-data-store"
 import { toastElementStore } from "../ToastElement/store/toast-element-store"
+import { signDataStore } from "./components/HeaderProfileBlock/sign-data-store"
 
 export const getMyProfileDropdownItems = (
   signData: SignHeaderData, darkMode: boolean | null,
@@ -56,42 +61,68 @@ export const getMyProfileDropdownItems = (
   ]
 
 
-export const getUserSession = (): SignHeaderData => {
-  const accessToken = Cookies.get('accessToken')
-  const refreshToken = Cookies.get('refreshToken')
+export const getUserSession = async (): Promise<SignHeaderData> => {
   const avatar = localStorage.getItem('accessTokenAvatar')
   const userId = localStorage.getItem('accessTokenUserId')
 
-  let signedIn = true
-  if (!refreshToken || avatar === undefined || userId === undefined) {
-    Cookies.remove('refreshToken')
-    Cookies.remove('accessToken')
-    localStorage.removeItem('accessTokenAvatar')
-    localStorage.removeItem('accessTokenUserId')
-
-    signedIn = false
+  if (avatar === null || userId === null) {
+    return { avatar: "", userId: "", authenticated: false }
   }
 
-  return { avatar, signedIn, userId, accessToken, refreshToken }
+  const userSessionData = await processSessionRequest();
+  if (!userSessionData.authenticated) {
+    return { avatar: "", userId: "", authenticated: false }
+  }
+
+
+  const bytesMasterKey = convertBase64ToUint8Array(userSessionData.masterKey);
+  const encryptedPrivateKey = await getIndexedDbItem("privateKey");
+  const privateKeyIV = await getIndexedDbItem("privateKeyIV");
+  const privateKeySalt = await getIndexedDbItem("privateKeySalt");
+  const decryptedPrivateKey = await decryptWithKey(
+    encryptedPrivateKey, bytesMasterKey, privateKeyIV, privateKeySalt
+  );
+
+  setPrivateKey(decryptedPrivateKey);
+
+  return { avatar, userId, authenticated: userSessionData.authenticated }
 }
 
 const logoutClickAction = async (signData: SignHeaderData) => {
-  const logoutBody = { accessToken: signData.accessToken, refreshToken: signData.refreshToken }
-  const { data, status } = await request<PostSignOutRequestResponse>("POST", "/auth/sign-out", logoutBody)
+  const { data, status } = await request<PostSignOutRequestResponse>("POST", "/auth/sign-out", undefined, true)
 
   if (status !== 200) {
     errorStore.set({ shown: true, error: data.error })
     return
   }
 
-  signDataStore.update(() => ({ ...signData, signedIn: false }))
-  toastElementStore.update((prev) => ({ ...prev, show: true, message: "You have successfully signed out.", type: "success" }))
-
-  Cookies.remove('refreshToken')
-  Cookies.remove('accessToken')
+  signDataStore.update(() => ({
+    ...signData, authenticated: false, masterKey: "", masterKeyIv: ""
+  }))
+  toastElementStore.update((prev) => ({
+    ...prev, show: true, message: "You have successfully signed out.", type: "success"
+  }))
 
   localStorage.removeItem("accessTokenAvatar");
   localStorage.removeItem("accessTokenUsername");
   localStorage.removeItem("accessTokenUserId");
+
+  await clearIndexedDbItem("privateKey")
+  await clearIndexedDbItem("privateKeyIV")
+  await clearIndexedDbItem("privateKeySalt")
+  setPrivateKey(new Uint8Array(0))
   navigate('/')
+}
+
+const processSessionRequest = async (): Promise<UserSessionData> => {
+  try {
+    const response = await request<GetUserSessionRequestResponse>("GET", "/auth/session", undefined, true)
+    if (response.status === 200) return response.data
+  }
+  catch (error) { }
+
+  return {
+    authenticated: false,
+    masterKey: "",
+  }
 }

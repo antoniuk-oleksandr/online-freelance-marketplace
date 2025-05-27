@@ -22,6 +22,7 @@ export const handleAddLanguagesSkillsButtonClick = (
   modalStore.set({
     title: "Add a " + type.slice(0, -1),
     isOpened: true,
+    //@ts-ignore
     renderContent: myProfileEditPageLanguagesSkillsModal,
     props: {
       type,

@@ -2,6 +2,7 @@
   import Button from '@/common-components/Button/Button.svelte'
   import { modalStore } from '@/common-stores/modal-store'
   import Icon from '@iconify/svelte'
+  //@ts-ignore
   import { OrderByIdChatTabAttachModelContent } from '../OrderByIdChatTabAttachModelContent/OrderByIdChatTabAttachModelContent.svelte'
 
   const openAttachModal = () => {

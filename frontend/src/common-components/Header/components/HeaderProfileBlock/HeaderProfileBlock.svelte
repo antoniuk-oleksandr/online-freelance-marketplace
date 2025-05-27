@@ -1,10 +1,10 @@
 <script lang="ts">
+  import { themeStore } from '@/common-stores/theme-storage'
+  import type { SignHeaderData } from '@/types/SignHeaderData'
   import { onMount } from 'svelte'
+  import { getUserSession } from '../../helpers'
   import HeaderProfileBlockSignedInBlock from './components/HeaderProfileBlockSignedInBlock/HeaderProfileBlockSignedInBlock.svelte'
   import HeaderProfileBlockUnsignedBlock from './components/HeaderProfileBlockUnsignedBlock/HeaderProfileBlockUnsignedBlock.svelte'
-  import type { SignHeaderData } from '@/types/SignHeaderData'
-  import { getUserSession } from '../../helpers'
-  import { themeStore } from '@/common-stores/theme-storage'
   import { signDataStore } from './sign-data-store'
 
   let signData = $state<SignHeaderData | undefined>()
@@ -12,14 +12,12 @@
 
   let darkMode = $state<boolean | null>(null)
   themeStore.subscribe((value) => (darkMode = value))
-
-  onMount(() => signDataStore.set(getUserSession()))
 </script>
 
 {#if signData}
-  {#if signData.signedIn}
+  {#if signData.authenticated}
     <HeaderProfileBlockSignedInBlock {darkMode} {signData} />
   {:else}
-    <HeaderProfileBlockUnsignedBlock {darkMode}/>
+    <HeaderProfileBlockUnsignedBlock {darkMode} />
   {/if}
 {/if}

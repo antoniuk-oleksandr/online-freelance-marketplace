@@ -2,16 +2,17 @@ import type { Category } from "@/types/Category";
 import { SvelteURLSearchParams } from "svelte/reactivity";
 
 export const getHost = () => {
-    return 'http://localhost:8080';
+    return window.env.VITE_BACKEND_HOST    
+    // return 'http://localhost:8080';
 }
 
 export const getWSHost = () => {
-    return 'ws://localhost:8080';
+    return window.env.VITE_WEBSOCKET_HOST
 }
 
 export const getFileServerHost = () => {
-    // return 'https://online-freelance-marketplace.s3.eu-north-1.amazonaws.com';
-    return 'http://localhost:8030/files';
+    return window.env.VITE_FILE_SERVER_HOST
+    // return 'http://localhost:8030/files';
 }
 
 export const getHoverClass = () => {
@@ -89,7 +90,7 @@ export const round = (value: number, precision: number) => {
 
 
 export const getServiceFees = () => {
-    return parseFloat(import.meta.env.VITE_SERVICE_FEES as string);
+    return parseFloat(window.env.VITE_SERVICE_FEES as string);
 }
 
 export const calcPriceWithServiceFees = (value: number) => {

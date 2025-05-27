@@ -1,7 +1,5 @@
 export type SignHeaderData = {
   avatar: string | null,
-  signedIn: boolean,
+  authenticated: boolean,
   userId: string | null,
-  accessToken?: string ,
-  refreshToken?: string ,
 }

@@ -19,6 +19,7 @@
 
 <!-- svelte-ignore element_invalid_self_closing_tag -->
 <textarea
+  name="message"
   bind:value
   maxlength="2000"
   bind:this={textarea}

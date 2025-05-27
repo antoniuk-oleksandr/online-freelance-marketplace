@@ -8,4 +8,4 @@
     const {title, size}: UserByIdServiceTitleProps = $props();
 </script>
 
-<p class="font-semibold mb-2 line-clamp-2 {size === 'small' ? 'text-base' : 'text-lg'} h-14">{title}</p>
+<p class="font-semibold mb-2 line-clamp-2 {size === 'small' ? 'text-base' : 'text-lg'} h-12">{title}</p>

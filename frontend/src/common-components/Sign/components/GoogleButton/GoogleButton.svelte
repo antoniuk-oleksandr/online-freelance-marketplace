@@ -10,7 +10,7 @@
 
   const { googleButtonText, keepSignedIn }: GoogleButtonProps = $props()
 
-  const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID
+  const clientId = window.env.VITE_GOOGLE_CLIENT_ID
 
   let loading = $state(false)
   const setLoading = (value: boolean) => (loading = value)
@@ -27,6 +27,7 @@
   >
     {#if loading}
       <Spinner
+        useDelay={false}
         size="size-8"
         color="border-l-light-palette-text-primary dark:border-l-dark-palette-text-primary"
       />

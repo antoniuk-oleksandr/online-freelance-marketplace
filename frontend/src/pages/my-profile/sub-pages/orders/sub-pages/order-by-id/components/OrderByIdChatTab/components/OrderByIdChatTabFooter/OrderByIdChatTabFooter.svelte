@@ -3,14 +3,15 @@
   import OrderByIdChatTabFooterLayout from './OrderByIdChatTabFooterLayout.svelte'
   import OrderByIdChatTabTextArea from '../OrderByIdChatTabTextArea/OrderByIdChatTabTextArea.svelte'
   import OrderByIdChatTabSendButton from '../OrderByIdChatTabSendButton/OrderByIdChatTabSendButton.svelte'
-    import OrderByIdChatTabAttachButton from '../OrderByIdChatTabAttachButton/OrderByIdChatTabAttachButton.svelte'
+  import OrderByIdChatTabAttachButton from '../OrderByIdChatTabAttachButton/OrderByIdChatTabAttachButton.svelte'
+  import OrderByIdChatForm from '../OrderByIdChatForm/OrderByIdChatForm.svelte'
 </script>
 
 <OrderByIdChatTabFooterLayout>
   <DividerElement />
-  <div class="flex gap-3 items-center py-3">
-    <OrderByIdChatTabAttachButton/>
+  <OrderByIdChatForm>
+    <OrderByIdChatTabAttachButton />
     <OrderByIdChatTabTextArea />
     <OrderByIdChatTabSendButton />
-  </div>
+  </OrderByIdChatForm>
 </OrderByIdChatTabFooterLayout>

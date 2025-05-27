@@ -1,36 +1,74 @@
-import type { AccessToken } from "@/types/AccessToken";
-import Cookies from "js-cookie";
-import { jwtDecode } from "jwt-decode";
+import { request } from "@/api/request";
+import { errorStore } from "@/common-stores/error-store";
+import type { GetEmailAvailabilityRequestResponse } from "@/types/GetEmailAvailabilityRequestResponse";
+import { ResponseErrorEnum } from "@/types/ResponseErrorEnum";
+import type { SignInData } from "@/types/SignInData";
+import type { SignInEncryptionData } from "@/types/SignInEncryptionData";
+import { generateAESIV, encryptWithKey } from "@/utils/aes-utils";
+import { convertBase64ToUint8Array } from "@/utils/base64-utils";
+import { generateECDHKeyPair } from "@/utils/ecdh-utils";
+import axios from "axios";
 
-const decodeAccessToken = (token: string) => {
-  const decoded = jwtDecode<AccessToken>(token);
-  
-  localStorage.setItem("accessTokenAvatar", decoded.avatar);
-  localStorage.setItem("accessTokenUsername", decoded.username);
-  localStorage.setItem("accessTokenUserId", decoded.userId);
-  return decoded;
-};
+export const parseSignInBackendResponse = (
+  response: SignInData,
+): SignInEncryptionData => {
+  return {
+    privateKey: convertBase64ToUint8Array(response.privateKey),
+    privateKeyIV: convertBase64ToUint8Array(response.privateKeyIV),
+    privateKeySalt: convertBase64ToUint8Array(response.privateKeySalt),
+    masterKey: convertBase64ToUint8Array(response.masterKey)
+  }
+}
 
-const getTokenExpiration = (token: string): Date | undefined => {
-  const decoded = jwtDecode<{ exp: number }>(token);
-  return decoded.exp ? new Date(decoded.exp * 1000) : undefined;
-};
-
-export const setTokenCookies = (data: { accessToken: string; refreshToken: string }, keepSignedIn: boolean) => {
-  decodeAccessToken(data.accessToken);
-
-  let options: ({ expires: Date } | undefined)[] = [undefined, undefined];
-
-
-  if (keepSignedIn) {
-    const accessTokenExpiration = getTokenExpiration(data.accessToken);
-    const refreshTokenExpiration = getTokenExpiration(data.refreshToken);
-
-    if (accessTokenExpiration && refreshTokenExpiration) {
-      options = [{ expires: accessTokenExpiration }, { expires: refreshTokenExpiration }];
+export const makeRequestToCheckIfUserExists = async (
+  email: string,
+): Promise<{ available: boolean; error: boolean; }> => {
+  const url = `/auth/email-availability?email=${email}`
+  const response = await request<GetEmailAvailabilityRequestResponse>("GET", url);
+  if (response.status === 200) {
+    return {
+      ...response.data,
+      error: false
+    };
+  } else {
+    errorStore.set({ shown: true, error: response.data.error })
+    return {
+      available: false,
+      error: true
     }
   }
+}
 
-  Cookies.set("accessToken", data.accessToken, options[0]);
-  Cookies.set("refreshToken", data.refreshToken, options[1]);
-};
+export const makeRequestToGetGoogleUserInfo = async (accessToken: string) => {
+  const url = 'https://www.googleapis.com/oauth2/v3/userinfo'
+
+  try {
+    const response = await axios.get(url, {
+      headers: { Authorization: `Bearer ${accessToken}` }
+    });
+
+    if (response.status === 200) return response.data;
+    else errorStore.set({ shown: true, error: ResponseErrorEnum.UnexpectedError });
+    return null;
+  }
+  catch (error) {
+    errorStore.set({ shown: true, error: ResponseErrorEnum.UnexpectedError });
+    return null;
+  }
+}
+
+export const encryptUserCredentials = async (body: any, key: string | Uint8Array) => {
+  const keys = await generateECDHKeyPair()
+
+  const privateKeyIV = generateAESIV();
+  const privateKeySalt = generateAESIV();
+  const encryptedKey = await encryptWithKey(keys.privateKey, key, privateKeyIV, privateKeySalt);
+
+  return {
+    ...body,
+    privateKeyIV: Array.from(privateKeyIV),
+    privateKeySalt: Array.from(privateKeySalt),
+    privateKey: Array.from(encryptedKey),
+    publicKey: Array.from(keys.publicKey),
+  }
+}

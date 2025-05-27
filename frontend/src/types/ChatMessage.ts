@@ -6,6 +6,6 @@ export type ChatMessage = {
   senderId: number,
   content: string,
   sentAt: number,
-  files: ChatFile[],
   type: ChatMessageType,
+  files?: ChatFile[],
 }

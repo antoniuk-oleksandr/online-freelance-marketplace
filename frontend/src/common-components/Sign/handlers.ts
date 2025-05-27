@@ -1,9 +1,17 @@
-import { postAuthRequest } from "@/api/post-auth-request";
+import { request } from "@/api/request";
 import { toastElementStore } from "@/common-components/ToastElement/store/toast-element-store";
+import { errorStore } from "@/common-stores/error-store";
+import { setPrivateKey } from "@/common-stores/private-key-store";
+import type { GoogleUserInfo } from "@/types/GoogleUserInfo";
+import type { SignInRequestResponse } from "@/types/SignInRequestResponse";
 import { ResponseErrorEnum } from "@/types/ResponseErrorEnum";
 import { ResponseMessageEnum } from "@/types/ResponseMessageEnum";
+import type { SignInData } from "@/types/SignInData";
+import { decryptWithKey, encryptWithKey, generateAESIV, generateAESSalt } from "@/utils/aes-utils";
+import { setIndexedDbItem } from "@/utils/indexed-db-utils";
 import { navigate } from "svelte-routing";
-import { setTokenCookies } from "./helpers";
+import { signDataStore } from "../Header/components/HeaderProfileBlock/sign-data-store";
+import { encryptUserCredentials, makeRequestToCheckIfUserExists, makeRequestToGetGoogleUserInfo, parseSignInBackendResponse } from "./helpers";
 
 const showToast = (message: string, type: "success" | "error") => {
     toastElementStore.set({
@@ -42,18 +50,47 @@ const handleSignErrors = (data: any, setErrors: any, setFields: any) => {
 };
 
 
-const handleSuccessSign = (
-    backendResponse: any,
+const handleSuccessSign = async (
+    response: SignInData,
     formData: any,
     setShowEmailSentMessage: any,
 ) => {
-    if (backendResponse.message === ResponseMessageEnum.EmailSentSuccessfully) {
+    //@ts-ignore
+    if (response.message === ResponseMessageEnum.EmailSentSuccessfully) {
         setShowEmailSentMessage && setShowEmailSentMessage(true);
-    } else if (backendResponse.accessToken && backendResponse.refreshToken) {
-        setTokenCookies(backendResponse, formData.keepSignedIn);
-        navigate("/");
-        showToast("You have successfully signed in.", "success");
+        return;
     }
+
+    localStorage.setItem("accessTokenAvatar", response.avatar);
+    localStorage.setItem("accessTokenUserId", response.id);
+
+    const encryptionData = parseSignInBackendResponse(response);
+
+    const decryptedPrivateKey = await decryptWithKey(
+        encryptionData.privateKey, formData.password,
+        encryptionData.privateKeyIV, encryptionData.privateKeySalt
+    );
+
+    setPrivateKey(decryptedPrivateKey)
+
+    const privateKeyIV = generateAESIV();
+    const privateKeySalt = generateAESSalt();
+    const encryptedPrivateKey = await encryptWithKey(
+        decryptedPrivateKey, encryptionData.masterKey, privateKeyIV, privateKeySalt
+    );
+
+    await setIndexedDbItem('privateKey', encryptedPrivateKey);
+    await setIndexedDbItem('privateKeyIV', privateKeyIV);
+    await setIndexedDbItem('privateKeySalt', privateKeySalt);
+
+    signDataStore.set({
+        avatar: response.avatar,
+        userId: response.id,
+        authenticated: true,
+    })
+
+    navigate("/");
+    showToast("You have successfully signed in.", "success");
 };
 
 export const handleSignSubmit = async (
@@ -70,7 +107,7 @@ export const handleSignSubmit = async (
     const { data: responseBackend, status } = await submitAction(formData);
 
     if (status === 200) {
-        handleSuccessSign(responseBackend, formData, setShowEmailSentMessage);
+        await handleSuccessSign(responseBackend, formData, setShowEmailSentMessage);
     } else {
         handleSignErrors(responseBackend, setErrors, setFields);
     }
@@ -79,28 +116,54 @@ export const handleSignSubmit = async (
 };
 
 
-export const handleGoogleAuth = async (code: string, keepSignedIn?: boolean) => {
-    const { status, data: backendResponse } = await postAuthRequest("google", undefined, { code });
+export const handleGoogleAuth = async (
+    userInfo: GoogleUserInfo, keepSignedIn?: boolean, accessToken?: string
+) => {
+    const { available, error } = await makeRequestToCheckIfUserExists(userInfo.email)
+    if (error) return;
 
-    if (status === 200) {
-        handleSuccessSign(backendResponse, { keepSignedIn }, false);
+    let response = {} as SignInRequestResponse
+    if (available) {
+        //sign up
+        const body = await encryptUserCredentials({ keepSignedIn, accessToken }, userInfo.sub);
+        response = await request<SignInRequestResponse>("PUT", "/auth/google", body, true)
+
+    } else {
+        //sign in
+        response = await request<SignInRequestResponse>(
+            "POST", "/auth/google", { keepSignedIn, accessToken }, true
+        );
     }
+    if (response.status !== 200) errorStore.set({ shown: true, error: response.data.error })
+    else await handleSuccessSign(response.data, { keepSignedIn, password: userInfo.sub }, false);
 }
 
+//here it starts
 export const handleGoogleButtonClick = async (
     setLoading: (loading: boolean) => void,
     clientId: string,
     keepSignedIn?: boolean
 ) => {
     setLoading(true);
-    google.accounts.oauth2.initCodeClient({
+    google.accounts.oauth2.initTokenClient({
         client_id: clientId,
-        scope: "email profile",
-        ux_mode: "popup",
-        callback: async (googleResponse) => {
-            await handleGoogleAuth(googleResponse.code, keepSignedIn);
-            setLoading(false);
+        scope: 'openid',
+        ux_mode: 'redirect',
+        callback: async (response) => {
+            try {
+                const userInfo = await makeRequestToGetGoogleUserInfo(response.access_token);
+                await handleGoogleAuth(userInfo, keepSignedIn, response.access_token);
+            } catch (error) {
+                console.error('Error processing Google auth:', error);
+            } finally {
+                setLoading(false);
+            }
         },
-        error_callback: () => setLoading(false)
-    }).requestCode();
+        error_callback: (error) => {
+            console.error('Google OAuth error:', error);
+            setLoading(false);
+        }
+    }).requestAccessToken();
 };
+
+

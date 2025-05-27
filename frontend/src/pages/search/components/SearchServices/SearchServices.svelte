@@ -4,6 +4,7 @@
     import SearchServicesLayout from "@/pages/search/components/SearchServices/SearchServicesLayout.svelte";
     import SearchServicesNotFound from "@/pages/search/components/SearchServicesNotFound/SearchServicesNotFound.svelte";
     import type {SearchCursorStore} from "@/types/SearchCursorStore.ts";
+    //@ts-ignore
     import {searchCursorStore} from "@/pages/search/stores/search-cursor-store.ts";
 
     let searchCursorData = $state<SearchCursorStore | undefined>();

@@ -22,7 +22,7 @@
         total: 0,
     });
 
-    const serviceFees = parseFloat(import.meta.env.VITE_SERVICE_FEES as string);
+    const serviceFees = parseFloat(window.env.VITE_SERVICE_FEES as string);
 
     $effect(() => {
         pkgData = {

@@ -1,34 +1,43 @@
 <script>
-  import { Router, Route } from 'svelte-routing'
-  import UserPage from './pages/users/UserPage.svelte'
-  import Home from './pages/home/HomePage.svelte'
-  import ServicePage from '@/pages/services/ServicePage.svelte'
   import AppLayout from '@/AppLayout.svelte'
-  import SignInPage from '@/pages/sign-in/SignInPage.svelte'
   import NotFound from '@/common-components/NotFound/NotFound.svelte'
-  import SignUpPage from '@/pages/sign-up/SignUpPage.svelte'
   import ConfirmEmailPage from '@/pages/confirm-email/ConfirmEmailPage.svelte'
   import ForgotPasswordPage from '@/pages/forgot-password/ForgotPasswordPage.svelte'
-  import ResetPasswordPage from '@/pages/reset-password/ResetPasswordPage.svelte'
-  import OrderRequestPage from '@/pages/order-request/OrderRequestPage.svelte'
-  import SearchPage from '@/pages/search/SearchPage.svelte'
   import OrderConfirmPayPage from '@/pages/order-confirm-pay/OrderConfirmPayPage.svelte'
+  import OrderRequestPage from '@/pages/order-request/OrderRequestPage.svelte'
   import OrderSubmitRequirementsPage from '@/pages/order-submit-requirements/OrderSubmitRequirementsPage.svelte'
-  import { onDestroy } from 'svelte'
+  import ResetPasswordPage from '@/pages/reset-password/ResetPasswordPage.svelte'
+  import SearchPage from '@/pages/search/SearchPage.svelte'
+  import ServicePage from '@/pages/services/ServicePage.svelte'
+  import SignInPage from '@/pages/sign-in/SignInPage.svelte'
+  import SignUpPage from '@/pages/sign-up/SignUpPage.svelte'
+  import { onDestroy, onMount } from 'svelte'
+  import { Route, Router } from 'svelte-routing'
   import { connectToWebsocket } from './api/websocket'
   import { signDataStore } from './common-components/Header/components/HeaderProfileBlock/sign-data-store'
+  import Home from './pages/home/HomePage.svelte'
+  import MyProfileEditPage from './pages/my-profile/sub-pages/edit/MyProfileEditPage.svelte'
   import MyProfileOrdersPage from './pages/my-profile/sub-pages/orders/MyProfileOrdersPage.svelte'
   import MyProfileOrderByIdPage from './pages/my-profile/sub-pages/orders/sub-pages/order-by-id/MyProfileOrderByIdPage.svelte'
   import MyProfileRequestsPage from './pages/my-profile/sub-pages/requests/MyProfileRequestsPage.svelte'
   import MyProfileServicesPage from './pages/my-profile/sub-pages/services/MyProfileServicesPage.svelte'
+  import CreateServiceBasicInfoPage from './pages/my-profile/sub-pages/services/sub-pages/create-service-basic-info/CreateServiceBasicInfoPage.svelte'
   import CreateServiceMediaPage from './pages/my-profile/sub-pages/services/sub-pages/create-service-media/CreateServiceMediaPage.svelte'
   import CreateServicePackagesPage from './pages/my-profile/sub-pages/services/sub-pages/create-service-packages/CreateServicePackagesPage.svelte'
-  import CreateServiceBasicInfoPage from './pages/my-profile/sub-pages/services/sub-pages/create-service-basic-info/CreateServiceBasicInfoPage.svelte'
   import CreateServiceRequirementsPage from './pages/my-profile/sub-pages/services/sub-pages/create-service-requirements/CreateServiceRequirementsPage.svelte'
-  import MyProfileEditPage from './pages/my-profile/sub-pages/edit/MyProfileEditPage.svelte'
+  import UserPage from './pages/users/UserPage.svelte'
+  import { openIndexedDb } from './utils/indexed-db-utils'
+    import { getUserSession } from './common-components/Header/helpers'
 
   const unsubscribe = signDataStore.subscribe((value) => {
-    if (value && value.signedIn) connectToWebsocket()
+    if (value && value.authenticated) connectToWebsocket()
+  })
+
+  onMount(() => {
+    openIndexedDb()
+    getUserSession().then((resp) => {
+      signDataStore.set(resp)
+    })
   })
 
   onDestroy(() => unsubscribe())

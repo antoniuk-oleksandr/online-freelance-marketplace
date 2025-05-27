@@ -2,6 +2,7 @@ import { errorStore } from "@/common-stores/error-store"
 import type { ChatMessage } from "@/types/ChatMessage"
 import { ChatMessageType } from "@/types/ChatMessageType"
 import type { MyProfileChatRequestResponse } from "@/types/MyProfileChatRequestResponse"
+import { z } from "zod"
 
 export const calcChatTextAreaRows = (
   textarea: HTMLTextAreaElement | null,
@@ -148,9 +149,9 @@ export const makeMyProfileChatRequest = async (orderId: string): Promise<MyProfi
       messages: [
         {
           id: 1,
-          senderId: 66, 
+          senderId: 66,
           content: "Hi name, I’d like to order a logo design for my new business. Are you available?",
-          sentAt: new Date(Date.UTC(2025, 2, 1, 10, 0, 0)).getTime(), 
+          sentAt: new Date(Date.UTC(2025, 2, 1, 10, 0, 0)).getTime(),
           files: [],
           type: ChatMessageType.Read,
         },
@@ -174,7 +175,7 @@ export const makeMyProfileChatRequest = async (orderId: string): Promise<MyProfi
           id: 4,
           senderId: 1,
           content: "Great! I’ll get started on a few initial concepts. You’ll have the first draft by Friday. Let me know if you have any references or logos you like.",
-          sentAt: new Date(Date.UTC(2025, 2, 1, 10, 20, 0)).getTime(), 
+          sentAt: new Date(Date.UTC(2025, 2, 1, 10, 20, 0)).getTime(),
           files: [],
           type: ChatMessageType.Read,
         },
@@ -182,9 +183,9 @@ export const makeMyProfileChatRequest = async (orderId: string): Promise<MyProfi
           id: 5,
           senderId: 66,
           content: "Sounds good. I’ll send over a couple of samples I like. Looking forward to seeing your ideas!",
-          sentAt: new Date(Date.UTC(2025, 2, 1, 10, 30, 0)).getTime(), 
+          sentAt: new Date(Date.UTC(2025, 2, 1, 10, 30, 0)).getTime(),
           files: [],
-          type: ChatMessageType.Read,
+          type: ChatMessageType.Sent,
         },
       ],
     },
@@ -199,3 +200,6 @@ export const makeMyProfileChatRequest = async (orderId: string): Promise<MyProfi
 }
 
 
+export const chatFormSchema = z.object({
+  message: z.string().min(1, { message: "Message is required" }),
+})

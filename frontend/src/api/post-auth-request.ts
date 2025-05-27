@@ -4,20 +4,17 @@ import { PostAuthRequestResponse } from "@/types/PostAuthRequestResponse";
 
 export const postAuthRequest = async (
     endpoint: string,
-    token?: string,
+    token?: boolean | string,
     body?: any,
 ): Promise<PostAuthRequestResponse> => {
     const host = getHost();
     const url = `${host}/api/v1/auth/${endpoint}`;
 
-    const config = token !== undefined ? {
-        headers: {
-            Authorization: `Bearer ${token}`
-        }
-    } : undefined;
-
     try {
-        const response = await axios.post(url, body, config);
+        const headers = getRequestHeaders(token);
+        const response = await axios.post(url, body, {
+            withCredentials: token === true, headers
+        });
 
         return {
             data: response.data,
@@ -29,4 +26,11 @@ export const postAuthRequest = async (
             status: (e as any).status,
         }
     }
+}
+
+const getRequestHeaders = (token?: boolean | string) => {
+    if (typeof token === 'string') {
+        return { Authorization: `Bearer ${token}` }
+    }
+    return {}
 }

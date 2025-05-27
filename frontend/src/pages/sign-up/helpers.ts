@@ -2,7 +2,8 @@ import { z } from 'zod';
 import { SignUpData } from "@/types/SignData";
 import { generateECDHKeyPair } from '@/utils/ecdh-utils';
 import { postAuthRequest } from '@/api/post-auth-request';
-import Cookies from 'js-cookie';
+import { encryptWithKey, generateAESIV } from '@/utils/aes-utils';
+import { encryptUserCredentials } from '@/common-components/Sign/helpers';
 
 export const signUpSchema = z.object({
     username: z.string()
@@ -22,8 +23,6 @@ export const signUpSchema = z.object({
         .regex(/[A-Z]/, { message: "Password must contain at least one uppercase letter." })
         .regex(/[0-9]/, { message: "Password must contain at least one digit." })
         .regex(/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/, { message: "Password must contain at least one special character." }),
-    privateKey: z.string(),
-    publicKey: z.string(),
 })
 
 export const initialSignUpData: SignUpData = {
@@ -32,14 +31,14 @@ export const initialSignUpData: SignUpData = {
     surname: "",
     password: "",
     email: "",
-    privateKey: "",
-    publicKey: "",
+    privateKey: new Uint8Array(),
+    publicKey: new Uint8Array(),
+    privateKeyIV: new Uint8Array(),
+    privateKeySalt: new Uint8Array(),
 }
 
 export const postSignUpRequest = async (body: SignUpData) => {
-    const keys = await generateECDHKeyPair()
-    Cookies.set('publicKey', keys.publicKey)
-    Cookies.set('privateKey', keys.privateKey)
-    
-    return postAuthRequest('sign-up', undefined, { ...body, ...keys })
+    const data = await encryptUserCredentials(body, body.password);
+
+    return postAuthRequest('sign-up', true, data)
 }
