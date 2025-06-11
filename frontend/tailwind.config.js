@@ -128,7 +128,12 @@ const config = {
                 22: "5.5rem",
                 10: "2.5rem",
                 19: "4.75rem",
+                18: "4.5rem",
+                21: "5.25rem",
                 15: "3.75rem",
+            },
+            screens: {
+                'xs': '27.5rem',
             },
             width: {
                 100: "25rem",

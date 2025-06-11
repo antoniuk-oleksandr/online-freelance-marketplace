@@ -21,6 +21,7 @@ export enum ResponseErrorEnum {
     ErrTooManyRequests = "Too many requests",
     ErrEncryption = "Encryption error",
     ErrInvalidAccessTokens = "Invalid access tokens",
+    ErrInvalidSharedSecret = "Invalid shared secret",
 }
 
 export type ResponseError = {

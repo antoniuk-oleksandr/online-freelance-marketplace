@@ -1,13 +1,18 @@
 <script lang="ts">
   import Avatar from '@/common-components/Avatar/Avatar.svelte'
   import type { ChatPartner } from '@/types/ChatPartner'
-  import OrderByIdChatTabHeaderLayout from './OrderByIdChatTabHeaderLayout.svelte'
-  import { makeLastOnlineText } from '../../helpers'
   import { Link } from 'svelte-routing'
+  import { makeLastOnlineText } from '../../helpers'
+  import OrderByIdChatTabHeaderLayout from './OrderByIdChatTabHeaderLayout.svelte'
 
   type OrderByIdChatTabHeaderProps = ChatPartner & {}
 
-  const { id, avatar, username, lastOnline }: OrderByIdChatTabHeaderProps = $props()
+  const {
+    partnerId: id,
+    avatar,
+    username,
+    lastSeenAt: lastOnline,
+  }: OrderByIdChatTabHeaderProps = $props()
 </script>
 
 <OrderByIdChatTabHeaderLayout>

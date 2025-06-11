@@ -16,7 +16,7 @@
 
 <OrderByIdChatTabPartnerMessageLayout {renderAvatar}>
   {#if renderAvatar}
-    <Avatar size="extra small" src={chatPartner.avatar} alt="avatar" />
+    <Avatar styles="hidden md:block" size="extra small" src={chatPartner.avatar} alt="avatar" />
   {/if}
   <OrderByIdChatTabMessage wasSentByPartner {message} />
 </OrderByIdChatTabPartnerMessageLayout>

@@ -8,6 +8,6 @@
   const { children, renderAvatar }: OrderByIdChatTabPartnerMessageLayoutProps = $props()
 </script>
 
-<div class="{renderAvatar ? '' : 'ml-15'} flex gap-3">
+<div class="{renderAvatar ? '' : 'md:ml-15'} flex gap-3">
   {@render children()}
 </div>

@@ -1,8 +1,7 @@
+import type { ChatPartnerPublicKeyData } from "./ChatPartnerPublicKeyData"
+import type { UserData } from "./UserData"
+
 export type SignInData = {
-  id: string,
-  avatar: string,
-  privateKey: string,
-  privateKeyIV: string,
-  privateKeySalt: string,
-  masterKey: string,
+  userData: UserData,
+  chatPartners: ChatPartnerPublicKeyData[]
 }

@@ -1,6 +1,6 @@
 export type ChatPartner = {
-  id: number,
+  partnerId: number,
   username: string,
   avatar: string,
-  lastOnline: number,
+  lastSeenAt: number,
 }

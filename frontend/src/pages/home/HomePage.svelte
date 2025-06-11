@@ -19,7 +19,6 @@
   request<GetHomeDataRequestResponse>('GET', '/home-data').then((response) => {
     if (response.status === 200) homeData = response.data
     else {
-      console.log(response)
       errorStore.set({ error: response.data.error, shown: true })
     }
   })

@@ -23,9 +23,10 @@
   bind:value
   maxlength="2000"
   bind:this={textarea}
-  class="w-full bg-transparent px-3 outline-none resize-none"
+  class="py-3 w-full bg-transparent px-3 outline-none resize-none"
   autocomplete="off"
   placeholder="Type a message"
   oninput={calculateRows}
   rows={1}
 />
+

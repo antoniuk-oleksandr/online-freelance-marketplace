@@ -4,19 +4,20 @@ import type { GetEmailAvailabilityRequestResponse } from "@/types/GetEmailAvaila
 import { ResponseErrorEnum } from "@/types/ResponseErrorEnum";
 import type { SignInData } from "@/types/SignInData";
 import type { SignInEncryptionData } from "@/types/SignInEncryptionData";
-import { generateAESIV, encryptWithKey } from "@/utils/aes-utils";
+import type { UserData } from "@/types/UserData";
+import { encryptWithKey, generateAESIV } from "@/utils/aes-utils";
 import { convertBase64ToUint8Array } from "@/utils/base64-utils";
 import { generateECDHKeyPair } from "@/utils/ecdh-utils";
 import axios from "axios";
 
-export const parseSignInBackendResponse = (
-  response: SignInData,
+export const parseSignInUserBackendResponse = (
+  userData: UserData,
 ): SignInEncryptionData => {
   return {
-    privateKey: convertBase64ToUint8Array(response.privateKey),
-    privateKeyIV: convertBase64ToUint8Array(response.privateKeyIV),
-    privateKeySalt: convertBase64ToUint8Array(response.privateKeySalt),
-    masterKey: convertBase64ToUint8Array(response.masterKey)
+    privateKey: convertBase64ToUint8Array(userData.privateKey),
+    privateKeyIV: convertBase64ToUint8Array(userData.privateKeyIV),
+    privateKeySalt: convertBase64ToUint8Array(userData.privateKeySalt),
+    masterKey: convertBase64ToUint8Array(userData.masterKey)
   }
 }
 

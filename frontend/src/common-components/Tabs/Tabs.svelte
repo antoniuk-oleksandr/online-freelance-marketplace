@@ -2,16 +2,23 @@
   import type { TabType } from '@/types/TabType'
   import TabElementList from './components/TabElementList/TabElementList.svelte'
   import TabsLayout from './TabsLayout.svelte'
-    import type { MyProfileOrderByIdData } from '@/types/MyProfileOrderByIdData'
+  import type { MyProfileOrderByIdData } from '@/types/MyProfileOrderByIdData'
 
   type TabsProps = {
     tabs: TabType[]
     initialActiveTabIndex?: number
     tabChangeAction?: (index: number) => void
     tabComponentsData: MyProfileOrderByIdData
+    orderId: number
   }
 
-  const { tabs, initialActiveTabIndex = 0, tabChangeAction, tabComponentsData }: TabsProps = $props()
+  const {
+    tabs,
+    initialActiveTabIndex = 0,
+    tabChangeAction,
+    tabComponentsData,
+    orderId,
+  }: TabsProps = $props()
 
   let activeTabIndex = $state(initialActiveTabIndex)
   const setActiveTabIndex = (index: number) => {
@@ -22,5 +29,5 @@
 
 <TabsLayout>
   <TabElementList {tabs} {activeTabIndex} {setActiveTabIndex} />
-  {@render tabs[activeTabIndex].component(tabComponentsData[activeTabIndex])}
+  {@render tabs[activeTabIndex].component(tabComponentsData[activeTabIndex], orderId)}
 </TabsLayout>

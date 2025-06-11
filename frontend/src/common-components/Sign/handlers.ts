@@ -3,15 +3,17 @@ import { toastElementStore } from "@/common-components/ToastElement/store/toast-
 import { errorStore } from "@/common-stores/error-store";
 import { setPrivateKey } from "@/common-stores/private-key-store";
 import type { GoogleUserInfo } from "@/types/GoogleUserInfo";
-import type { SignInRequestResponse } from "@/types/SignInRequestResponse";
 import { ResponseErrorEnum } from "@/types/ResponseErrorEnum";
 import { ResponseMessageEnum } from "@/types/ResponseMessageEnum";
 import type { SignInData } from "@/types/SignInData";
+import type { SignInRequestResponse } from "@/types/SignInRequestResponse";
 import { decryptWithKey, encryptWithKey, generateAESIV, generateAESSalt } from "@/utils/aes-utils";
 import { setIndexedDbItem } from "@/utils/indexed-db-utils";
 import { navigate } from "svelte-routing";
 import { signDataStore } from "../Header/components/HeaderProfileBlock/sign-data-store";
-import { encryptUserCredentials, makeRequestToCheckIfUserExists, makeRequestToGetGoogleUserInfo, parseSignInBackendResponse } from "./helpers";
+import { encryptUserCredentials, makeRequestToCheckIfUserExists, makeRequestToGetGoogleUserInfo, parseSignInUserBackendResponse } from "./helpers";
+import { processChatPartners, processSharedSecrets } from "../Header/helpers";
+import { setSharedSecrets } from "@/common-stores/shared-secrets-store";
 
 const showToast = (message: string, type: "success" | "error") => {
     toastElementStore.set({
@@ -61,10 +63,10 @@ const handleSuccessSign = async (
         return;
     }
 
-    localStorage.setItem("accessTokenAvatar", response.avatar);
-    localStorage.setItem("accessTokenUserId", response.id);
+    localStorage.setItem("accessTokenAvatar", response.userData.avatar);
+    localStorage.setItem("accessTokenUserId", response.userData.id.toString());
 
-    const encryptionData = parseSignInBackendResponse(response);
+    const encryptionData = parseSignInUserBackendResponse(response.userData);
 
     const decryptedPrivateKey = await decryptWithKey(
         encryptionData.privateKey, formData.password,
@@ -84,10 +86,15 @@ const handleSuccessSign = async (
     await setIndexedDbItem('privateKeySalt', privateKeySalt);
 
     signDataStore.set({
-        avatar: response.avatar,
-        userId: response.id,
+        avatar: response.userData.avatar,
+        userId: response.userData.id.toString(),
         authenticated: true,
     })
+
+
+    const chatPartners = processChatPartners(response.chatPartners);
+    const sharedSecrets = await processSharedSecrets(chatPartners, decryptedPrivateKey);
+    setSharedSecrets(sharedSecrets)
 
     navigate("/");
     showToast("You have successfully signed in.", "success");
@@ -165,5 +172,4 @@ export const handleGoogleButtonClick = async (
         }
     }).requestAccessToken();
 };
-
 

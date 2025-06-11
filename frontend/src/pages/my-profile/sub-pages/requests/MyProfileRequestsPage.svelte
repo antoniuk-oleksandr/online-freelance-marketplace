@@ -65,6 +65,3 @@
     <Loader />
   {/if}
 </PaperElement>
-
-<!-- Add initial selected value(value after page reload)-->
-<!-- Fix "http://localhost:3000/my-profile/requests?page=1&status=2" no select element -->

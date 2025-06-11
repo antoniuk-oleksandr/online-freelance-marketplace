@@ -1,7 +1,7 @@
-import type { Snippet } from "svelte"
+import type { Snippet, SvelteComponent } from "svelte"
 
 export type TabType = {
   title: string,
-  component: Snippet,
+  component: any,
   icon?: string,
 }

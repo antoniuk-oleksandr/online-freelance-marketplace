@@ -11,7 +11,6 @@ export const handleMyProfileEditPageFormSubmit = async (
   initialData: MyProfileEditPageFormData,
 ) => {
   const diff = getMyProfileEditPageDataDifference(data, initialData);
-  console.log("Data difference:", diff);
 }
 
 export const handleAddLanguagesSkillsButtonClick = (

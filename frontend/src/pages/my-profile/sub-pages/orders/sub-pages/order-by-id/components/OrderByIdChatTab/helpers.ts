@@ -1,7 +1,13 @@
+import { request } from "@/api/request"
 import { errorStore } from "@/common-stores/error-store"
+import { getSharedSecret } from "@/common-stores/shared-secrets-store"
 import type { ChatMessage } from "@/types/ChatMessage"
 import { ChatMessageType } from "@/types/ChatMessageType"
+import type { CryptoKeyData } from "@/types/CryptoKeyData"
 import type { MyProfileChatRequestResponse } from "@/types/MyProfileChatRequestResponse"
+import { ResponseErrorEnum } from "@/types/ResponseErrorEnum"
+import { convertBase64ToUint8Array } from "@/utils/base64-utils"
+import { decryptWithECDHKey } from "@/utils/ecdh-utils"
 import { z } from "zod"
 
 export const calcChatTextAreaRows = (
@@ -138,68 +144,117 @@ export const isFirstMessageOfDay = (
 
 
 export const makeMyProfileChatRequest = async (orderId: string): Promise<MyProfileChatRequestResponse> => {
-  const response = {
-    data: {
-      chatPartner: {
-        id: 1,
-        username: 'name',
-        avatar: 'http://localhost:8030/files/avatar_2.jpg',
-        lastOnline: 1811011158000,
-      },
-      messages: [
-        {
-          id: 1,
-          senderId: 66,
-          content: "Hi name, I’d like to order a logo design for my new business. Are you available?",
-          sentAt: new Date(Date.UTC(2025, 2, 1, 10, 0, 0)).getTime(),
-          files: [],
-          type: ChatMessageType.Read,
-        },
-        {
-          id: 2,
-          senderId: 1,
-          content: "Hi! Yes, I'm available. Could you please share more details about your business and the style you're looking for?",
-          sentAt: new Date(Date.UTC(2025, 2, 1, 10, 5, 0)).getTime(),
-          files: [],
-          type: ChatMessageType.Read,
-        },
-        {
-          id: 3,
-          senderId: 66,
-          content: "Sure. The business is called 'GreenLeaf Wellness'. I’d like something clean and modern with a natural color palette.",
-          sentAt: new Date(Date.UTC(2025, 2, 1, 10, 10, 0)).getTime(),
-          files: [],
-          type: ChatMessageType.Read,
-        },
-        {
-          id: 4,
-          senderId: 1,
-          content: "Great! I’ll get started on a few initial concepts. You’ll have the first draft by Friday. Let me know if you have any references or logos you like.",
-          sentAt: new Date(Date.UTC(2025, 2, 1, 10, 20, 0)).getTime(),
-          files: [],
-          type: ChatMessageType.Read,
-        },
-        {
-          id: 5,
-          senderId: 66,
-          content: "Sounds good. I’ll send over a couple of samples I like. Looking forward to seeing your ideas!",
-          sentAt: new Date(Date.UTC(2025, 2, 1, 10, 30, 0)).getTime(),
-          files: [],
-          type: ChatMessageType.Sent,
-        },
-      ],
-    },
-    status: 200,
-  } as MyProfileChatRequestResponse;
+  // const response = {
+  //   data: {
+  //     chatPartner: {
+  //       id: 1,
+  //       username: 'name',
+  //       avatar: 'http://localhost:8030/files/avatar_2.jpg',
+  //       lastOnline: 1811011158000,
+  //     },
+  //     messages: [
+  //       {
+  //         id: 1,
+  //         senderId: 66,
+  //         content: "Hi name, I’d like to order a logo design for my new business. Are you available?",
+  //         sentAt: new Date(Date.UTC(2025, 2, 1, 10, 0, 0)).getTime(),
+  //         files: [],
+  //         type: ChatMessageType.Read,
+  //       },
+  //       {
+  //         id: 2,
+  //         senderId: 1,
+  //         content: "Hi! Yes, I'm available. Could you please share more details about your business and the style you're looking for?",
+  //         sentAt: new Date(Date.UTC(2025, 2, 1, 10, 5, 0)).getTime(),
+  //         files: [],
+  //         type: ChatMessageType.Read,
+  //       },
+  //       {
+  //         id: 3,
+  //         senderId: 66,
+  //         content: "Sure. The business is called 'GreenLeaf Wellness'. I’d like something clean and modern with a natural color palette.",
+  //         sentAt: new Date(Date.UTC(2025, 2, 1, 10, 10, 0)).getTime(),
+  //         files: [],
+  //         type: ChatMessageType.Read,
+  //       },
+  //       {
+  //         id: 4,
+  //         senderId: 1,
+  //         content: "Great! I’ll get started on a few initial concepts. You’ll have the first draft by Friday. Let me know if you have any references or logos you like.",
+  //         sentAt: new Date(Date.UTC(2025, 2, 1, 10, 20, 0)).getTime(),
+  //         files: [],
+  //         type: ChatMessageType.Read,
+  //       },
+  //       {
+  //         id: 5,
+  //         senderId: 66,
+  //         content: "Sounds good. I’ll send over a couple of samples I like. Looking forward to seeing your ideas!",
+  //         sentAt: new Date(Date.UTC(2025, 2, 1, 10, 30, 0)).getTime(),
+  //         files: [],
+  //         type: ChatMessageType.Sent,
+  //       },
+  //     ],
+  //   },
+  //   status: 200,
+  // } as MyProfileChatRequestResponse;
 
+  const response = await request<MyProfileChatRequestResponse>(
+    "GET", `/my-profile/orders/${orderId}/chat`, undefined, true
+  );
+  
   if (response.status !== 200) {
     errorStore.set({ shown: true, error: response.data.error });
+  } else {
+
+    const sharedSecret = getSharedSecret(response.data.chatPartner.partnerId);
+    await decodeChatMessages(response.data.messages, sharedSecret);
   }
 
   return response;
 }
 
 
+const decodeChatMessages = async (
+  messages: ChatMessage[],
+  sharedSecret: CryptoKey | undefined
+): Promise<ChatMessage[]> => {
+  if (sharedSecret === undefined) {
+    errorStore.set({ shown: true, error: ResponseErrorEnum.ErrInvalidSharedSecret });
+    return messages;
+  }
+
+  return Promise.all(messages.map(async (msg) => {
+    const messageContentBytes = convertBase64ToUint8Array(msg.content)
+    const messageContentIVBytes = convertBase64ToUint8Array(msg.contentIV)
+
+    msg.content = await decryptWithECDHKey(messageContentBytes, messageContentIVBytes, sharedSecret)
+
+    return msg
+  }))
+}
+
 export const chatFormSchema = z.object({
   message: z.string().min(1, { message: "Message is required" }),
 })
+
+export const processChatMessages = (
+  orderId: number,
+  requestMessages: ChatMessage[],
+  newMessages: ChatMessage[],
+  oldMessages?: ChatMessage[],
+): ChatMessage[] => {
+  newMessages = newMessages.filter((message) => message.orderId === orderId);
+
+  let overlapIndex = 0;
+  for (; overlapIndex < newMessages.length; overlapIndex++) {
+    const requestIndex = requestMessages.length - 1 - overlapIndex;
+    if (requestIndex < 0 || newMessages[overlapIndex].id !== requestMessages[requestIndex].id) {
+      break;
+    }
+  }
+  newMessages = newMessages.slice(overlapIndex);
+
+  return oldMessages
+    ? [...oldMessages, ...requestMessages, ...newMessages]
+    : [...requestMessages, ...newMessages];
+}

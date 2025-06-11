@@ -15,10 +15,10 @@
 
 <OrderByIdChatTabMessageLayout {wasSentByPartner}>
   <span
-    class="whitespace-pre-wrap break-words w-fit text-light-palette-text-primary dark:text-dark-palette-text-primary"
+    class="pr-21 whitespace-pre-wrap break-words w-fit text-light-palette-text-primary dark:text-dark-palette-text-primary"
     >{message.content}</span
   >
-  <div class="flex ml-3 items-center">
+  <div class="flex absolute bottom-3 right-3 ">
     <span class="text-xs break-keep w-full whitespace-nowrap">
       {formatChatMessageTime(message.sentAt)}
     </span>

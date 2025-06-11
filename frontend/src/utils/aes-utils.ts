@@ -48,7 +48,7 @@ export async function encryptWithKey(
 
 export async function decryptWithKey(
     cipher: Uint8Array,
-    key: string |Uint8Array,
+    key: string | Uint8Array,
     iv: Uint8Array,
     salt: Uint8Array
 ): Promise<Uint8Array> {

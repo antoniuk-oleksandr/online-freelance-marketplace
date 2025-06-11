@@ -66,7 +66,5 @@ export const getMyProfileRequestsInitialSelectIndex = (value: number): number =>
   const selectItems = getInitialRequestsStatusValues();
 
   const index = selectItems.findIndex(({ title }) => title.replaceAll(/\s+/g, '') === tuple?.[0]);
-  console.log(index);
-  return index;
-  
+  return index;  
 }

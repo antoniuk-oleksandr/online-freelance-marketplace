@@ -5,11 +5,20 @@
   import OrderByIdChatTabSendButton from '../OrderByIdChatTabSendButton/OrderByIdChatTabSendButton.svelte'
   import OrderByIdChatTabAttachButton from '../OrderByIdChatTabAttachButton/OrderByIdChatTabAttachButton.svelte'
   import OrderByIdChatForm from '../OrderByIdChatForm/OrderByIdChatForm.svelte'
+
+  type OrderByIdChatTabFooterProps = {
+    chatParentId: number
+    orderId: number
+  }
+  let {
+    chatParentId,
+    orderId,
+  }: OrderByIdChatTabFooterProps = $props()
 </script>
 
 <OrderByIdChatTabFooterLayout>
   <DividerElement />
-  <OrderByIdChatForm>
+  <OrderByIdChatForm {orderId} {chatParentId}>
     <OrderByIdChatTabAttachButton />
     <OrderByIdChatTabTextArea />
     <OrderByIdChatTabSendButton />

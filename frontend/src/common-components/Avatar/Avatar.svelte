@@ -11,6 +11,7 @@
     mobileSize?: 'extra small' | 'small' | 'large' | '24' | string
     noSrcIcon?: string
     noSrcImage?: string
+    styles? : string
   }
 
   let {
@@ -21,6 +22,7 @@
     mobileSize = size,
     noSrcIcon = 'hugeicons:user-circle-02',
     noSrcImage,
+    styles,
   }: AvatarProps = $props()
 
   const borderRadiusStyle = `rounded-${borderRadius}`
@@ -29,7 +31,7 @@
   const mobileSizeClass = calcAvatarSize(mobileSize, '')
 </script>
 
-<AvatarLayout>
+<AvatarLayout {styles}>
   {#if src || noSrcImage}
     <img
       class="{borderRadiusStyle} object-center object-cover {sizeClass} {mobileSizeClass}  "

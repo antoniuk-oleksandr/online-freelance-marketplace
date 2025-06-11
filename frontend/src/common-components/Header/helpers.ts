@@ -13,6 +13,11 @@ import { clearIndexedDbItem, getIndexedDbItem } from "@/utils/indexed-db-utils"
 import { navigate } from "svelte-routing"
 import { toastElementStore } from "../ToastElement/store/toast-element-store"
 import { signDataStore } from "./components/HeaderProfileBlock/sign-data-store"
+import { ChatMessageType } from "@/types/ChatMessageType"
+import type { ChatPartnerPublicKeyData } from "@/types/ChatPartnerPublicKeyData"
+import type { ChatPartnerSecret } from "@/types/ChatPartnerSecret"
+import { deriveSharedSecret } from "@/utils/ecdh-utils"
+import { setSharedSecrets } from "@/common-stores/shared-secrets-store"
 
 export const getMyProfileDropdownItems = (
   signData: SignHeaderData, darkMode: boolean | null,
@@ -62,67 +67,113 @@ export const getMyProfileDropdownItems = (
 
 
 export const getUserSession = async (): Promise<SignHeaderData> => {
-  const avatar = localStorage.getItem('accessTokenAvatar')
-  const userId = localStorage.getItem('accessTokenUserId')
+  try {
+    const avatar = localStorage.getItem('accessTokenAvatar')
+    const userId = localStorage.getItem('accessTokenUserId')
 
-  if (avatar === null || userId === null) {
-    return { avatar: "", userId: "", authenticated: false }
+    if (avatar === null || userId === null) {
+      return { avatar: "", userId: "", authenticated: false }
+    }
+
+    let userSessionData = await processSessionRequest();
+    if (!userSessionData.authenticated) {
+      return { avatar: "", userId: "", authenticated: false }
+    }
+
+    userSessionData = processUserSessionData(userSessionData);
+
+    const encryptedPrivateKey = await getIndexedDbItem("privateKey");
+    const privateKeyIV = await getIndexedDbItem("privateKeyIV");
+    const privateKeySalt = await getIndexedDbItem("privateKeySalt");
+    const decryptedPrivateKey = await decryptWithKey(
+      encryptedPrivateKey, userSessionData.masterKey, privateKeyIV, privateKeySalt
+    );
+    setPrivateKey(decryptedPrivateKey);
+
+    const sharedSecrets = await processSharedSecrets(userSessionData.chatPartners, decryptedPrivateKey);
+    setSharedSecrets(sharedSecrets)
+
+    return {
+      avatar, userId,
+      authenticated: userSessionData.authenticated,
+      chatPartners: userSessionData.chatPartners
+    };
   }
-
-  const userSessionData = await processSessionRequest();
-  if (!userSessionData.authenticated) {
-    return { avatar: "", userId: "", authenticated: false }
+  catch (error) {
+    return {
+      avatar: "",
+      userId: "",
+      authenticated: false,
+    }
   }
-
-
-  const bytesMasterKey = convertBase64ToUint8Array(userSessionData.masterKey);
-  const encryptedPrivateKey = await getIndexedDbItem("privateKey");
-  const privateKeyIV = await getIndexedDbItem("privateKeyIV");
-  const privateKeySalt = await getIndexedDbItem("privateKeySalt");
-  const decryptedPrivateKey = await decryptWithKey(
-    encryptedPrivateKey, bytesMasterKey, privateKeyIV, privateKeySalt
-  );
-
-  setPrivateKey(decryptedPrivateKey);
-
-  return { avatar, userId, authenticated: userSessionData.authenticated }
 }
 
+export const processSharedSecrets = async (
+  chatPartners: ChatPartnerPublicKeyData[],
+  privateKey: Uint8Array
+): Promise<ChatPartnerSecret[]> => Promise.all(
+  chatPartners.map(async (item) => ({
+    userId: item.userId,
+    secret: await deriveSharedSecret(privateKey, item.publicKey as Uint8Array)
+  }))
+)
+
+const processUserSessionData = (userSessionData: UserSessionData) => ({
+  ...userSessionData,
+  masterKey: convertBase64ToUint8Array(userSessionData.masterKey as string),
+  chatPartners: processChatPartners(userSessionData.chatPartners)
+})
+
+export const processChatPartners = (chatPartners: ChatPartnerPublicKeyData[]) =>
+  chatPartners.map((partner) => ({
+    ...partner,
+    publicKey: convertBase64ToUint8Array(partner.publicKey as string),
+  }))
+
+
 const logoutClickAction = async (signData: SignHeaderData) => {
-  const { data, status } = await request<PostSignOutRequestResponse>("POST", "/auth/sign-out", undefined, true)
+  const { data, status } = await request<PostSignOutRequestResponse>(
+    "POST", "/auth/sign-out", undefined, true
+  );
 
   if (status !== 200) {
-    errorStore.set({ shown: true, error: data.error })
-    return
+    errorStore.set({ shown: true, error: data.error });
+    return;
   }
 
   signDataStore.update(() => ({
     ...signData, authenticated: false, masterKey: "", masterKeyIv: ""
-  }))
+  }));
   toastElementStore.update((prev) => ({
     ...prev, show: true, message: "You have successfully signed out.", type: "success"
-  }))
+  }));
 
   localStorage.removeItem("accessTokenAvatar");
   localStorage.removeItem("accessTokenUsername");
   localStorage.removeItem("accessTokenUserId");
 
-  await clearIndexedDbItem("privateKey")
-  await clearIndexedDbItem("privateKeyIV")
-  await clearIndexedDbItem("privateKeySalt")
-  setPrivateKey(new Uint8Array(0))
-  navigate('/')
+  await clearIndexedDbItem("privateKey");
+  await clearIndexedDbItem("privateKeyIV");
+  await clearIndexedDbItem("privateKeySalt");
+  setPrivateKey(new Uint8Array(0));
+  navigate('/');
 }
 
 const processSessionRequest = async (): Promise<UserSessionData> => {
   try {
-    const response = await request<GetUserSessionRequestResponse>("GET", "/auth/session", undefined, true)
-    if (response.status === 200) return response.data
+    const response = await request<GetUserSessionRequestResponse>(
+      "GET", "/auth/session", undefined, true
+    );
+    if (response.status === 200) return {
+      ...response.data,
+      authenticated: true,
+    };
   }
   catch (error) { }
 
   return {
     authenticated: false,
     masterKey: "",
+    chatPartners: []
   }
 }

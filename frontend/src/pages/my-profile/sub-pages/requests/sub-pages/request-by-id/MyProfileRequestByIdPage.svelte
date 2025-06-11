@@ -1,7 +1,6 @@
 <script lang="ts">
   import Tabs from '@/common-components/Tabs/Tabs.svelte'
   import type { TabType } from '@/types/TabType'
-  import MyProfileOrderByIdPageLayout from './MyProfileOrderByIdPageLayout.svelte'
   import { useRouter } from 'svelte-routing'
   import {
     fetchOrderTabData,
@@ -10,8 +9,9 @@
     handleOrderByIdTabChange,
   } from './helpers'
   import { onDestroy } from 'svelte'
-  import OrderByIdSidebar from './components/OrderByIdSidebar/OrderByIdSidebar.svelte'
   import type { MyProfileOrderByIdData } from '@/types/MyProfileOrderByIdData'
+  import MyProfileOrderByIdPageLayout from '../../../orders/sub-pages/order-by-id/MyProfileOrderByIdPageLayout.svelte'
+  import OrderByIdSidebar from '../../../orders/sub-pages/order-by-id/components/OrderByIdSidebar/OrderByIdSidebar.svelte'
 
   type MyProfileOrderByIdPageProps = {
     orderId: string

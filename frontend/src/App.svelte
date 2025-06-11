@@ -27,7 +27,10 @@
   import CreateServiceRequirementsPage from './pages/my-profile/sub-pages/services/sub-pages/create-service-requirements/CreateServiceRequirementsPage.svelte'
   import UserPage from './pages/users/UserPage.svelte'
   import { openIndexedDb } from './utils/indexed-db-utils'
-    import { getUserSession } from './common-components/Header/helpers'
+  import { getUserSession } from './common-components/Header/helpers'
+  import MyProfileRequestByIdPage from './pages/my-profile/sub-pages/requests/sub-pages/request-by-id/MyProfileRequestByIdPage.svelte'
+
+  let mounted = $state(false)
 
   const unsubscribe = signDataStore.subscribe((value) => {
     if (value && value.authenticated) connectToWebsocket()
@@ -35,81 +38,90 @@
 
   onMount(() => {
     openIndexedDb()
-    getUserSession().then((resp) => {
-      signDataStore.set(resp)
-    })
+    getUserSession()
+      .then((resp) => {
+        signDataStore.set(resp)
+      })
+      .finally(() => {
+        mounted = true
+      })
   })
 
   onDestroy(() => unsubscribe())
 </script>
 
-<Router>
-  <AppLayout>
-    <Route path="/">
-      <Home />
-    </Route>
-    <Route path="/services/:id" let:params>
-      <ServicePage id={params.id} />
-    </Route>
-    <Route path="/orders/request">
-      <OrderRequestPage />
-    </Route>
-    <Route path="/orders/confirm-pay">
-      <OrderConfirmPayPage />
-    </Route>
-    <Route path="/orders/:orderId/submit-requirements" let:params>
-      <OrderSubmitRequirementsPage orderId={params.orderId} />
-    </Route>
-    <Route path="/users/:id" let:params>
-      <UserPage id={params.id} />
-    </Route>
-    <Route path="/search">
-      <SearchPage />
-    </Route>
-    <Route path="/sign-in">
-      <SignInPage />
-    </Route>
-    <Route path="/sign-up">
-      <SignUpPage />
-    </Route>
-    <Route path="/confirm-email">
-      <ConfirmEmailPage />
-    </Route>
-    <Route path="/forgot-password">
-      <ForgotPasswordPage />
-    </Route>
-    <Route path="/reset-password">
-      <ResetPasswordPage />
-    </Route>
-    <Route path="/my-profile/orders">
-      <MyProfileOrdersPage />
-    </Route>
-    <Route path="/my-profile/services">
-      <MyProfileServicesPage />
-    </Route>
-    <Route path="/my-profile/requests">
-      <MyProfileRequestsPage />
-    </Route>
-    <Route path="/my-profile/orders/:orderId" let:params>
-      <MyProfileOrderByIdPage orderId={params.orderId} />
-    </Route>
-    <Route path="/my-profile/services/create/basic-information">
-      <CreateServiceBasicInfoPage />
-    </Route>
-    <Route path="/my-profile/services/create/packages">
-      <CreateServicePackagesPage />
-    </Route>
-    <Route path="/my-profile/services/create/requirements">
-      <CreateServiceRequirementsPage />
-    </Route>
-    <Route path="/my-profile/services/create/media">
-      <CreateServiceMediaPage />
-    </Route>
-    <Route path="/my-profile/edit">
-      <MyProfileEditPage />
-    </Route>
-    <Route path="/*">
-      <NotFound />
-    </Route>
-  </AppLayout>
-</Router>
+{#if mounted}
+  <Router>
+    <AppLayout>
+      <Route path="/">
+        <Home />
+      </Route>
+      <Route path="/services/:id" let:params>
+        <ServicePage id={params.id} />
+      </Route>
+      <Route path="/orders/request">
+        <OrderRequestPage />
+      </Route>
+      <Route path="/orders/confirm-pay">
+        <OrderConfirmPayPage />
+      </Route>
+      <Route path="/orders/:orderId/submit-requirements" let:params>
+        <OrderSubmitRequirementsPage orderId={params.orderId} />
+      </Route>
+      <Route path="/users/:id" let:params>
+        <UserPage id={params.id} />
+      </Route>
+      <Route path="/search">
+        <SearchPage />
+      </Route>
+      <Route path="/sign-in">
+        <SignInPage />
+      </Route>
+      <Route path="/sign-up">
+        <SignUpPage />
+      </Route>
+      <Route path="/confirm-email">
+        <ConfirmEmailPage />
+      </Route>
+      <Route path="/forgot-password">
+        <ForgotPasswordPage />
+      </Route>
+      <Route path="/reset-password">
+        <ResetPasswordPage />
+      </Route>
+      <Route path="/my-profile/orders">
+        <MyProfileOrdersPage />
+      </Route>
+      <Route path="/my-profile/services">
+        <MyProfileServicesPage />
+      </Route>
+      <Route path="/my-profile/requests">
+        <MyProfileRequestsPage />
+      </Route>
+      <Route path="/my-profile/orders/:orderId" let:params>
+        <MyProfileOrderByIdPage orderId={params.orderId} />
+      </Route>
+      <Route path="/my-profile/requests/:orderId" let:params>
+        <MyProfileRequestByIdPage orderId={params.orderId} />
+      </Route>
+      <Route path="/my-profile/services/create/basic-information">
+        <CreateServiceBasicInfoPage />
+      </Route>
+      <Route path="/my-profile/services/create/packages">
+        <CreateServicePackagesPage />
+      </Route>
+      <Route path="/my-profile/services/create/requirements">
+        <CreateServiceRequirementsPage />
+      </Route>
+      <Route path="/my-profile/services/create/media">
+        <CreateServiceMediaPage />
+      </Route>
+      <Route path="/my-profile/edit">
+        <MyProfileEditPage />
+      </Route>
+      <Route path="/*">
+        <NotFound />
+      </Route>
+    </AppLayout>
+  </Router>
+{/if}

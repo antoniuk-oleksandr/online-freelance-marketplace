@@ -14,5 +14,4 @@ export const handleOrderSubmitRequirementsFormSubmit = async (
   })
 
   const response = await request("POST", `/orders/${data.orderId}/requirements`, formData, true)
-  console.log(response);
 }
