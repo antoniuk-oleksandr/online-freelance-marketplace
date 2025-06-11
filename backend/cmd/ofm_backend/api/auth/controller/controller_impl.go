@@ -2,7 +2,6 @@ package controller
 
 import (
 	"errors"
-	"log"
 	"ofm_backend/cmd/ofm_backend/api/auth/body"
 	"ofm_backend/cmd/ofm_backend/api/auth/helpers"
 	"ofm_backend/cmd/ofm_backend/api/auth/service"
@@ -116,7 +115,6 @@ func (ac *authController) SignIn(ctx *fiber.Ctx) error {
 	}
 	signResponse, signInData, err := ac.authService.SignIn(signInBody)
 	if err != nil {
-		log.Println("err", err)
 		if err.Error() == fiber.ErrUnprocessableEntity.Error() {
 			return ctx.Status(fiber.StatusUnprocessableEntity).JSON(
 				fiber.Map{"error": "Invalid request body"},
@@ -235,7 +233,7 @@ func (ac *authController) SignInWithGoogle(ctx *fiber.Ctx) error {
 			"error": utils.ErrUnexpectedError.Error(),
 		})
 	}
-	
+
 	helpers.CreateSignCookies(ctx, signResponse, signInBody.KeepSignedIn)
 
 	return ctx.Status(fiber.StatusOK).JSON(signInData)
@@ -253,13 +251,12 @@ func (ac *authController) SignUpWithGoogle(ctx *fiber.Ctx) error {
 
 	signResponse, signInData, err := ac.authService.SignUpWithGoogle(&signUpBody)
 	if err != nil {
-		log.Println("err", err)
 		return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"error": utils.ErrUnexpectedError.Error(),
 		})
 	}
-	
+
 	helpers.CreateSignCookies(ctx, signResponse, signUpBody.KeepSignedIn)
-	
+
 	return ctx.Status(fiber.StatusOK).JSON(signInData)
 }

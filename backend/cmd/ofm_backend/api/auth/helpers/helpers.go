@@ -9,7 +9,9 @@ import (
 	"math/big"
 	"net/http"
 	"ofm_backend/cmd/ofm_backend/api/auth/body"
+	"ofm_backend/cmd/ofm_backend/api/auth/dto"
 	"ofm_backend/cmd/ofm_backend/api/auth/model"
+	"ofm_backend/cmd/ofm_backend/utils"
 	"os"
 	"time"
 
@@ -121,4 +123,61 @@ func ClearCookies(ctx *fiber.Ctx) {
 		Secure:   false,
 		SameSite: fiber.CookieSameSiteStrictMode,
 	})
+}
+
+func ConvertChatPartnersBase64ToBytes(
+	partners []model.ChatPartnerPublicKey,
+) ([]dto.ChatPartnerPublicKey, error) {
+	var result []dto.ChatPartnerPublicKey = make([]dto.ChatPartnerPublicKey, len(partners))
+
+	for index, val := range partners {
+		if val.PublicKey == "" {
+			return nil, utils.ErrInvalidPublicKey
+		}
+
+		decodedKey, err := base64.StdEncoding.DecodeString(val.PublicKey)
+		if err != nil {
+			return nil, err
+		}
+		result[index] = dto.ChatPartnerPublicKey{
+			UserId:    val.UserId,
+			PublicKey: decodedKey,
+		}
+	}
+
+	return result, nil
+}
+
+func ConvertUserDataBase64ToBytes(
+	userDataModel model.UserData,
+) (*dto.UserData, error) {
+	var userDataDto = dto.UserData{
+		Id:       userDataModel.Id,
+		Username: userDataModel.Username,
+		Avatar:   userDataModel.Avatar,
+	}
+
+	decodedPrivateKey, err := base64.StdEncoding.DecodeString(string(userDataModel.PrivateKey))
+	if err != nil {
+		return nil, err
+	}
+	decodedPrivateKeyIV, err := base64.StdEncoding.DecodeString(string(userDataModel.PrivateKeyIV))
+	if err != nil {
+		return nil, err
+	}
+	decodedPrivateKeySalt, err := base64.StdEncoding.DecodeString(string(userDataModel.PrivateKeySalt))
+	if err != nil {
+		return nil, err
+	}
+	decodedMasterKey, err := base64.StdEncoding.DecodeString(string(userDataModel.MasterKey))
+	if err != nil {
+		return nil, err
+	}
+
+	userDataDto.PrivateKey = decodedPrivateKey
+	userDataDto.PrivateKeyIV = decodedPrivateKeyIV
+	userDataDto.PrivateKeySalt = decodedPrivateKeySalt
+	userDataDto.MasterKey = decodedMasterKey
+
+	return &userDataDto, nil
 }

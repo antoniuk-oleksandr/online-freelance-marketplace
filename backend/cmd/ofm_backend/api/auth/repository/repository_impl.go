@@ -3,7 +3,10 @@ package repository
 import (
 	"context"
 	"database/sql"
+	"encoding/json"
+	"fmt"
 	"ofm_backend/cmd/ofm_backend/api/auth/body"
+	"ofm_backend/cmd/ofm_backend/api/auth/dto"
 	"ofm_backend/cmd/ofm_backend/api/auth/model"
 	"ofm_backend/cmd/ofm_backend/api/auth/queries"
 	"ofm_backend/cmd/ofm_backend/utils"
@@ -208,23 +211,70 @@ func (ar *authRepisotory) GetUserPasswordPrivateKeyByEmail(email string) (string
 func (ar *authRepisotory) GetUserSignInData(usernameOrEmail string) (*model.SignInData, error) {
 	var signInData model.SignInData
 
-	err := ar.posgresqlDb.Get(&signInData, queries.GetUserSignInDataQuery, usernameOrEmail)
-	if err != nil {
+	var userDataJson []byte
+	var chatPartnersJson []byte
+	if err := ar.posgresqlDb.QueryRowx(queries.GetUserSignInDataQuery, usernameOrEmail).
+		Scan(&userDataJson, &chatPartnersJson); err != nil{
 		return nil, err
 	}
 
+	if err := json.Unmarshal(userDataJson, &signInData.UserData); err != nil {
+		return nil, err
+	}
+	
+	if err := json.Unmarshal(chatPartnersJson, &signInData.ChatPartners); err != nil {
+		return nil, err
+	}
+	
 	return &signInData, nil
 }
 
-func (ar *authRepisotory) GetUserSessionData(userId int64) (*model.UserSessionData, error) {
+func (ar *authRepisotory) GetUserSessionDataFromPostgres(userId int64) (*model.UserSessionData, error) {
 	var userSessionData model.UserSessionData
-
-	err := ar.posgresqlDb.Get(&userSessionData, queries.GetUserSessionDataQuery, userId)
-	if err != nil {
+	var jsonData []byte
+	if err := ar.posgresqlDb.QueryRowx(queries.GetUserSessionDataQuery, userId).
+		Scan(&jsonData, &userSessionData.MasterKey); err != nil {
+		return nil, err
+	}
+	if err := json.Unmarshal(jsonData, &userSessionData.ChatPartners); err != nil {
 		return nil, err
 	}
 
 	return &userSessionData, nil
+}
+
+func (ar *authRepisotory) GetUserSessionDataCache(
+	userId int64, ctx context.Context,
+) (*dto.UserSessionData, error) {
+	key := fmt.Sprintf("user:session:%d", userId)
+
+	result, err := ar.redisDb.Get(ctx, key).Result()
+	if err != nil {
+		if err == redis.Nil {
+			return nil, utils.ErrSessionCacheNotFound
+		}
+
+		return nil, utils.ErrInvalidSessionCache
+	}
+
+	var userSessionData dto.UserSessionData
+	if err := json.Unmarshal([]byte(result), &userSessionData); err != nil {
+		return nil, err
+	}
+	return &userSessionData, nil
+}
+
+func (ar *authRepisotory) AddUserSessionDataCache(
+	userId int64, userSessionData *dto.UserSessionData, ctx context.Context,
+) error {
+	key := fmt.Sprintf("user:session:%d", userId)
+
+	jsonData, err := json.Marshal(userSessionData)
+	if err != nil {
+		return err
+	}
+
+	return ar.redisDb.Set(ctx, key, jsonData, time.Hour*24).Err()
 }
 
 func (ar *authRepisotory) CreateTransaction() (*sqlx.Tx, error) {

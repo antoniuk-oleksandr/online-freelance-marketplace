@@ -1,7 +1,9 @@
 package repository
 
 import (
+	"context"
 	"ofm_backend/cmd/ofm_backend/api/auth/body"
+	"ofm_backend/cmd/ofm_backend/api/auth/dto"
 	"ofm_backend/cmd/ofm_backend/api/auth/model"
 
 	"github.com/jmoiron/sqlx"
@@ -23,7 +25,9 @@ type AuthRepository interface {
 	AddMultipleJWTToBlacklist(tokens []model.Token) error
 	GetUserPasswordPrivateKeyByEmail(email string) (string, string, error)
 	GetUserSignInData(usernameOrEmail string) (*model.SignInData, error)
-	GetUserSessionData(userId int64) (*model.UserSessionData, error)
+	GetUserSessionDataFromPostgres(userId int64) (*model.UserSessionData, error)
+	GetUserSessionDataCache(userId int64, ctx context.Context) (*dto.UserSessionData, error)
+	AddUserSessionDataCache(userId int64, userSessionData *dto.UserSessionData, ctx context.Context) error
 	CreateTransaction() (*sqlx.Tx, error)
 	CommitTransaction(tx *sqlx.Tx) error
 	RollbackTransaction(tx *sqlx.Tx) error

@@ -1,8 +1,11 @@
 package service
 
 import (
+	"context"
+	"errors"
 	"fmt"
 	"ofm_backend/cmd/ofm_backend/api/auth/body"
+	"ofm_backend/cmd/ofm_backend/api/auth/dto"
 	"ofm_backend/cmd/ofm_backend/api/auth/helpers"
 	"ofm_backend/cmd/ofm_backend/api/auth/model"
 	"ofm_backend/cmd/ofm_backend/api/auth/repository"
@@ -196,7 +199,7 @@ func (as *authService) ResetPassword(
 	return as.authRepository.AddJWTToBlacklist(token)
 }
 
-func (as *authService) SignIn(signInBody body.SignInBody) (*model.SignResponse, *model.SignInData, error) {
+func (as *authService) SignIn(signInBody body.SignInBody) (*model.SignResponse, *dto.SignInData, error) {
 	hashPassword, err := as.authRepository.GetUserPassword(signInBody.UsernameOrEmail)
 	if err != nil {
 		return nil, nil, fiber.ErrUnauthorized
@@ -261,13 +264,30 @@ func (as *authService) SignOut(signOutBody body.SignOut) error {
 	return as.authRepository.AddMultipleJWTToBlacklist(tokens)
 }
 
-func (as *authService) GetUserSessionData(userId int64) (*model.UserSessionData, error) {
-	userSessionData, err := as.authRepository.GetUserSessionData(userId)
+func (as *authService) GetUserSessionData(userId int64) (*dto.UserSessionData, error) {
+	ctx := context.Background()
+	userSessionData, err := as.authRepository.GetUserSessionDataCache(userId, ctx)
 	if err != nil {
-		return nil, err
+		if errors.Is(err, utils.ErrSessionCacheNotFound) {
+			userSessionDataModel, err := as.authRepository.GetUserSessionDataFromPostgres(userId)
+			if err != nil {
+				return nil, err
+			}
+
+			var userSessionDataDto dto.UserSessionData
+			userSessionDataDto.MasterKey = userSessionDataModel.MasterKey
+			userSessionDataDto.ChatPartners, err = helpers.ConvertChatPartnersBase64ToBytes(userSessionDataModel.ChatPartners)
+			if err != nil {
+				return nil, err
+			}
+
+			err = as.authRepository.AddUserSessionDataCache(userId, &userSessionDataDto, ctx)
+			return &userSessionDataDto, err
+		} else {
+			return nil, err
+		}
 	}
 
-	userSessionData.Authenticated = true
 	return userSessionData, nil
 }
 
@@ -277,7 +297,7 @@ func (as *authService) CheckIfEmailIsAvailable(email string) (bool, error) {
 
 func (as *authService) SignInWithGoogle(
 	signInBody *body.GoogleSignInBody,
-) (*model.SignResponse, *model.SignInData, error) {
+) (*model.SignResponse, *dto.SignInData, error) {
 	googleUserInfo, err := helpers.GetGoogleUserInfo(signInBody.AccessToken)
 	if err != nil {
 		return nil, nil, err
@@ -288,7 +308,7 @@ func (as *authService) SignInWithGoogle(
 
 func (as *authService) SignUpWithGoogle(
 	signUpBody *body.GoogleSignUpBody,
-) (*model.SignResponse, *model.SignInData, error) {
+) (*model.SignResponse, *dto.SignInData, error) {
 	googleUserInfo, err := helpers.GetGoogleUserInfo(signUpBody.AccessToken)
 	if err != nil {
 		return nil, nil, err
@@ -302,19 +322,20 @@ func (as *authService) SignUpWithGoogle(
 	return as.CreateSignInTokensWithData(googleUserInfo, userId, signUpBody)
 }
 
-func (as *authService) CreateSignInTokens(usernameOrEmail string) (*model.SignResponse, *model.SignInData, error) {
-	signInData, err := as.authRepository.GetUserSignInData(usernameOrEmail)
+func (as *authService) CreateSignInTokens(usernameOrEmail string) (*model.SignResponse, *dto.SignInData, error) {
+	var err error
+	signInDataModel, err := as.authRepository.GetUserSignInData(usernameOrEmail)
 	if err != nil {
 		return nil, nil, err
 	}
-	signInData.Avatar = *utils.AddServerURLToFiles(&signInData.Avatar)
+	signInDataModel.UserData.Avatar = *utils.AddServerURLToFiles(&signInDataModel.UserData.Avatar)
 
 	accessTokenExpiration, err := strconv.Atoi(os.Getenv("ACCESS_TOKEN_EXPIRATION"))
 	if err != nil || accessTokenExpiration == 0 {
 		return nil, nil, utils.ErrUnexpectedError
 	}
 
-	accessToken, err := as.middleware.GenerateSignInAccessToken(signInData.Username, accessTokenExpiration)
+	accessToken, err := as.middleware.GenerateSignInAccessToken(signInDataModel.UserData.Username, accessTokenExpiration)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -324,10 +345,23 @@ func (as *authService) CreateSignInTokens(usernameOrEmail string) (*model.SignRe
 		return nil, nil, utils.ErrUnexpectedError
 	}
 
-	refreshToken, err := as.middleware.GenerateRefreshToken(signInData.Username, refreshTokenExpiration)
+	refreshToken, err := as.middleware.GenerateRefreshToken(signInDataModel.UserData.Username, refreshTokenExpiration)
 	if err != nil {
 		return nil, nil, err
 	}
+
+	var signInDataDto dto.SignInData
+	chatPartners, err := helpers.ConvertChatPartnersBase64ToBytes(signInDataModel.ChatPartners)
+	if err != nil {
+		return nil, nil, err
+	}
+	signInDataDto.ChatPartners = chatPartners
+
+	userData, err := helpers.ConvertUserDataBase64ToBytes(signInDataModel.UserData)
+	if err != nil {
+		return nil, nil, err
+	}
+	signInDataDto.UserData = userData
 
 	signResponse := &model.SignResponse{
 		AccessToken:           accessToken,
@@ -336,12 +370,12 @@ func (as *authService) CreateSignInTokens(usernameOrEmail string) (*model.SignRe
 		RefreshTokenExpiresAt: refreshTokenExpiration,
 	}
 
-	return signResponse, signInData, nil
+	return signResponse, &signInDataDto, nil
 }
 
 func (as *authService) CreateSignInTokensWithData(
 	googleUserInfo *model.GoogleUserInfo, userId int64, signUpBody *body.GoogleSignUpBody,
-) (*model.SignResponse, *model.SignInData, error) {
+) (*model.SignResponse, *dto.SignInData, error) {
 	accessTokenExpiration, err := strconv.Atoi(os.Getenv("ACCESS_TOKEN_EXPIRATION"))
 	if err != nil || accessTokenExpiration == 0 {
 		return nil, nil, utils.ErrUnexpectedError
@@ -372,13 +406,16 @@ func (as *authService) CreateSignInTokensWithData(
 		RefreshTokenExpiresAt: refreshTokenExpiration,
 	}
 
-	return signResponse, &model.SignInData{
-		Id:             strconv.FormatInt(userId, 10),
-		Username:       googleUserInfo.Email,
-		Avatar:         googleUserInfo.Picture,
-		PrivateKey:     signUpBody.PrivateKey,
-		PrivateKeyIV:   signUpBody.PrivateKeyIV,
-		PrivateKeySalt: signUpBody.PrivateKeySalt,
-		MasterKey:      signUpBody.MasterKey,
+	return signResponse, &dto.SignInData{
+		UserData: &dto.UserData{
+			Id:             int(userId),
+			Username:       googleUserInfo.Email,
+			Avatar:         googleUserInfo.Picture,
+			PrivateKey:     signUpBody.PrivateKey,
+			PrivateKeyIV:   signUpBody.PrivateKeyIV,
+			PrivateKeySalt: signUpBody.PrivateKeySalt,
+			MasterKey:      signUpBody.MasterKey,
+		},
+		ChatPartners: []dto.ChatPartnerPublicKey{},
 	}, nil
 }
