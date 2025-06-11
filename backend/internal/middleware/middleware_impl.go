@@ -187,7 +187,7 @@ func (middleware *middleware) ProcessRefreshToken(ctx *fiber.Ctx) (string, int, 
 func (middleware *middleware) ProcessRegularJWT() fiber.Handler {
 	return func(ctx *fiber.Ctx) error {
 		var accessToken = ctx.Cookies("accessToken", "")
-
+		
 		if accessToken == "" {
 			newAccessToken, status, err := middleware.ProcessRefreshToken(ctx)
 			if err != nil {

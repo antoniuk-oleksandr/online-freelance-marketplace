@@ -2,79 +2,50 @@ package service
 
 import (
 	"bytes"
-	"context"
 	"file-server/internal/utils"
 	"io"
 	"mime/multipart"
 	"os"
+	"path/filepath"
 
-	"github.com/aws/aws-sdk-go-v2/aws"
-	"github.com/aws/aws-sdk-go-v2/config"
-	"github.com/aws/aws-sdk-go-v2/service/s3"
-	"github.com/aws/aws-sdk-go-v2/service/s3/types"
 	"github.com/gofiber/fiber/v2"
 )
 
 type fileService struct {
-	bucketName string
-	client     *s3.Client
+	uploadDir string
 }
 
-func NewFileService(bucket string) FileService {
-	cfg, err := config.LoadDefaultConfig(context.TODO())
-	if err != nil {
-		panic("unable to load AWS config, " + err.Error())
-	}
-
+func NewFileService(uploadDir string) FileService {
 	return &fileService{
-		bucketName: bucket,
-		client:     s3.NewFromConfig(cfg),
+		uploadDir: uploadDir,
 	}
 }
 
 func (fs fileService) DeleteFile(fileName string) (int, error) {
-	_, err := fs.client.DeleteObject(context.TODO(), &s3.DeleteObjectInput{
-		Bucket: &fs.bucketName,
-		Key:    &fileName,
-	})
+	path := filepath.Join(fs.uploadDir, fileName)
+	if _, err := os.Stat(path); os.IsNotExist(err) {
+		return fiber.StatusNotFound, utils.ErrFileNotFound
+	}
+
+	err := os.Remove(path)
 	if err != nil {
 		return fiber.StatusInternalServerError, err
 	}
+
 	return fiber.StatusOK, nil
 }
 
 func (fs fileService) UploadFiles(files []*multipart.FileHeader) (int, error) {
 	for _, file := range files {
-		err := fs.uploadToS3(file)
+		filePath := filepath.Join(fs.uploadDir, file.Filename)
+		err := fs.SaveFile(file, filePath)
 		if err != nil {
 			return fiber.StatusInternalServerError, err
 		}
 	}
+
 	return fiber.StatusCreated, nil
 }
-
-func (fs fileService) uploadToS3(file *multipart.FileHeader) error {
-	content, err := fs.ConvertToBytes(file)
-	if err != nil {
-		return err
-	}
-
-	contentType := file.Header.Get("Content-Type")
-
-	_, err = fs.client.PutObject(context.TODO(), &s3.PutObjectInput{
-		Bucket:      &fs.bucketName,
-		Key:         aws.String(file.Filename),
-		Body:        bytes.NewReader(content),
-		ContentType: aws.String(contentType),
-		ACL:         types.ObjectCannedACLPublicRead, 
-	})
-	if err != nil {
-		return utils.ErrFailedToSaveFile
-	}
-
-	return nil
-}
-
 
 func (fs fileService) SaveFile(file *multipart.FileHeader, filePath string) error {
 	bytes, err := fs.ConvertToBytes(file)
@@ -85,7 +56,7 @@ func (fs fileService) SaveFile(file *multipart.FileHeader, filePath string) erro
 	if err := os.WriteFile(filePath, bytes, 0666); err != nil {
 		return utils.ErrFailedToSaveFile
 	}
-
+	
 	return nil
 }
 

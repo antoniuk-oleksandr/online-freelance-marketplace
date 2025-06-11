@@ -14,8 +14,7 @@ services:
 
   file-server:
     restart: always
-    build:
-      context: ./file-server
+    image: go-file-server:latest
     container_name: go-file-server
     ports:
       - "8030:8030"
@@ -32,7 +31,7 @@ services:
       - "6379:6379"
     networks:
       - backend-network
-    command: ["redis-server", "--requirepass", "freelance-redis-db"]
+    command: ["redis-server", "--requirepass", "freelance-redis-db"] 
 
 networks:
   backend-network:

@@ -2,9 +2,11 @@ package service
 
 import (
 	"encoding/json"
-	"ofm_backend/cmd/ofm_backend/api/chat/dto"
+	"ofm_backend/cmd/ofm_backend/api/chat/helpers"
+	"ofm_backend/cmd/ofm_backend/api/chat/model"
 	"ofm_backend/cmd/ofm_backend/api/chat/repository"
 	websocketmanager "ofm_backend/cmd/ofm_backend/api/chat/websocket_manager"
+	"ofm_backend/cmd/ofm_backend/enum"
 
 	"github.com/gofiber/contrib/websocket"
 )
@@ -34,23 +36,84 @@ func (chatServ *chatService) HandleWSConnection(conn *websocket.Conn, userId int
 			break
 		}
 
-		var chatMessage dto.ChatMessageToReceive
-		err = json.Unmarshal(msg, &chatMessage)
+		var websocketRequest model.WebSocketRequest
+		err = json.Unmarshal(msg, &websocketRequest)
 		if err != nil {
 			break
 		}
 
-		partnerConn := chatServ.wsManager.GetConnection(chatMessage.ChatPartnerId)
-		if partnerConn != nil {
-			err = partnerConn.WriteMessage(mt, msg)
+		switch websocketRequest.Type {
+		case enum.ChatMessage:
+			err = chatServ.HandleChatMessage(mt, websocketRequest.Data, userId, conn)
 			if err != nil {
 				break
 			}
 		}
-		
-		err = conn.WriteMessage(mt, msg)
+	}
+}
+
+func (chatServ chatService) HandleChatMessage(
+	mt int, messageData []byte,
+	userId int, conn *websocket.Conn,
+) error {
+	var chatMessage model.ChatMessageToReceive
+	err := json.Unmarshal(messageData, &chatMessage)
+	if err != nil {
+		return err
+	}
+
+	messageId, err := chatServ.chatRepository.SaveMessage(chatMessage)
+	if err != nil {
+		return err
+	}
+
+	helpers.PrepareChatMessage(&chatMessage, messageId, userId)
+
+	chatMessageBytes, err := json.Marshal(chatMessage)
+	if err != nil {
+		return err
+	}
+
+	websocketRequest := model.WebSocketRequest{
+		Type: enum.ChatMessage,
+		Data: chatMessageBytes,
+	}
+
+	messageBytes, err := json.Marshal(websocketRequest)
+	if err != nil {
+		return err
+	}
+
+	if err := conn.WriteMessage(mt, messageBytes); err != nil {
+		return err
+	}
+
+	//send to partner
+	receiver := chatMessage.ChatPartnerId
+	chatMessage.ChatPartnerId = userId
+
+	chatMessageBytes, err = json.Marshal(chatMessage)
+	if err != nil {
+		return err
+	}
+
+	websocketRequest = model.WebSocketRequest{
+		Type: enum.ChatMessage,
+		Data: chatMessageBytes,
+	}
+
+	messageBytes, err = json.Marshal(websocketRequest)
+	if err != nil {
+		return err
+	}
+
+	partnerConn := chatServ.wsManager.GetConnection(receiver)
+	if partnerConn != nil {
+		err = partnerConn.WriteMessage(mt, messageBytes)
 		if err != nil {
-			break
+			return err
 		}
 	}
+
+	return nil
 }

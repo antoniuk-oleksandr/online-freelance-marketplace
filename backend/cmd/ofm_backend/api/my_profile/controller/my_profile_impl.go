@@ -1,7 +1,6 @@
 package controller
 
 import (
-	"log"
 	"ofm_backend/cmd/ofm_backend/api/my_profile/helpers"
 	"ofm_backend/cmd/ofm_backend/api/my_profile/service"
 	"ofm_backend/cmd/ofm_backend/utils"
@@ -30,7 +29,6 @@ func (mpc *myProfileController) GetMyProfileServices(ctx *fiber.Ctx) error {
 
 	servicesResponse, err := mpc.myProfileService.GetMyProfileServices(paginationParams)
 	if err != nil {
-		log.Println("err:", err)
 		return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"error": utils.ErrUnexpectedError.Error(),
 		})
@@ -67,7 +65,6 @@ func (mpc *myProfileController) GetMyProfileRequests(ctx *fiber.Ctx) error {
 
 	requestsResponse, err := mpc.myProfileService.GetMyProfileRequests(params)
 	if err != nil {
-		log.Println("err", err)
 		return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"error": utils.ErrUnexpectedError.Error(),
 		})
@@ -83,13 +80,20 @@ func (mpc *myProfileController) GetMyProfileOrderChat(ctx *fiber.Ctx) error {
 			"error": utils.ErrInvalidPathParam.Error(),
 		})
 	}
-	
-	orderChat, err := mpc.myProfileService.GetMyProfileChatByOrderId(id)
+
+	userId, err := utils.GetUserIdFromLocals("userId", ctx)
+	if err != nil {
+		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error": utils.ErrUserNotFound.Error(),
+		})
+	}
+
+	orderChat, err := mpc.myProfileService.GetMyProfileChatByOrderId(id, userId)
 	if err != nil {
 		return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"error": utils.ErrUnexpectedError.Error(),
 		})
 	}
-	
+
 	return ctx.Status(fiber.StatusOK).JSON(orderChat)
 }

@@ -25,7 +25,10 @@ var (
 	ErrUsernameDoesNotExist = errors.New("Username does not exist")
 	ErrBlacklistedToken     = errors.New("Token is blacklisted")
 	ErrUnauthorized         = errors.New("Unauthorized")
-
+	ErrSessionCacheNotFound = errors.New("Session cache not found")
+	ErrInvalidSessionCache  = errors.New("Invalid session cache")
+	ErrInvalidPublicKey     = errors.New("Invalid public key")
+	
 	// User
 	ErrUserNotFound = errors.New("User not found")
 
@@ -53,6 +56,9 @@ var (
 
 	//My Profile Errors
 	ErrNoDataFound = errors.New("No data found")
+
+	//Chat Errors
+	ErrBadUserIdQueryFormat = errors.New("Bad user id query format")
 )
 
 type ErrorResponse struct {

@@ -1,7 +1,6 @@
 package config
 
 import (
-	"crypto/tls"
 	"ofm_backend/cmd/ofm_backend/utils"
 	"os"
 	"strconv"
@@ -22,47 +21,21 @@ func ConfigCors() func(*fiber.Ctx) error {
 	})
 }
 
-func ConfigRateLimiter() func(ctx *fiber.Ctx) error {
-	port, _ := strconv.Atoi(os.Getenv("REDIS_PORT"))
-	maxConnections, _ := strconv.Atoi(os.Getenv("MAX_CONNECTIONS"))
-
-	host := os.Getenv("REDIS_HOST")
-	password := os.Getenv("REDIS_PASSWORD")
-
-	return limiter.New(limiter.Config{
-		Max:        maxConnections,
-		Expiration: 1 * time.Minute,
-		Storage: redis.New(redis.Config{
-			Host:      host,
-			Password:  password,
-			Port:      port,
-			TLSConfig: &tls.Config{},
-		}),
-		KeyGenerator: func(ctx *fiber.Ctx) string {
-			return ctx.IP()
-		},
-		LimitReached: func(ctx *fiber.Ctx) error {
-			return ctx.Status(fiber.StatusTooManyRequests).JSON(fiber.Map{
-				"error": utils.ErrTooManyRequests.Error(),
-			})
-		},
-	})
-}
-
 // func ConfigRateLimiter() func(ctx *fiber.Ctx) error {
 // 	port, _ := strconv.Atoi(os.Getenv("REDIS_PORT"))
-//     maxConnections, _ := strconv.Atoi(os.Getenv("MAX_CONNECTIONS"))
-    
+// 	maxConnections, _ := strconv.Atoi(os.Getenv("MAX_CONNECTIONS"))
+
 // 	host := os.Getenv("REDIS_HOST")
-//     password := os.Getenv("REDIS_PASSWORD")
+// 	password := os.Getenv("REDIS_PASSWORD")
 
 // 	return limiter.New(limiter.Config{
-// 		Max: maxConnections,
+// 		Max:        maxConnections,
 // 		Expiration: 1 * time.Minute,
 // 		Storage: redis.New(redis.Config{
-// 			Host: host,
-// 			Password: password,
-// 			Port: port,
+// 			Host:      host,
+// 			Password:  password,
+// 			Port:      port,
+// 			TLSConfig: &tls.Config{},
 // 		}),
 // 		KeyGenerator: func(ctx *fiber.Ctx) string {
 // 			return ctx.IP()
@@ -74,3 +47,29 @@ func ConfigRateLimiter() func(ctx *fiber.Ctx) error {
 // 		},
 // 	})
 // }
+
+func ConfigRateLimiter() func(ctx *fiber.Ctx) error {
+	port, _ := strconv.Atoi(os.Getenv("REDIS_PORT"))
+    maxConnections, _ := strconv.Atoi(os.Getenv("MAX_CONNECTIONS"))
+    
+	host := os.Getenv("REDIS_HOST")
+    password := os.Getenv("REDIS_PASSWORD")
+
+	return limiter.New(limiter.Config{
+		Max: maxConnections,
+		Expiration: 1 * time.Minute,
+		Storage: redis.New(redis.Config{
+			Host: host,
+			Password: password,
+			Port: port,
+		}),
+		KeyGenerator: func(ctx *fiber.Ctx) string {
+			return ctx.IP()
+		},
+		LimitReached: func(ctx *fiber.Ctx) error {
+			return ctx.Status(fiber.StatusTooManyRequests).JSON(fiber.Map{
+				"error": utils.ErrTooManyRequests.Error(),
+			})
+		},
+	})
+}

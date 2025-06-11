@@ -21,5 +21,5 @@ func RegisterChatRoutes(apiGroup fiber.Router, db *sqlx.DB) {
 	chatService := service.NewChatService(chatRepistory, wsManager)
 	chatController := controller.NewChatController(chatService)
 
-	apiGroup.Get("/ws", middleware.ProcessWebSocketJWT(), chatController.ConnectToWS)
+	apiGroup.Get("/ws", middleware.ProcessRegularJWT(), chatController.ConnectToWS)
 }

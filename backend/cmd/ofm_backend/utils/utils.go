@@ -9,6 +9,7 @@ import (
 
 	"slices"
 
+	"github.com/gofiber/fiber/v2"
 	"github.com/joho/godotenv"
 )
 
@@ -69,4 +70,14 @@ func Int64ToString(value int64) string {
 
 func IntToString(value int) string {
 	return strconv.Itoa(value)
+}
+
+func GetUserIdFromLocals(paramName string, ctx *fiber.Ctx) (int, error) {
+	var userId int
+	userIdInterface := ctx.Locals("userId")
+	if userIdInterface == nil {
+		return userId, ctx.SendStatus(fiber.StatusUnauthorized)
+	}
+	userId = int(userIdInterface.(float64))
+	return userId, nil
 }

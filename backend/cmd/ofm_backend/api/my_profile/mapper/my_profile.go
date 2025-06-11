@@ -87,3 +87,37 @@ func mapOrderTableDataModelsToDtos(orderTableDataModels []model.OrderTableData) 
 
 	return orderTableDataDtos
 }
+
+func mapOrderChatMessagesToDtos(messageModels []model.ChatMessage) []dto.ChatMessage {
+	messageDtos := make([]dto.ChatMessage, len(messageModels))
+
+	for i, messageModel := range messageModels {
+		messageDtos[i] = dto.ChatMessage{
+			Id:        messageModel.Id,
+			SenderId:  messageModel.SenderId,
+			Content:   messageModel.Content,
+			ContentIV: messageModel.ContentIV,
+			SentAt:    messageModel.SentAt,
+			Files:     *utils.AddServerURLToFiles(&messageModel.Files),
+			Type:      messageModel.Type,
+		}
+	}
+
+	return messageDtos
+}
+
+func MapOrderChatDataModelToDto(orderChatModel *model.OrderChat) *dto.OrderChat {
+	if orderChatModel == nil {
+		return nil
+	}
+
+	return &dto.OrderChat{
+		ChatPartner: dto.ChatPartner{
+			Id:         orderChatModel.ChatPartner.Id,
+			Username:   orderChatModel.ChatPartner.Username,
+			Avatar:     *utils.AddServerURLToFiles[*string](&orderChatModel.ChatPartner.Avatar),
+			LastSeenAt: orderChatModel.ChatPartner.LastSeenAt,
+		},
+		Messages: mapOrderChatMessagesToDtos(orderChatModel.Messages),
+	}
+}

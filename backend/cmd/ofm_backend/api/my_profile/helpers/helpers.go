@@ -84,7 +84,7 @@ func ParseMyProfileChatByOrderIdFromRows(rows *sqlx.Rows) (*model.OrderChat, err
 	var chatPartnherJSON []byte
 	var chatMessagesJSON []byte
 	var chatPartner model.ChatPartner
-	var chatMessages = make([]model.ChatMessage, 0)
+	var rawChatMessages = make([]model.ChatMessageRaw, 0)
 
 	if !rows.Next() {
 		return nil, utils.ErrNoDataFound
@@ -99,7 +99,12 @@ func ParseMyProfileChatByOrderIdFromRows(rows *sqlx.Rows) (*model.OrderChat, err
 		return nil, err
 	}
 
-	if err := json.Unmarshal(chatMessagesJSON, &chatMessages); err != nil {
+	if err := json.Unmarshal(chatMessagesJSON, &rawChatMessages); err != nil {
+		return nil, err
+	}
+
+	chatMessages, err := ConvertRawChatMessages(rawChatMessages)
+	if err != nil {
 		return nil, err
 	}
 
@@ -107,6 +112,34 @@ func ParseMyProfileChatByOrderIdFromRows(rows *sqlx.Rows) (*model.OrderChat, err
 		ChatPartner: chatPartner,
 		Messages:    chatMessages,
 	}, nil
+}
+
+func ConvertRawChatMessages(rawMessages []model.ChatMessageRaw) ([]model.ChatMessage, error) {
+	var chatMessages = make([]model.ChatMessage, len(rawMessages))
+
+	for i, msg := range rawMessages {
+		decodedContent, err := utils.ConvertBase64ToBytes(msg.Content)
+		if err != nil {
+			return nil, err
+		}
+
+		decodedContentIV, err := utils.ConvertBase64ToBytes(msg.ContentIV)
+		if err != nil {
+			return nil, err
+		}
+
+		chatMessages[i] = model.ChatMessage{
+			Id:        msg.Id,
+			SenderId:  msg.SenderId,
+			Content:   decodedContent,
+			ContentIV: decodedContentIV,
+			SentAt:    msg.SentAt,
+			Files:     msg.Files,
+			Type:      msg.Type,
+		}
+	}
+
+	return chatMessages, nil
 }
 
 func ParseMyProfileRequestsParams(ctx *fiber.Ctx) (*dto.MyProfileParams, error) {

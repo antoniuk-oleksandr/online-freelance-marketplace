@@ -9,5 +9,5 @@ type MyProfileRepository interface {
 	GetMyProfileOrders(params *dto.MyProfileParams) (*model.OrdersData, error)
 	GetMyProfileServices(params *dto.MyProfileParams) (*model.ServicesData, error)
 	GetMyProfileRequests(params *dto.MyProfileParams) (*model.RequestsData, error)
-	GetMyProfileChatByOrderId(orderId int) (*model.OrderChat, error)
+	GetMyProfileChatByOrderId(orderId int, userId int) (*model.OrderChat, error)
 }

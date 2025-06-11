@@ -3,17 +3,23 @@ package queries
 var GetMyProfileChatByOrderIdQuery = `
 WITH chat_partner_data AS (
     SELECT
-        U.user_id, U.username,
-        F.name as avatar,
+        U.user_id,
+        U.username,
+        F.name AS avatar,
         TO_CHAR(U.last_seen_at AT TIME ZONE 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS.US"Z"') AS last_seen_at
     FROM orders O
-    INNER JOIN users U ON U.user_id = O.freelancer_id
-    LEFT JOIN files F ON f.file_id = U.avatar_id
+    JOIN users U ON (
+        (O.customer_id = $2 AND U.user_id = O.freelancer_id) OR
+        (O.freelancer_id = $2 AND U.user_id = O.customer_id)
+    )
+    LEFT JOIN files F ON F.file_id = U.avatar_id
     WHERE O.order_id = $1
 ),
 messages_data AS (
     SELECT
-        CM.chat_message_id, CM.sender_id, CM.content,
+        CM.chat_message_id, CM.sender_id, 
+        encode(CM.content, 'base64') as content,
+        encode(CM.content_iv, 'base64') as content_iv,
         TO_CHAR(CM.sent_at AT TIME ZONE 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS.US"Z"') AS sent_at,
         CM.type,
         COALESCE(json_agg(F.name) FILTER (WHERE F.name IS NOT NULL), '[]') AS files
@@ -23,6 +29,7 @@ messages_data AS (
     LEFT JOIN files F ON F.file_id = CMF.file_id
     WHERE O.order_id = $1
     GROUP BY CM.chat_message_id, CM.sender_id, CM.content, CM.sent_at, CM.type
+    ORDER BY CM.sent_at
 )
 
 SELECT
@@ -35,18 +42,22 @@ SELECT json_build_object(
 ) as chat_partner
 FROM chat_partner_data CPD
 ),
-(
-SELECT json_agg(
-    json_build_object(
-        'chat_message_id', MD.chat_message_id,
-        'sender_id', MD.sender_id,
-        'content', MD.content,
-        'sent_at', MD.sent_at,
-        'files', MD.files,
-        'type', MD.type
-    )
+COALESCE(
+    (
+        SELECT json_agg(
+            json_build_object(
+                'chat_message_id', MD.chat_message_id,
+                'sender_id', MD.sender_id,
+                'content', MD.content,
+                'content_iv', MD.content_iv,
+                'sent_at', MD.sent_at,
+                'files', MD.files,
+                'type', MD.type
+            )
+        )
+        FROM messages_data MD
+        WHERE MD.chat_message_id IS NOT NULL
+    ),
+    '[]'::json
 ) as messages
-FROM messages_data MD
-)
-
 `

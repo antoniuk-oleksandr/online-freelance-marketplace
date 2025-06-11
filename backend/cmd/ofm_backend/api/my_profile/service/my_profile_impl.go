@@ -4,7 +4,6 @@ import (
 	"ofm_backend/cmd/ofm_backend/api/my_profile/dto"
 	"ofm_backend/cmd/ofm_backend/api/my_profile/helpers"
 	"ofm_backend/cmd/ofm_backend/api/my_profile/mapper"
-	"ofm_backend/cmd/ofm_backend/api/my_profile/model"
 	"ofm_backend/cmd/ofm_backend/api/my_profile/repository"
 )
 
@@ -79,6 +78,11 @@ func (mps *myProfileService) GetMyProfileRequests(params *dto.MyProfileParams) (
 	return ordersReponse, nil
 }
 
-func (mps *myProfileService) GetMyProfileChatByOrderId(orderId int) (*model.OrderChat, error) {
-	return mps.myProfileRepository.GetMyProfileChatByOrderId(orderId)
+func (mps *myProfileService) GetMyProfileChatByOrderId(orderId int, userId int) (*dto.OrderChat, error) {
+	orderChatModel, err := mps.myProfileRepository.GetMyProfileChatByOrderId(orderId, userId)
+	if err != nil {
+		return nil, err
+	}
+
+	return mapper.MapOrderChatDataModelToDto(orderChatModel), nil
 }
