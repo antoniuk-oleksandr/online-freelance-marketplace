@@ -15,6 +15,7 @@ import (
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
 	"github.com/google/uuid"
+	"github.com/jmoiron/sqlx"
 )
 
 type fileService struct {
@@ -59,10 +60,10 @@ func (fileService *fileService) UploadFiles(files []*multipart.FileHeader) error
 	return nil
 }
 
-func (fileService *fileService) SaveFilesMetaData(files []*multipart.FileHeader) ([]int, error) {
+func (fileService *fileService) SaveFilesMetaData(tx *sqlx.Tx, files []*multipart.FileHeader) ([]int, error) {
 	fileData := helpers.MakeFileData(files)
 
-	fileIds, err := fileService.fileRepository.AddFiles(fileData)
+	fileIds, err := fileService.fileRepository.AddFiles(tx, fileData)
 	if err != nil {
 		return nil, err
 	}
@@ -70,7 +71,7 @@ func (fileService *fileService) SaveFilesMetaData(files []*multipart.FileHeader)
 	return fileIds, nil
 }
 
-func (fileService *fileService) UploadFromURLWithoutTransaction(picURL string) (int, string, error) {
+func (fileService *fileService) UploadFromURLWithoutTransaction(tx *sqlx.Tx, picURL string) (int, string, error) {
 	ctx := context.Background()
 
 	resp, err := http.Get(picURL)
@@ -113,7 +114,7 @@ func (fileService *fileService) UploadFromURLWithoutTransaction(picURL string) (
 		return -1, "", fmt.Errorf("failed to upload to S3: %w", err)
 	}
 
-	fileIDs, err := fileService.fileRepository.AddFiles([]model.FileData{
+	fileIDs, err := fileService.fileRepository.AddFiles(tx, []model.FileData{
 		{Name: filename},
 	})
 	if err != nil || len(fileIDs) == 0 {

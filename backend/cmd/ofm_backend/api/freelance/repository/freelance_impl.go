@@ -2,6 +2,7 @@ package repository
 
 import (
 	"encoding/json"
+	"log"
 	"ofm_backend/cmd/ofm_backend/api/freelance/model"
 	"ofm_backend/cmd/ofm_backend/api/freelance/utils"
 	main_utils "ofm_backend/cmd/ofm_backend/utils"
@@ -62,6 +63,7 @@ func (fr *freelanceRepository) GetFreelanceServiceById(id int) (*model.Freelance
 		&freelance.Title, &freelance.ReviewsCount, &freelance.Rating,
 		&imagesJSON, &categoryJSON, &packagesJSON, &freelancerJSON,
 	); err != nil {
+		log.Println("scan err", err)
 		return nil, err
 	}
 

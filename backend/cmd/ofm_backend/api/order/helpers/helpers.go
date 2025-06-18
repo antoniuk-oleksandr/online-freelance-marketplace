@@ -1,12 +1,8 @@
 package helpers
 
 import (
-	"mime/multipart"
 	"ofm_backend/cmd/ofm_backend/api/order/body"
 	"ofm_backend/cmd/ofm_backend/api/order/model"
-	"path/filepath"
-
-	"github.com/google/uuid"
 )
 
 func MakeOrderAnswerData(
@@ -37,16 +33,4 @@ func MakeOrderFilesData(orderId int, fileIds []int) []model.OrderFile {
 	}
 
 	return orderFilesData
-}
-
-func RenameFilesWithUUID(files []*multipart.FileHeader) {
-	for _, file := range files {
-		file.Filename = generateUUIDFilename(file)
-	}
-}
-
-func generateUUIDFilename(file *multipart.FileHeader) string {
-	fileUuid := uuid.New()
-	ext := filepath.Ext(file.Filename)
-	return fileUuid.String() + ext
 }

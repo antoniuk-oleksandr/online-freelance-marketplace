@@ -5,7 +5,7 @@ import (
 	"os"
 
 	"github.com/jmoiron/sqlx"
-	_ "github.com/lib/pq"
+	_ "github.com/jackc/pgx/v5/stdlib"
 )
 
 var db *sqlx.DB
@@ -21,7 +21,7 @@ func ConnectToPostgresDB() *sqlx.DB {
 	connectionString := fmt.Sprintf("postgres://%s:%s@%s:%s/%s?sslmode=%s", dbUser, dbPassword, dbHost, dbPort, dbName, dbSSLMode)
 
 	var err error
-	db, err = sqlx.Connect("postgres", connectionString)
+	db, err = sqlx.Connect("pgx", connectionString)
 	if err != nil {
 		panic(err)
 	}

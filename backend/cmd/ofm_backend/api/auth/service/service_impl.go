@@ -140,7 +140,7 @@ func (as *authService) HandleUserAccount(
 	}
 
 	// avatarId := 1
-	avatarId, fileName, err := as.fileService.UploadFromURLWithoutTransaction(googleUserInfo.Picture)
+	avatarId, fileName, err := as.fileService.UploadFromURLWithoutTransaction(tx, googleUserInfo.Picture)
 	if err != nil {
 		as.authRepository.RollbackTransaction(tx)
 		return -1, err

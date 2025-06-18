@@ -164,3 +164,39 @@ func ParseMyProfileRequestsParams(ctx *fiber.Ctx) (*dto.MyProfileParams, error) 
 
 	return &myProfileParams, nil
 }
+
+func GetOrderAndUserIds(ctx *fiber.Ctx) (int, int, error) {
+	orderId, err := strconv.Atoi(ctx.Params("orderId"))
+	if err != nil {
+		return 0, 0, utils.ErrInvalidPathParam
+	}
+
+	userId, ok := ctx.Locals("userId").(float64)
+	if !ok || userId <= 0 {
+		return 0, 0, utils.ErrUserNotFound
+	}
+
+	return orderId, int(userId), nil
+}
+
+func GetOrderId(ctx *fiber.Ctx) (int, error) {
+	orderId, err := strconv.Atoi(ctx.Params("orderId"))
+	if err != nil {
+		return 0, utils.ErrInvalidPathParam
+	}
+
+	return orderId, nil
+}
+
+func CreateDeliveryFiles(deliveryId int, filesIds []int) []model.DeliveryFile {
+	var deliveryFiles []model.DeliveryFile = make([]model.DeliveryFile, len(filesIds))
+
+	for index, fileId := range filesIds {
+		deliveryFiles[index] = model.DeliveryFile{
+			DeliveryId: deliveryId,
+			FileId:     fileId,
+		}
+	}
+
+	return deliveryFiles
+}

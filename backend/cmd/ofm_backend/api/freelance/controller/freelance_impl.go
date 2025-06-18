@@ -28,7 +28,7 @@ func (fc *freelanceController) GetResrictedFreelanceById(ctx *fiber.Ctx) error {
 			"error": utils.ErrUnexpectedError.Error(),
 		})
 	}
-	
+
 	freelanceByID, err := fc.service.GetResrictedFreelanceById(id)
 	if err != nil {
 		if errors.Is(err, utils.ErrNotFound) {
@@ -65,6 +65,7 @@ func (fc *freelanceController) GetFreelanceById(ctx *fiber.Ctx) error {
 			"error": utils.ErrUnexpectedError.Error(),
 		})
 	}
+
 
 	return ctx.Status(fiber.StatusOK).JSON(freelanceByID)
 }

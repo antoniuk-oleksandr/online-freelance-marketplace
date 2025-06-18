@@ -121,3 +121,31 @@ func MapOrderChatDataModelToDto(orderChatModel *model.OrderChat) *dto.OrderChat 
 		Messages: mapOrderChatMessagesToDtos(orderChatModel.Messages),
 	}
 }
+
+func MapMyProfileOrderOverviewModelToDto(
+	orderOverviewModel *model.OrderOverview,
+) dto.OrderOverview {
+	return dto.OrderOverview{
+		Id:           orderOverviewModel.Id,
+		DeliveryDate: orderOverviewModel.DeliveryDate,
+		CreatedAt:    orderOverviewModel.CreatedAt,
+		Subtotal:     orderOverviewModel.Subtotal,
+		ServiceFee:   orderOverviewModel.ServiceFee,
+		TotalPrice:   orderOverviewModel.TotalPrice,
+		Status:       orderOverviewModel.Status,
+		OrderOverviewService: dto.OrderOverviewService{
+			Image: *utils.AddServerURLToFiles(&orderOverviewModel.OrderOverviewService.Image),
+			Title: orderOverviewModel.OrderOverviewService.Title,
+			Package: dto.OrderOverviewServicePackage{
+				Description:  orderOverviewModel.OrderOverviewService.Package.Description,
+				Name:         orderOverviewModel.OrderOverviewService.Package.Name,
+				DeliveryTime: orderOverviewModel.OrderOverviewService.Package.DeliveryTime,
+			},
+		},
+		OrderOverviewFreelancer: dto.OrderOverviewFreelancer{
+			Username: orderOverviewModel.OrderOverviewFreelancer.Username,
+			Id:       orderOverviewModel.OrderOverviewFreelancer.Id,
+			Avatar:   *utils.AddServerURLToFiles(&orderOverviewModel.OrderOverviewFreelancer.Avatar),
+		},
+	}
+}

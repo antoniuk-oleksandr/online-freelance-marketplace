@@ -8,6 +8,7 @@ import (
 	"ofm_backend/cmd/ofm_backend/api/order/mapper"
 	"ofm_backend/cmd/ofm_backend/api/order/repository"
 	"ofm_backend/cmd/ofm_backend/enum"
+	"ofm_backend/cmd/ofm_backend/utils"
 )
 
 type orderService struct {
@@ -59,9 +60,9 @@ func (os *orderService) SubmitOrderRequirements(
 }
 
 func (os *orderService) AttachOrderFiles(orderRequirementsBody *body.OrderRequirementsBody) error {
-	helpers.RenameFilesWithUUID(orderRequirementsBody.Files)
+	utils.RenameFilesWithUUID(orderRequirementsBody.Files)
 
-	fileIds, err := os.fileService.SaveFilesMetaData(orderRequirementsBody.Files)
+	fileIds, err := os.fileService.SaveFilesMetaData(nil, orderRequirementsBody.Files)
 	if err != nil {
 		return err
 	}

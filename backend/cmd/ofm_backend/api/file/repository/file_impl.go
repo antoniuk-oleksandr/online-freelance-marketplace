@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"ofm_backend/cmd/ofm_backend/api/file/helpers"
 	"ofm_backend/cmd/ofm_backend/api/file/model"
 	"ofm_backend/cmd/ofm_backend/api/file/queries"
 
@@ -18,9 +19,11 @@ func NewFileRepository(db *sqlx.DB) FileRepository {
 }
 
 func (fileRepository *fileRepository) AddFiles(
-	fileData []model.FileData,
+	tx *sqlx.Tx, fileData []model.FileData,
 ) ([]int, error) {
-	rows, err := fileRepository.db.NamedQuery(queries.AddFilesQuery, fileData)
+	db := helpers.ResolveTx(tx, fileRepository.db)
+
+	rows, err := db.NamedQuery(queries.AddFilesQuery, fileData)
 	if err != nil {
 		return nil, err
 	}

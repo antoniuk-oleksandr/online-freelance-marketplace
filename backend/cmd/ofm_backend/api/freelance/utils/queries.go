@@ -93,6 +93,7 @@ FROM orders OI
 WHERE
     OI.service_id = $1
     AND OI.ended_at IS NOT NULL
+    AND R.review_id IS NOT NULL
     AND (
            ($2 = '' OR $2 IS NULL OR $3 = -1 OR $3 IS NULL)
            OR (

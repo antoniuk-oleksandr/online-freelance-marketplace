@@ -37,9 +37,16 @@ func FormatHtml(
 }
 
 func formatOrderDate(date time.Time, userTimezone string) string {
-	location, _ := time.LoadLocation(userTimezone)
-	localTime := date.In(location)
+	if date.Location() == nil {
+		date = date.UTC() // Default to UTC if no location is set
+	}
 
+	location, err := time.LoadLocation(userTimezone)
+	if err != nil {
+		location = time.UTC
+	}
+
+	localTime := date.In(location)
 	return localTime.Format("2006-01-02 15:04:05")
 }
 

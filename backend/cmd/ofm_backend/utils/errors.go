@@ -28,7 +28,7 @@ var (
 	ErrSessionCacheNotFound = errors.New("Session cache not found")
 	ErrInvalidSessionCache  = errors.New("Invalid session cache")
 	ErrInvalidPublicKey     = errors.New("Invalid public key")
-	
+
 	// User
 	ErrUserNotFound = errors.New("User not found")
 
@@ -55,7 +55,10 @@ var (
 	ErrFailedFileUploadRequest = errors.New("Failed to upload file")
 
 	//My Profile Errors
-	ErrNoDataFound = errors.New("No data found")
+	ErrNoDataFound         = errors.New("No data found")
+	ErrCompletingOrder     = errors.New("Error while completing order")
+	ErrAddingDeliveryFiles = errors.New("Error while adding delivery files")
+	ErrOrderReviewNotFound = errors.New("Order review not found")
 
 	//Chat Errors
 	ErrBadUserIdQueryFormat = errors.New("Bad user id query format")

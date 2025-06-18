@@ -1,6 +1,8 @@
 package utils
 
 import (
+	"mime/multipart"
+	"path/filepath"
 	"strconv"
 	"time"
 
@@ -10,6 +12,7 @@ import (
 	"slices"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/google/uuid"
 	"github.com/joho/godotenv"
 )
 
@@ -80,4 +83,16 @@ func GetUserIdFromLocals(paramName string, ctx *fiber.Ctx) (int, error) {
 	}
 	userId = int(userIdInterface.(float64))
 	return userId, nil
+}
+
+func RenameFilesWithUUID(files []*multipart.FileHeader) {
+	for _, file := range files {
+		file.Filename = generateUUIDFilename(file)
+	}
+}
+
+func generateUUIDFilename(file *multipart.FileHeader) string {
+	fileUuid := uuid.New()
+	ext := filepath.Ext(file.Filename)
+	return fileUuid.String() + ext
 }

@@ -2,6 +2,7 @@ package controller
 
 import (
 	"errors"
+	"log"
 	"ofm_backend/cmd/ofm_backend/api/auth/body"
 	"ofm_backend/cmd/ofm_backend/api/auth/helpers"
 	"ofm_backend/cmd/ofm_backend/api/auth/service"
@@ -189,6 +190,7 @@ func (ac *authController) Session(ctx *fiber.Ctx) error {
 
 	userSessionData, err := ac.authService.GetUserSessionData(userId)
 	if err != nil {
+		log.Println("err", err)
 		return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"error": utils.ErrUnexpectedError.Error(),
 		})

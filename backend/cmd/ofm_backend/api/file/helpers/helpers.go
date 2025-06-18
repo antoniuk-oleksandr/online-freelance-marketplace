@@ -9,6 +9,8 @@ import (
 	"ofm_backend/cmd/ofm_backend/api/file/model"
 	"ofm_backend/cmd/ofm_backend/utils"
 	"os"
+
+	"github.com/jmoiron/sqlx"
 )
 
 func MakeFileData(files []*multipart.FileHeader) []model.FileData {
@@ -76,4 +78,11 @@ func getFileServerURL() (string, error) {
 	}
 
 	return fmt.Sprintf("%s/upload", fileHost), nil
+}
+
+func ResolveTx(tx *sqlx.Tx, db *sqlx.DB) model.NamedQuerier {
+	if tx != nil {
+		return tx
+	}
+	return db
 }

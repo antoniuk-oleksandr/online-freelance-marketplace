@@ -5,11 +5,9 @@ WORKDIR /app
 
 # Copy go.mod and go.sum files
 COPY go.mod go.sum ./
-
-# Download dependencies
 RUN go mod download
 
-# Copy the rest of the app source code
+# Copy the rest of the app source code, including keys
 COPY . .
 
 # Build the app
@@ -26,7 +24,12 @@ RUN apk --no-cache add ca-certificates
 # Copy binary from builder
 COPY --from=builder /app/app .
 
-# Expose the port your Fiber app runs on (default is 3000)
+# 🔑 Copy keys from builder stage
+COPY --from=builder /app/keys ./keys
+COPY --from=builder /app/internal ./internal
+COPY --from=builder /app/cmd ./cmd
+
+# Expose the port your Fiber app runs on (default is 3000 or 8000)
 EXPOSE 8000
 
 # Run the app

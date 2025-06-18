@@ -1,6 +1,7 @@
 package main
 
 import (
+	"log"
 	auth_routes "ofm_backend/cmd/ofm_backend/api/auth/routes"
 	chat_routes "ofm_backend/cmd/ofm_backend/api/chat/routes"
 	filter_params_routes "ofm_backend/cmd/ofm_backend/api/filter_params/routes"
@@ -21,11 +22,14 @@ import (
 
 func main() {
 	utils.LoadEnvValues()
-	
+
 	s3Client := config.InitS3Client()
 	rsa_encryption.TryToLoadRSAKeys()
 	posgresqlDb := database.ConnectToPostgresDB()
-	redisDb := database.ConnectToRedisDB()
+	redisDb, err := database.ConnectToRedisDB()
+	if err != nil {
+		log.Fatal("redisDb err:", err)
+	}
 	defer func() {
 		posgresqlDb.Close()
 		redisDb.Close()
@@ -44,7 +48,7 @@ func main() {
 	home_data_routes.RegisterHomeDataRoutes(apiGroup, posgresqlDb)
 	payment_routes.RegisterPaymentRoutes(apiGroup, posgresqlDb)
 	order_routes.RegisterOrderRoutes(apiGroup, posgresqlDb, s3Client)
-	my_profile_routes.RegisterMyProfileRoutes(apiGroup, posgresqlDb)
+	my_profile_routes.RegisterMyProfileRoutes(apiGroup, posgresqlDb, s3Client)
 	chat_routes.RegisterChatRoutes(apiGroup, posgresqlDb)
 
 	app.Listen(":8000")

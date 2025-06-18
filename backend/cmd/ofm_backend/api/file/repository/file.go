@@ -7,7 +7,7 @@ import (
 )
 
 type FileRepository interface {
-	AddFiles(fileData []model.FileData) ([]int, error)
+	AddFiles(tx *sqlx.Tx, fileData []model.FileData) ([]int, error)
 	DeleteFile(fileId int) error
 	StartTransaction() (*sqlx.Tx, error)
 	RollbackTransaction(tx *sqlx.Tx) error
