@@ -5,8 +5,9 @@
 
   type TabElementListProps = {
     tabs: TabType[]
-    activeTabIndex: number
-    setActiveTabIndex: (index: number) => void
+    tabIndex: number
+    setTabIndex: (index: number) => void
+    elementStyles?: string
   }
 
   const { tabs, ...rest }: TabElementListProps = $props()

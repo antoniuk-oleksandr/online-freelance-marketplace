@@ -17,10 +17,10 @@
 <ModalBackdrop {modalContentRef} {modalData}>
   <div
     bind:this={modalContentRef}
-    class="w-[90%] max-w-xl sm:w-[70%] lg:w-[40%] h-auto max-h-[75vh]"
+    class="w-full max-w-[min(100%,45rem)] h-fit max-h-[100svh-3rem] md:max-h-[75vh] grid place-items-center"
     transition:flyFade={{ y: 10, duration: 300 }}
   >
-    <PaperElement styles="!p-0 text-base size-full shadow-lg">
+    <PaperElement styles="!p-0 text-base size-full !max-h-[calc(100svh-3rem)] shadow-lg overflow-y-auto">
       {@render children()}
     </PaperElement>
   </div>

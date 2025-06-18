@@ -5,9 +5,10 @@
         fraction?: number,
         count?: number,
         value: number,
+        iconStyles?: string
     }
 
-    const {count = 5, value}: RatingProps = $props();
+    const {count = 5, value, iconStyles = ""}: RatingProps = $props();
     const isFraction = value % 1 !== 0 && value % 1 >= 0.5;
 </script>
 
@@ -16,12 +17,12 @@
         {#if isFraction && index === Math.floor(value)}
             <div class="relative">
                 <div class="absolute left-0 top-0 w-[8px] overflow-hidden">
-                    <Icon class="text-yellow-500 " icon="mingcute:star-fill"/>
+                    <Icon class="text-yellow-500 {iconStyles}" icon="mingcute:star-fill"/>
                 </div>
-                <Icon class="text-neutral-500" icon="mingcute:star-fill"/>
+                <Icon class="text-neutral-500 {iconStyles}" icon="mingcute:star-fill"/>
             </div>
         {:else}
-            <Icon class={index + 1 <= value ? 'text-yellow-500' : 'text-neutral-500'} icon="mingcute:star-fill"/>
+            <Icon class="{iconStyles} {index + 1 <= value ? 'text-yellow-500' : 'text-neutral-500'}" icon="mingcute:star-fill"/>
         {/if}
     {/each}
 </div>

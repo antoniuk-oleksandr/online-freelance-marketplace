@@ -7,11 +7,13 @@
     getInitialTabComponentsData,
     getOrderByIdTabData,
     handleOrderByIdTabChange,
+    processOrderTabComponentsData,
   } from './helpers'
-  import { onDestroy } from 'svelte'
+  import { onDestroy, onMount } from 'svelte'
   import type { MyProfileOrderByIdData } from '@/types/MyProfileOrderByIdData'
   import MyProfileOrderByIdPageLayout from '../../../orders/sub-pages/order-by-id/MyProfileOrderByIdPageLayout.svelte'
   import OrderByIdSidebar from '../../../orders/sub-pages/order-by-id/components/OrderByIdSidebar/OrderByIdSidebar.svelte'
+  import { orderByIdSidebarStore } from '../../../orders/sub-pages/order-by-id/stores/order-by-id-sidebar-store'
 
   type MyProfileOrderByIdPageProps = {
     orderId: string
@@ -22,14 +24,22 @@
   let tabComponentsData = $state<MyProfileOrderByIdData>(getInitialTabComponentsData())
   const setTabComponentsData = (value: MyProfileOrderByIdData) => (tabComponentsData = value)
 
+  const unsubOrderStore = orderByIdSidebarStore.subscribe((value) => {
+    tabComponentsData = processOrderTabComponentsData(tabComponentsData, value)
+  })
+
   let tabIndex = $state(-1)
   const setTabIndex = (value: number) => (tabIndex = value)
 
-  const unsubscribe = useRouter().routerBase.subscribe((route) => {
+  const unsubRouterBase = useRouter().routerBase.subscribe((route) => {
     fetchOrderTabData(route, orderId, setTabIndex, tabComponentsData, setTabComponentsData)
   })
 
-  onDestroy(() => unsubscribe())
+  onMount(() => orderByIdSidebarStore.set(undefined))
+  onDestroy(() => {
+    unsubRouterBase()
+    unsubOrderStore()
+  })
 
   const tabsData: TabType[] = $derived(getOrderByIdTabData(tabComponentsData))
 </script>
@@ -39,10 +49,10 @@
     <Tabs
       orderId={parseInt(orderId)}
       {tabComponentsData}
-      tabChangeAction={(tabIndex) => handleOrderByIdTabChange(orderId, tabIndex)}
-      initialActiveTabIndex={tabIndex}
+      setTabIndex={(tabIndex) => handleOrderByIdTabChange(orderId, tabIndex)}
+      {tabIndex}
       tabs={tabsData}
     />
-    <OrderByIdSidebar orderData={tabComponentsData[0]} />
+    <OrderByIdSidebar showOrderByIdSidebarSelect {orderId} orderData={tabComponentsData[0]} />
   </MyProfileOrderByIdPageLayout>
 {/if}

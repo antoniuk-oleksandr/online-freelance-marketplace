@@ -2,11 +2,12 @@
   type InputErrorProps = {
     wasSubmitted: boolean
     error: string | null | undefined
+    styles?: string
   }
 
-  const { wasSubmitted, error }: InputErrorProps = $props()
+  const { wasSubmitted, error, styles = '' }: InputErrorProps = $props()
 </script>
 
 {#if wasSubmitted && error}
-  <span class="text-red-500 text-sm">{error}</span>
+  <span class="{styles} text-red-500 text-sm">{error}</span>
 {/if}

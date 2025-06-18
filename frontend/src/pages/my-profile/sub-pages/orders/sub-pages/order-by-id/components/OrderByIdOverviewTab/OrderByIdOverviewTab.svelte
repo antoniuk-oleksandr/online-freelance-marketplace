@@ -23,8 +23,10 @@
           <Title text={response.data.service.title} />
           <div class="grid grid-cols-two-columns-with-divider md:flex gap-6">
             <OrderByIdOverviewTabFreelancerInfo freelancer={response.data.freelancer} />
-            <DividerElement orientation="vertical" />
-            <OrderByIdOverviewTabDeliveryDate deliveryDate={response.data.deliveryDate} />
+            {#if response.data.deliveryDate !== null}
+              <DividerElement orientation="vertical" />
+              <OrderByIdOverviewTabDeliveryDate deliveryDate={response.data.deliveryDate} />
+            {/if}
           </div>
         </div>
         <OrderByIdOverviewTabTotalPrice totalPrice={response.data.totalPrice} />

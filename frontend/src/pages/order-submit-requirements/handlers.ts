@@ -1,6 +1,8 @@
 import { request } from "@/api/request";
+import { errorStore } from "@/common-stores/error-store";
 import type { OrderSubmitRequirementsFormData } from "@/types/OrderSubmitRequirementsFormData";
-import Cookies from "js-cookie";
+import type { PostRequirementsByOrderIdRequestResponse } from "@/types/PostRequirementsByOrderIdRequestResponse";
+import { navigate } from "svelte-routing";
 
 export const handleOrderSubmitRequirementsFormSubmit = async (
   data: OrderSubmitRequirementsFormData
@@ -13,5 +15,8 @@ export const handleOrderSubmitRequirementsFormSubmit = async (
     formData.append("files", file);
   })
 
-  const response = await request("POST", `/orders/${data.orderId}/requirements`, formData, true)
+  const response = await request<PostRequirementsByOrderIdRequestResponse>("POST", `/orders/${data.orderId}/requirements`, formData, true)
+  if (response.status !== 200) {
+    errorStore.set({ shown: true, error: response.data.error });
+  } else navigate(`/my-profile/orders/${data.orderId}`);
 }

@@ -2,7 +2,7 @@ import type { StatusEnum } from "./StatusEnum";
 
 export type OrderByIdOverviewTabData = {
   id: number,
-  deliveryDate: number,
+  deliveryDate: string,
   createdAt: number,
   totalPrice: number,
   status: StatusEnum,

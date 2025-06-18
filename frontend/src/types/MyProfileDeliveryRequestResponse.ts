@@ -1,8 +1,8 @@
-import type { OrderByIdDeliveryTabData } from "./OrderByIdDeliveryTabData"
+import type { DeliveryData } from "./DeliveryData"
 import type { ResponseError } from "./ResponseErrorEnum"
 
 export type MyProfileDeliveryRequestResponse = {
-  data: OrderByIdDeliveryTabData,
+  data: DeliveryData,
   status: 200
 } | {
   data: ResponseError,

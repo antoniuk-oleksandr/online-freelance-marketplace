@@ -9,19 +9,22 @@ import { orderByIdOverviewTabComponent } from '../../../orders/sub-pages/order-b
 // @ts-ignore
 import { orderByIdRequirementsTabComponent } from '../../../orders/sub-pages/order-by-id/components/OrderByIdRequirementsTab/OrderByIdRequirementsTab.svelte'
 // @ts-ignore
-import { orderByIdDeliveryTabComponent } from '../../../orders/sub-pages/order-by-id/components/OrderByIdDeliveryTab/OrderByIdDeliveryTab.svelte'
-import { StatusEnum } from "@/types/StatusEnum"
-import { round } from "@/utils/utils"
-import type { MyProfileOverviewRequestResponse } from "@/types/MyProfileOverviewRequestResponse"
+import { requestByIdDeliveryTabComponent } from './components/RequestByIdDeliveryTab/RequestByIdDeliveryTab.svelte'
+// @ts-ignore
+import { requestByIdReviewTabComponent } from './components/RequestByIdReviewTab/RequestByIdReviewTab.svelte'
 import type { MyProfileOrderByIdData } from "@/types/MyProfileOrderByIdData"
 import type { RouterBase } from "svelte-routing/types/RouterContext"
 import { SvelteURLSearchParams } from "svelte/reactivity"
 import { makeMyProfileChatRequest } from "../../../orders/sub-pages/order-by-id/components/OrderByIdChatTab/helpers"
 import { makeMyProfileDeliveryRequest } from "../../../orders/sub-pages/order-by-id/components/OrderByIdDeliveryTab/helpers"
 import { makeMyProfileDiaryRequest } from "../../../orders/sub-pages/order-by-id/components/OrderByIdDiaryTab/helpers"
-import { makeMyProfileRequirementsRequest } from "../../../orders/sub-pages/order-by-id/components/OrderByIdRequirementsTab/helprers"
+import { makeMyProfileRequirementsRequest } from "../../../orders/sub-pages/order-by-id/components/OrderByIdRequirementsTab/helpers"
+import { makeMyProfileOverviewRequest } from "../../../orders/sub-pages/order-by-id/helpers"
+import type { OrderByIdSidebarStore } from "@/types/OrderByIdSidebarStore"
+import { makeMyProfileReviewRequest } from "./components/RequestByIdReviewTab/helpers"
 
 export const getInitialTabComponentsData = (): MyProfileOrderByIdData => [
+    undefined,
     undefined,
     undefined,
     undefined,
@@ -30,7 +33,7 @@ export const getInitialTabComponentsData = (): MyProfileOrderByIdData => [
 ]
 
 export const handleOrderByIdTabChange = (orderId: string, tabIndex: number) => {
-    navigate(`/my-profile/orders/${orderId}?tabIndex=${tabIndex}`)
+    navigate(`/my-profile/requests/${orderId}?tabIndex=${tabIndex}`)
 }
 
 export const getOrderByIdTabData = (tabComponentsData: MyProfileOrderByIdData): TabType[] => [
@@ -61,40 +64,16 @@ export const getOrderByIdTabData = (tabComponentsData: MyProfileOrderByIdData): 
     {
         title: 'Delivery',
         //@ts-ignore
-        component: orderByIdDeliveryTabComponent,
-        icon: 'hugeicons:package'
+        component: requestByIdDeliveryTabComponent,
+        icon: 'hugeicons:package',
     },
-]
-
-export const makeMyProfileOverviewRequest = async (id: string): Promise<MyProfileOverviewRequestResponse> => {
-
-    return {
-        data: {
-            id: 73,
-            deliveryDate: 1741118830000,
-            createdAt: 1740859630000,
-            subtotal: 49.99,
-            serviceFee: round(49.99 * 0.05, 2),
-            totalPrice: round(49.99 + 49.99 * 0.05, 2),
-            status: StatusEnum.InProgress,
-            service: {
-                image: 'http://localhost:8030/files/image_2.jpg',
-                title: 'Professional Logo Design',
-                package: {
-                    description: 'Get a professional logo design design design design design design design design design design',
-                    name: 'Premium',
-                    deliveryTime: 3,
-                },
-            },
-            freelancer: {
-                username: 'name',
-                id: 1,
-                avatar: 'http://localhost:8030/files/avatar_2.jpg',
-            }
-        },
-        status: 200
+    {
+        title: 'Review',
+        //@ts-ignore
+        component: requestByIdReviewTabComponent,
+        icon: 'hugeicons:star'
     }
-}
+]
 
 export const fetchOrderTabData = (
     route: RouterBase,
@@ -118,6 +97,7 @@ export const fetchOrderTabData = (
         makeMyProfileChatRequest,
         makeMyProfileDiaryRequest,
         makeMyProfileDeliveryRequest,
+        makeMyProfileReviewRequest,
     ]
 
     const fetchData = async () => {
@@ -129,4 +109,27 @@ export const fetchOrderTabData = (
     }
 
     fetchData()
+}
+
+export const processOrderTabComponentsData = (
+    tabComponentsData: MyProfileOrderByIdData,
+    storeData: OrderByIdSidebarStore | undefined
+): MyProfileOrderByIdData => {
+    if (!storeData) return tabComponentsData;
+
+    let orderData = tabComponentsData[0];
+    if (!orderData || orderData.status !== 200) return tabComponentsData;
+
+    if (storeData.endedAt !== undefined) {
+        orderData.data.deliveryDate = storeData.endedAt;
+    }
+    orderData.data.status = storeData.status;
+
+    tabComponentsData[0] = orderData;
+
+    if (tabComponentsData[4] !== undefined && tabComponentsData[4].status === 200) {
+        tabComponentsData[4] = undefined
+    }
+
+    return tabComponentsData;
 }

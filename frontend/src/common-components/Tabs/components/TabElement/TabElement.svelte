@@ -6,9 +6,10 @@
   type TabElementProps = {
     title: string
     index: number
-    activeTabIndex: number
-    setActiveTabIndex: (index: number) => void,
+    tabIndex: number
+    setTabIndex: (index: number) => void
     icon?: string
+    elementStyles?: string
   }
 
   const props: TabElementProps = $props()

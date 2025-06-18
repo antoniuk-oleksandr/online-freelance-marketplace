@@ -9,9 +9,10 @@
     getOrderByIdTabData,
     handleOrderByIdTabChange,
   } from './helpers'
-  import { onDestroy } from 'svelte'
+  import { onDestroy, setContext } from 'svelte'
   import OrderByIdSidebar from './components/OrderByIdSidebar/OrderByIdSidebar.svelte'
   import type { MyProfileOrderByIdData } from '@/types/MyProfileOrderByIdData'
+  import { writable } from 'svelte/store'
 
   type MyProfileOrderByIdPageProps = {
     orderId: string
@@ -22,11 +23,11 @@
   let tabComponentsData = $state<MyProfileOrderByIdData>(getInitialTabComponentsData())
   const setTabComponentsData = (value: MyProfileOrderByIdData) => (tabComponentsData = value)
 
-  let tabIndex = $state(-1)
-  const setTabIndex = (value: number) => (tabIndex = value)
+  let tabIndex = writable<number>(-1)
+  setContext('tabIndex', tabIndex)
 
   const unsubscribe = useRouter().routerBase.subscribe((route) => {
-    fetchOrderTabData(route, orderId, setTabIndex, tabComponentsData, setTabComponentsData)
+    fetchOrderTabData(route, orderId, tabIndex, tabComponentsData, setTabComponentsData)
   })
 
   onDestroy(() => unsubscribe())
@@ -34,15 +35,16 @@
   const tabsData: TabType[] = $derived(getOrderByIdTabData(tabComponentsData))
 </script>
 
-{#if tabIndex !== -1}
+{#if $tabIndex !== -1}
   <MyProfileOrderByIdPageLayout>
     <Tabs
+      elementStyles="!px-1 xs:!px-2.5"
       orderId={parseInt(orderId)}
       {tabComponentsData}
-      tabChangeAction={(tabIndex) => handleOrderByIdTabChange(orderId, tabIndex)}
-      initialActiveTabIndex={tabIndex}
+      setTabIndex={(tabIndex) => handleOrderByIdTabChange(orderId, tabIndex)}
+      tabIndex={$tabIndex}
       tabs={tabsData}
     />
-    <OrderByIdSidebar orderData={tabComponentsData[0]} />
+    <OrderByIdSidebar {orderId} orderData={tabComponentsData[0]} />
   </MyProfileOrderByIdPageLayout>
 {/if}

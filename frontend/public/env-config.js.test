@@ -1,0 +1,9 @@
+window.env = {
+  VITE_GOOGLE_CLIENT_ID: '434086143424-g0o2v3g444htp3v4v8c1pvu3osp357g8.apps.googleusercontent.com',
+  VITE_MAX_FREELANCE_BY_ID_REVIEWS: '2',
+  VITE_SERVICE_FEES: '0.05',
+  VITE_FILE_SERVER_HOST: 'http://localhost:8030/files',
+  VITE_WEBSOCKET_HOST: 'ws://localhost:8000',
+  VITE_BACKEND_HOST: 'http://localhost:8000'
+};
+

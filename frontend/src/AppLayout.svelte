@@ -8,6 +8,10 @@
   import Modal from '@/common-components/Modal/Modal.svelte'
   import ErrorComponent from '@/common-components/ErrorComponent/ErrorComponent.svelte'
   import { errorStore } from '@/common-stores/error-store'
+  import hugeicons from '@iconify-json/hugeicons/icons.json'
+  import { addCollection } from '@iconify/svelte'
+
+  addCollection(hugeicons)
 
   let { children }: LayoutProps = $props()
 

@@ -6,12 +6,15 @@
   import OrderRequestSummaryItem from '@/pages/order-request/components/OrderRequestSummary/components/OrderRequestSummaryItem/OrderRequestSummaryItem.svelte'
   import { formatOrderDate } from '@/pages/order-submit-requirements/helpers'
   import OrderByIdSidebarTop from './components/OrderByIdSidebarTop/OrderByIdSidebarTop.svelte'
+  import OrderByIdSidebarSelect from './components/OrderByIdSidebarSelect/OrderByIdSidebarSelect.svelte'
 
   type OrderByIdSidebarProps = {
     orderData: MyProfileOverviewRequestResponse | undefined
+    orderId: string
+    showOrderByIdSidebarSelect?: boolean
   }
 
-  const { orderData }: OrderByIdSidebarProps = $props()
+  const { orderData, orderId, showOrderByIdSidebarSelect = false }: OrderByIdSidebarProps = $props()
 </script>
 
 <OrderByIdSidebarLayout>
@@ -25,11 +28,13 @@
       valueLink="/users/{orderData.data.freelancer.id}"
       value={orderData.data.freelancer.username}
     />
-    <OrderRequestSummaryItem
-      valueStyles="!font-semibold"
-      title="delivery date"
-      value={formatOrderDate(orderData.data.deliveryDate)}
-    />
+    {#if orderData.data.deliveryDate !== null}
+      <OrderRequestSummaryItem
+        valueStyles="!font-semibold"
+        title="delivery date"
+        value={formatOrderDate(orderData.data.deliveryDate)}
+      />
+    {/if}
     <OrderRequestSummaryItem
       valueStyles="!font-semibold"
       title="total price"
@@ -40,5 +45,8 @@
       title="order number"
       value={orderData.data.id}
     />
+    {#if showOrderByIdSidebarSelect}
+      <OrderByIdSidebarSelect {orderId} />
+    {/if}
   {/if}
 </OrderByIdSidebarLayout>

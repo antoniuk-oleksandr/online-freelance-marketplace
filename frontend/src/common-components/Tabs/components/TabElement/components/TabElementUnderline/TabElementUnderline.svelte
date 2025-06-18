@@ -3,13 +3,13 @@
 
   type TabElementUnderlineProps = {
     index: number
-    activeTabIndex: number
+    tabIndex: number
   }
 
-  const { index, activeTabIndex }: TabElementUnderlineProps = $props()
+  const { index, tabIndex }: TabElementUnderlineProps = $props()
 </script>
 
-{#if index === activeTabIndex}
+{#if index === tabIndex}
   <div
     in:slide={{ duration: 300 }}
     out:slide={{ duration: 300 }}

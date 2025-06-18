@@ -18,8 +18,10 @@
   const { files, ...rest }: OrderSubmitRequirementsFormAttachFileListProps = $props()
 </script>
 
-<OrderSubmitRequirementsFormAttachFileListLayout {...rest} {isMobile}>
-  {#each files as file, index}
-    <OrderSubmitRequirementsFormAttachFile {...rest} {isMobile} {index} {file} />
-  {/each}
-</OrderSubmitRequirementsFormAttachFileListLayout>
+{#if files.length > 0}
+  <OrderSubmitRequirementsFormAttachFileListLayout {...rest} {isMobile}>
+    {#each files as file, index}
+      <OrderSubmitRequirementsFormAttachFile {...rest} {isMobile} {index} {file} />
+    {/each}
+  </OrderSubmitRequirementsFormAttachFileListLayout>
+{/if}

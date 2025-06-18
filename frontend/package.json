@@ -29,6 +29,7 @@
   },
   "dependencies": {
     "@felte/validator-zod": "^1.0.18",
+    "@iconify-json/hugeicons": "^1.2.5",
     "@tiptap/core": "^2.11.7",
     "@tiptap/extension-character-count": "^2.11.7",
     "@tiptap/extension-color": "^2.11.7",

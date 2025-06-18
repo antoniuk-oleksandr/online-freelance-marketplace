@@ -3,6 +3,7 @@ import type { MyProfileDeliveryRequestResponse } from "./MyProfileDeliveryReques
 import type { MyProfileDiaryRequestResponse } from "./MyProfileDiaryRequestResponse";
 import type { MyProfileOverviewRequestResponse } from "./MyProfileOverviewRequestResponse";
 import type { MyProfileRequirementsRequestResponse } from "./MyProfileRequirementsRequestResponse";
+import type { MyProfileReviewRequestResponse } from "./MyProfileReviewRequestResponse";
 
 export type MyProfileOrderByIdData = [
   MyProfileOverviewRequestResponse | undefined,
@@ -10,5 +11,6 @@ export type MyProfileOrderByIdData = [
   MyProfileChatRequestResponse | undefined,
   MyProfileDiaryRequestResponse | undefined,
   MyProfileDeliveryRequestResponse | undefined,
+  MyProfileReviewRequestResponse | undefined,
 ];
 

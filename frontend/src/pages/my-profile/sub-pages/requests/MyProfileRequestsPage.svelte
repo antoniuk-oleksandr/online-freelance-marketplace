@@ -52,7 +52,6 @@
     {:else}
       <RequestsTable requests={requestsData.requests} />
     {/if}
-
     {#if requestsData.totalPages > 1}
       <Pagination
         setPage={(value) =>

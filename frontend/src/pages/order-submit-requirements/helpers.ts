@@ -70,13 +70,13 @@ const getMonthAbbreviation = (monthIndex: number) => {
 
 export const getStatusBgColor = (num: StatusEnum) => {
     const statusClasses = {
-        [StatusEnum.Incomplete]: "bg-gray-200 text-gray-700 border-gray-300",
-        [StatusEnum.InProgress]: "bg-yellow-100 text-yellow-700 border-yellow-300",
-        [StatusEnum.Completed]: "bg-green-100 text-green-700 border-green-300",
-        [StatusEnum.Cancelled]: "bg-red-200 text-red-800 border-red-400",
-        [StatusEnum.Pending]: "bg-orange-100 text-orange-700 border-orange-300",
-        [StatusEnum.Failed]: "bg-red-100 text-red-700 border-red-300",
-        [StatusEnum.AwaitingAcceptance]: "bg-blue-100 text-blue-700 border-blue-300"
+        [StatusEnum.InProgress]: "bg-yellow-100 text-yellow-700 border-yellow-300 dark:bg-yellow-700 dark:text-yellow-200 dark:border-yellow-600",
+        [StatusEnum.Completed]: "bg-green-100 text-green-700 border-green-300 dark:bg-green-900 dark:text-green-200 dark:border-green-700",
+        [StatusEnum.Cancelled]: "bg-red-200 text-red-800 border-red-400 dark:bg-red-900 dark:text-red-200 dark:border-red-600",
+        [StatusEnum.Pending]: "bg-orange-100 text-orange-700 border-orange-300 dark:bg-orange-900 dark:text-orange-200 dark:border-orange-600",
+        [StatusEnum.AwaitingAcceptance]: "bg-blue-100 text-blue-700 border-blue-300 dark:bg-blue-900 dark:text-blue-200 dark:border-blue-600",
+        [StatusEnum.Incomplete]: "bg-gray-200 text-gray-700 border-gray-300 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-600",
+        [StatusEnum.Failed]: "bg-red-100 text-red-700 border-red-300 dark:bg-red-900 dark:text-red-200 dark:border-red-600",
     };
 
     return statusClasses[num] || "text-gray-500 bg-gray-100";

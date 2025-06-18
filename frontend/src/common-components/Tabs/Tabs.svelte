@@ -6,28 +6,24 @@
 
   type TabsProps = {
     tabs: TabType[]
-    initialActiveTabIndex?: number
-    tabChangeAction?: (index: number) => void
+    tabIndex: number
+    setTabIndex: (index: number) => void
     tabComponentsData: MyProfileOrderByIdData
     orderId: number
+    elementStyles?: string
   }
 
   const {
     tabs,
-    initialActiveTabIndex = 0,
-    tabChangeAction,
+    tabIndex,
+    setTabIndex,
     tabComponentsData,
     orderId,
+    elementStyles,
   }: TabsProps = $props()
-
-  let activeTabIndex = $state(initialActiveTabIndex)
-  const setActiveTabIndex = (index: number) => {
-    activeTabIndex = index
-    tabChangeAction && tabChangeAction(index)
-  }
 </script>
 
 <TabsLayout>
-  <TabElementList {tabs} {activeTabIndex} {setActiveTabIndex} />
-  {@render tabs[activeTabIndex].component(tabComponentsData[activeTabIndex], orderId)}
+  <TabElementList {elementStyles} {tabs} {tabIndex} {setTabIndex} />
+  {@render tabs[tabIndex].component(tabComponentsData[tabIndex], orderId)}
 </TabsLayout>

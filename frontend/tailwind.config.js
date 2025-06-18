@@ -19,7 +19,14 @@ const config = {
         "bg-red-200", "text-red-800", "border-red-400",
         "bg-orange-100", "text-orange-700", "border-orange-300",
         "bg-red-100", "text-red-700", "border-red-300",
-        "bg-blue-100", "text-blue-700", "border-blue-300"
+        "bg-blue-100", "text-blue-700", "border-blue-300",
+        "dark:bg-green-900", "dark:text-green-200", "dark:border-green-700",
+        "dark:bg-yellow-700", "dark:text-yellow-200", "dark:border-yellow-600",
+        "dark:bg-red-900", "dark:text-red-200", "dark:border-red-600",
+        "dark:bg-orange-900", "dark:text-orange-200", "dark:border-orange-600",
+        "dark:bg-blue-900", "dark:text-blue-200", "dark:border-blue-600",
+        "dark:bg-red-900", "dark:text-red-200", "dark:border-red-600",
+        "dark:bg-gray-700", "dark:text-gray-300", "dark:border-gray-600",
     ],
     theme: {
         extend: {
@@ -152,6 +159,7 @@ const config = {
                 "order-overview": "23.3125rem",
                 10.5: "2.625rem",
                 13.5: "3.375rem",
+                30: "7.5rem",
             },
             translate: {
                 "search-sidebar": "23rem",
